@@ -92,3 +92,14 @@
 IdeaProjects
 g/
 proj/
+.dotty_history
+.gdb_history
+.gkrellm2/
+.gnupg/
+.lesshst
+.mtk-bash_history
+.mypy_cache/
+.npm/
+.pgpass
+.psql_history
+.purple/
