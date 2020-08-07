@@ -1,0 +1,29 @@
+#!/usr/local/bin/perl -ln
+BEGIN
+{
+  if ($ARGV[0] eq '-h')
+    {
+      warn "min max mean stddev\n";
+      exit;
+    }
+}
+$total += $_;
+$total_squared += $_*$_;
+$n++;
+$min = $_ if not defined ($min) or $_ < $min;
+$max = $_ if $_ > $max;
+END
+{
+  my $mean = $total / $n;
+  my $mean_x_squared = $total_squared / $n;
+  my $variance = $mean_x_squared - ($mean*$mean);
+  my $stddev = sqrt $variance;
+  printf ("%0.2f %0.2f %0.2f %0.2f \n", $min, $max, $mean, $stddev);
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

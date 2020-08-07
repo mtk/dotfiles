@@ -1,0 +1,9 @@
+function lsd
+{
+    'ls' -ld $(dlist $*)
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

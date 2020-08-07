@@ -1,0 +1,5 @@
+function lss
+{
+	list-screen-sessions "$@"| tee ~/.my-screen-sessions | halign
+}
+

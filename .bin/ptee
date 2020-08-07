@@ -1,0 +1,75 @@
+#!/usr/local/bin/perl
+
+# tee clone that groks process tees (should work even with old perls)
+# Tom Christiansen <tchrist@convex.com>
+# 6 June 91
+
+# Did you know that if you write a filter that processes 
+# <ARGV>, (same as <>), that you can write command lines like:
+
+#     ptee f1 "c1|" f2 - f3 "c2|c3|" f4 "c5 2>&1|"
+
+# and have everything work out automatically?  It's true.  The open()
+# function is full of cool magic.
+
+# To come at this from the other direction, the open() magic can also be
+# wonderful for output.  Consider:
+
+#     cmd | ptee f1 "|c1" ">>f2" f3 - "|c2|c3 > f4" f5 
+
+# Yup: you can now tee into many processes at once, control which
+# files are appended and which clobbered, etc.  Here's the ancient
+# program I wrote to do this.
+
+while ($ARGV[0] =~ /^-(.+)/ && (shift, ($_ = $1), 1)) {
+    next if /^$/;
+    s/i// && (++$ignore_ints, redo); 
+    s/a// && (++$append,      redo);
+    s/u// && (++$unbuffer,    redo);
+    s/n// && (++$nostdout,    redo);
+    die "usage ptee [-aiun] [filenames] ...\n";
+} 
+if ($ignore_ints) {
+    for $sig ('INT', 'TERM', 'HUP', 'QUIT') { $SIG{$sig} = 'IGNORE'; } 
+}
+$SIG{'PIPE'} = 'PLUMBER';
+$mode = $append ? '>>' : '>';
+$fh = 'FH000';
+unless ($nostdout) { 
+    %fh = ('STDOUT', 'standard output'); # always go to stdout
+}
+$| = 1 if $unbuffer;
+
+for (@ARGV) {
+    if (!open($fh, (/^[^>|]/ && $mode) . $_)) {
+	warn "$0: cannot open $_: $!\n"; # like sun's; i prefer die
+	$status++;
+	next;
+    }
+    select((select($fh), $| = 1)[0]) if $unbuffer;
+    $fh{$fh++} = $_;
+} 
+while (<STDIN>) {
+    for $fh (keys %fh) {
+	print $fh $_;
+    } 
+} 
+for $fh (keys %fh) { 
+    next if close($fh) || !defined $fh{$fh};
+    warn "$0: couldn't close $fh{$fh}: $!\n";
+    $status++;
+}
+exit $status;
+
+sub PLUMBER {
+    warn "$0: pipe to \"$fh{$fh}\" broke!\n";
+    $status++;
+    delete $fh{$fh};
+} 
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

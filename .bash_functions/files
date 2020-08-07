@@ -1,0 +1,17 @@
+# bash shell function
+
+function files
+{
+    local i
+    
+    for i in $*; do
+	[[ -f "$i" ]] && echo $i
+    done
+}
+
+
+
+# Local Variables:
+# mode: sh
+# End:
+

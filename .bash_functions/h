@@ -1,0 +1,15 @@
+function h
+{
+	local ncmds
+        if [[ -z "$1" ]]; then
+                ((ncmds=$LINES-3))
+        else
+                ncmds=$1
+        fi
+        fc -l -"$ncmds"
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

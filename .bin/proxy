@@ -1,0 +1,35 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use HTTP::Daemon;
+use HTTP::Status;
+
+my $port = $ARGV[0] || 8000;
+
+my $d = new HTTP::Daemon ('LocalPort' => $port, 'Reuse' => 1);
+
+while (my $c = $d->accept)
+{
+    while (my $r = $c->get_request)
+    {
+	print STDERR
+	    'method: ',    $r->method,       "\n",
+	    'uri: ',       $r->uri,          "\n",
+	    'as string: ', $r->as_string,    "\n",
+	    'ctype: ',     $r->content_type, "\n",
+	    'content: <',  $r->content,      ">\n";
+	
+	$c->send_error (RC_FORBIDDEN);
+    }
+
+    $c->close;
+    undef $c;
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

@@ -1,0 +1,7 @@
+#!/usr/local/bin/bash
+exec enscript -q -C -G -E -j -L 66 -r -p- "$@" | mpage -t -1 | lp
+
+# Local Variables:
+# mode: sh
+# End:
+

@@ -1,0 +1,12 @@
+function rlw
+{
+    rlwrap -A -c -H .$1_history -pYELLOW -r -s 1000 "$@"
+}
+
+# Local Variables:
+# mode: sh
+# End:
+
+
+
+

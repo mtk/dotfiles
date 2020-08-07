@@ -1,0 +1,9 @@
+\set PROMPT1 '[%/]> '
+\set PROMPT2 '> '
+\set eav 'explain analyze verbose'
+\set COMP_KEYWORD_CASE upper
+\x auto
+\pset null <N>
+\timing on
+\set VERBOSITY verbose
+\set HISTCONTROL ignoredups

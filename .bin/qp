@@ -1,0 +1,30 @@
+#!/usr/local/bin/perl
+
+use strict;
+use Getopt::Std;
+use MIME::QuotedPrint;
+
+use vars qw($opt_e);
+getopts ('e') or die "bogus options: only '-e' for encode allowed, decode is the default\n";
+
+if ($opt_e)
+{
+  while (<>)
+    {
+      print encode_qp $_;
+    }
+}
+else
+{
+  while (<>)
+    {
+      print decode_qp $_;
+    }
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

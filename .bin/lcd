@@ -1,0 +1,38 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Getopt::Std;
+use Regexp::Common;
+
+our $opt_w = 10;
+getopt ('w');
+
+my @i;
+
+my $counter;
+
+while (<>)
+  {
+    chomp;
+    my @f = split / /;
+    $counter = 0;
+    foreach (@f)
+      {
+	$i[$counter] = $_ unless $_ eq '<N>';
+	$i[$counter] = sprintf ('%0.2f', $i[$counter])
+	  if $i[$counter] =~ /[.]/ and not $i[$counter] =~ /[:]/;
+	my $delta = $opt_w - length ($i[$counter]);
+	$i[$counter] = (' ' x $delta) . $i[$counter] if $delta > 0;
+	$counter++;
+      }
+    print STDERR "@i\r";
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

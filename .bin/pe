@@ -1,0 +1,75 @@
+#!/usr/local/bin/perl
+
+use strict;
+use Getopt::Long ();
+
+use vars qw($opt_ignore $opt_key $opt_value $opt_exported $opt_local
+	    $opt_help $opt_debug $opt_attrs $opt_readonly $opt_array
+	    $opt_integer);
+
+sub usage (;$)
+{
+    # eat the input to avoid 'broken pipe' messages
+    1 while <>;
+
+    my $msg = shift;
+    print STDERR "$0: $msg\n" if $msg;
+    print STDERR <<"MSG";
+usage: $0 [options] varpattern... varpattern...
+    -ignore   ignore case within patterns
+    -key      match against key namespace (the default)
+    -value    match against value namespace
+    -exported report on exported vars (the default)
+    -local    report on local vars
+    -readonly report on readonly vars
+    -array    report on arrays
+    -integer  report on integer vars
+    -help     print this message
+MSG
+    exit -1;
+}
+
+$0 =~ s@^.*/@@;
+
+Getopt::Long::config ('bundling_override');
+Getopt::Long::GetOptions ('ignore|ig', 'key|k', 'value|v', 'exported|e|x',
+			  'local|l', 'readonly|r', 'array|a', 'integer|in',
+			  'help|h', 'debug|d') or usage;
+usage if $opt_help;
+$opt_key ||= 1 unless $opt_value;
+$opt_key = $opt_value = undef if $opt_key and $opt_value;
+
+$opt_attrs .= 'x' if $opt_exported;
+$opt_attrs .= 'l' if $opt_local;
+$opt_attrs .= 'i' if $opt_integer;
+$opt_attrs .= 'r' if $opt_readonly;
+$opt_attrs .= 'a' if $opt_array;
+$opt_attrs ||= 'x';
+my @opt_attrs = split //, $opt_attrs;
+
+my $args = join ('|', @ARGV) || '.';
+@ARGV = qw(-);
+my $pats = $opt_ignore ? qr/$args/o : qr/$args/oi;
+
+my (%env, %attrs);
+
+# the big suck
+$/ = undef;
+$_ = <>;
+
+# who needs parsers when you have perl5.005 regexps?
+ENTRY: while (/^declare -(\S+) ([^=]+)=(([\"\'])(?:.|\n)*?(?<!\\)\4)$/mg)
+{
+    my ($attrs, $k, $v) = ($1, $2, $3);
+    $attrs .= 'l' if index ($attrs, 'x') == -1;
+    foreach my $attr (@opt_attrs) { next ENTRY if index ($attrs, $attr) == -1 }
+    print  "$k=$v\n" if ($opt_key ? $k : $opt_value ? $v : $k . $v) =~ /$pats/;
+}
+
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

@@ -1,0 +1,13 @@
+#! /bin/sh
+
+pid=$1
+
+# assumes Linux
+# also assumes that the process has fd 0, 1, and 2 open.
+gdb /proc/$pid/exe $pid <<EOF
+call close(1)
+call close(2)
+call open("/dev/null", 1)
+call open("/dev/null", 1)
+detach
+EOF

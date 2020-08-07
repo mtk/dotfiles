@@ -1,0 +1,14 @@
+function inpath()
+{
+    local prog p
+    for p in $(path)
+    do
+	    [ -x $p/$1 ] && { prog=$p/$1; break; }
+    done
+    [[ $prog ]]
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

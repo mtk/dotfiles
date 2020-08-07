@@ -1,0 +1,48 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Number::Format;
+use Getopt::Std;
+
+our $opt_m = 0;
+our $opt_w = 0;
+getopts ('mw');
+
+my $nf = Number::Format->new (-thousands_sep => ',');
+
+sub format_number
+{
+  my $number = shift;
+  my $t;
+  if ($opt_m and $number =~ /[.]\d\d$/)
+    {
+      $t = $nf->format_number ($number, 2, 1);
+    }
+  else
+    {
+      $t = $nf->format_number ($number);
+    }
+  return $t ? $t : $number;
+}
+
+while (<>)
+{
+  if ($opt_w)
+    {
+      s/\b(\d+(?:[.]\d+)?)/format_number ($1)/eg;
+    }
+  else
+    {
+      s/(\d+(?:[.]\d+)?)/format_number ($1)/eg;
+    }
+
+  print;
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

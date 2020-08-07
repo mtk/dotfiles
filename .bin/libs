@@ -1,0 +1,68 @@
+#!/usr/local/bin/perl
+
+use strict;
+use Getopt::Long;
+
+sub dsplit ($)
+{
+  my @path = split m@/@, shift;
+  shift @path unless $path[0];
+  @path;
+}
+
+sub resolve_links ($)
+{
+  my $base;
+  my @path = dsplit shift;
+
+  while (@path)
+    {
+      my $link = readlink $base . '/' . $path[0];
+
+      if ($link)
+	{
+	  shift @path;
+	  unshift @path, dsplit $link;
+	  $base = undef if $link =~ m@^/@;
+	}
+      else
+	{
+	  $base .= '/' . shift @path;
+	}
+    }
+
+  $base;
+}
+
+my %seen;
+
+sub unique ($)
+{
+  my $dir = shift;
+  $dir = $ENV{PWD} . '/' . $dir unless $dir =~ m@^/@;
+  return 0 unless -d $dir;
+  $dir = resolve_links $dir;
+  return 0 if exists $seen{$dir};
+  $seen{$dir} = 1;
+  return 1;
+}
+
+my $args = join '|', @ARGV;
+
+foreach my $dir (grep unique $_, split /:/, $ENV{'LD_LIBRARY_PATH'})
+{
+  opendir D, $dir;
+  foreach my $file (map { "$dir/$_" } grep /^[^.]/, readdir D)
+    {
+      next unless -f $file;
+      print $file, "\n"
+	if not @ARGV or ((split m@/@, $file)[-1]) =~ /$args/o;
+    }
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

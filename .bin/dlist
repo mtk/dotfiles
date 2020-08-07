@@ -1,0 +1,23 @@
+#!/usr/local/bin/perl
+
+use strict;
+use Getopt::Long;
+
+use vars qw($opt_a);
+GetOptions ('a');
+
+my $dh;
+my $root = @ARGV ? shift : '.';
+opendir D, $root;
+my @dirs = readdir D;
+closedir D;
+
+foreach my $dir (sort @dirs)
+{
+    next if $dir eq '.' or $dir eq '..';
+    next if not $opt_a and  substr ($dir, 0, 1) eq '.';
+    my $fqdn = $root eq '.' ? $dir : "$root/$dir";
+    print $fqdn, "\n" if -d $fqdn;
+}
+
+

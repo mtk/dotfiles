@@ -1,0 +1,65 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use IO::File;
+use Getopt::Std;
+
+our $opt_f = '\s+';
+getopt ('f');
+
+my $column = 0;
+my $file;
+
+if (@ARGV == 0)
+  {
+    #$column = 0;
+    $file = \*STDIN;
+  }
+elsif (@ARGV == 2)
+  {
+    $column = $ARGV[0];
+    $file = IO::File->new ("<$ARGV[1]");
+  }
+elsif (@ARGV == 1)
+  {
+    if (-r $ARGV[0])
+      {
+	#$column = 0;
+	$file = IO::File->new ("<$ARGV[0]");
+      }
+    else
+      {
+	$column = $ARGV[0];
+	$file = \*STDIN
+      }
+  }
+else
+  {
+    die "$0: huh???\n";
+  }
+
+
+my $last;
+
+while (<$file>)
+  {
+    my @fields = split /$opt_f/;
+    my $fields = join (chr(1), eval "\@fields\[$column\]");
+
+    if ($fields ne $last)
+      {
+	$last = $fields;
+	print "\n";
+      }
+
+    print $_;
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

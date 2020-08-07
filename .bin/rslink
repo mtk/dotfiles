@@ -1,0 +1,452 @@
+#!/usr/local/bin/perl -w
+
+# usage: rslink [-aqrsuv] fromdir todir [ignore ...]
+#
+# Performs recursive symbolic link .
+# See man page for documentation.
+#
+# Release 1.20.
+# Last edited: Fri May 21 10:17:23 1993 by Tim Wilson
+# $Id: rslink,v 1.5 1993/05/21 09:17:31 wilson Exp $
+#
+# Modification summary
+## Release 1.20.  Submitted to comp.sources.misc 21 May 1993.
+#  10 May 1993	wilson	Incompatible change: symbolic links to directories
+#			are now treated like symbolic links rather than
+#			like directories.  This is useful, whereas the original
+#			behaviour was never useful.
+## Release 1.10.  Not posted.
+#   9 Apr 1992	tdw	Add r (copy contents of relative symbolic
+#			links), s (copy contents of absolute symbolic
+#			links), u (update -- allow target to
+#			exist), and q (quiet) options.
+#			Idea for r and s from drk@COM.Rational (David
+#			Kaelbling).
+## Release 1.00.  Posted to alt.sources 11 March 1992.
+#  20 Sep 1991	tdw	if -a and todir does not start with `/' (previously an
+#			error), make relative via cwd.
+#			Ignore list changed to be regexps.
+#			Slight restructuring.
+#  15 May 1991	tdw	Add -a (absolute) option
+#   2 Nov 1990	tdw	Ignore `file exists' for directories too
+#  25 Aug 1990	tdw	Ignore spurious `file exists' errors
+#  17 Aug 1990	tdw	Created by Tim Wilson.
+#
+# Author: Tim Wilson, c/o 43 Byron Avenue, Winchester, Hants, SO22 5AT, UK.
+#         wilson@europarc.xerox.com, tdw@cl.cam.ac.uk
+#
+######################################################################
+#
+# Symlink on NFS file systems is seen to give spurious `file exists'
+# errors from time to time, which rslink just ignores, except for
+# warning (suppressed by quiet mode).
+#
+# The errors are probably due to low-level retrys (because of network
+# timeouts) of the non-idempotent NFS symlink operation.
+#
+######################################################################
+#
+# TO DO:
+#  + Copy mode of created directories?  Not sure if this is a good idea.
+#
+######################################################################
+#
+# Copyright (C) 1992, 1993 T D Wilson.  All rights reserved.
+#
+# Permission to copy without fee all or part of this material is
+# granted provided that the copies are not made or distributed for
+# direct commercial advantage, the copyright notice and the title and
+# date appear, and notice is given that copying is by permission of
+# the author.  To copy otherwise, or to republish, requires specific
+# permission.
+#
+# T D Wilson makes no representations about the suitability of this
+# software for any purpose.  It is provided "as is" without express or
+# implied warranty.
+#
+######################################################################
+#
+# Implementation contants
+#
+
+$dirmode = 0755;		# Mode in which directories are created
+
+$EEXIST = 17;			# From Ultrix 3.1C errno.h
+
+
+######################################################################
+#
+# Eliminate one-mention warnings
+
+defined $opt_a;
+
+######################################################################
+#
+# Parse options -- set $opt_a to 1 if -a present (etc)
+#
+
+$0 =~ m|([^/]*)$|;		# progname is last component
+$progname = $1;
+
+$options = "aqrsuv";
+$usage = "usage: $progname [-$options] fromdir todir [ignore ...]";
+
+# Unset all option variables
+
+@flags = split (//, $options);
+foreach $letter (@flags) {
+	eval "\$opt_$letter = 0";
+}
+
+# Set from command line
+
+$usage_error = 0;
+ARG:
+while (@ARGV) {
+	$arg = $ARGV[0];
+	last ARG unless $arg =~ /^-/;
+	shift @ARGV;
+
+	@flags = split (//, $arg);	# Get individual letters
+	shift @flags;			# Drop leading -
+	foreach $letter (@flags) {
+		if (index ($options, $letter) >= $[) {
+			eval "\$opt_$letter = 1";
+		} else {
+			warn "$progname: Unknown option -$letter\n";
+			$usage_error++;
+		}
+	}
+}
+die "$usage\n" if ($usage_error || @ARGV < 2);
+
+($fromdir,$todir,@ignore) = @ARGV;
+
+defined($debug) || ($debug = 0);	# Boolean: don't actually make links
+
+
+######################################################################
+#
+# Subroutine to create a symbolic link
+#
+# arg 0: Contents of new symbolic link
+# arg 1: Path name of new symbolic link that should not exist already
+#
+# Globals:
+#   $debug
+#   $opt_q -- quiet
+#   $opt_v -- verbose
+
+
+sub dolink {
+	local ($contents,$path) = @_;
+
+	$opt_v && print "ln -s $contents $path\n";
+	unless ($debug || symlink($contents, $path)) {
+		if ($! == $EEXIST) { # Assume NFS problem
+			$opt_q || warn "$progname: symlink $path -> $contents:"
+				. " $! -- IGNORING SPURIOUS ERROR\n";
+		} else {	# Some other error
+			die "$progname: Can't symlink "
+				. "$path -> $contents: $!\n";
+		}
+	}
+}
+
+
+######################################################################
+#
+# Subroutine to test if file is required or should be omitted
+#
+# arg 0: file name -- just base name, not whole path
+# arg 1: name of file for omitting message (see $opt_v below)
+#
+# Returns: True if file should be omitted
+#
+# Side effects: if $opt_v, prints message
+#
+# Global variables:
+#  @ignore: the list of regexps matching files to be omitted
+
+sub should_omit {
+	local ($file,$name) = @_;
+
+	if (grep($file =~ /$_/, @ignore)) {
+		if ($opt_v) { print "[Omitting $name]\n"; }
+		return 1;
+	}
+	return 0;
+}
+
+
+######################################################################
+#
+# Subroutine to recursively link a directory tree
+#
+# arg 0: path to destination directory from cwd;
+#        which should not exist (unless $opt_u), with no trailing `/'
+# arg 1: path from cwd to source directory, with no trailing `/'
+# arg 2: depth: n "../"s are required to get back from the source to cd.
+#        If depth is ABSOLUTE, the paths are assumed to be absolute.
+#
+# Create the destination directory.
+#
+# For each entry in the source directory (except . and .., and ignored files)
+#   if it's a directory, recurse
+#   else make a symbolic link
+#
+# Affected by the following global variables:
+#   $debug
+#   @ignore
+#   $opt_q -- quiet
+#   $opt_r -- copy contents of relative symbolic links
+#   $opt_s -- copy contents of absolute symbolic links
+#   $opt_u -- create files if they don't exist already
+#   $opt_v -- verbose
+#   $progname
+
+$ABSOLUTE = -1;
+
+sub rslink {
+	$debug && warn "$progname: DB: rslink @_\n";
+
+	local($todest,$tosource,$depth) = @_;
+	local($d,$s,$f,$fromdst,$newdepth,@dir,@components);
+
+	if ($depth == $ABSOLUTE) {	# Using absolute paths
+		$newdepth = $depth;	# Continue using them
+		$fromdst = "";
+	} else {			# Relative paths
+		$newdepth = $depth + 1;
+		$fromdst = "../" x $depth;
+	}
+
+	# Get last component of directory name
+	# and check whether we should ignore it.
+
+	@components = split ('/', $tosource);
+	$f = @components[$#components];
+	&should_omit ($f, $tosource) && return;
+
+	# Create destination directory,
+	# unless we are only updating and it exists already.
+
+	if (-e $todest) {
+		unless (-d _ && $opt_u) {	# The only good combination
+			# All others die
+			-d _ && die "$progname: $todest directory "
+					. "exists already (see -u option)\n";
+			$opt_u && die "$progname: Update failed: "
+					. "$todest is not a directory\n";
+			die "$progname: $todest exists\n";
+			# NOTREACHED
+		}
+		# (Destination directory exists already.)
+	} else {
+		$opt_v && print "mkdir $todest\n";
+		unless (mkdir($todest, $dirmode)) {
+			if ($! == $EEXIST) { # Assume NFS problem
+				$opt_q || warn "$progname: mkdir $todest: $! "
+					. "-- IGNORING SPURIOUS ERROR\n";
+			} else {	# Some other error
+				die "$progname: Can't create directory "
+					. "$todest: $!\n";
+			}
+		}
+	}
+
+	opendir(DIR, $tosource) || die "$progname: Can't open $tosource: $!";
+	@dir = readdir(DIR);
+	closedir(DIR);
+
+	FILE:
+	foreach $f (@dir) {
+
+		# Discard irrelevant directory entries
+		($f eq "." || $f eq "..") && next FILE;
+
+		$s = $tosource . "/" . $f;	# Full source path name
+		$d = $todest . "/" . $f;	# Full destination path name
+
+		# If the file is a symbolic link
+		#   (and not ignorable, and destination does not exist)
+		#   if $opt_r and relative symblink, copy contents
+		#   elsif $opt_r and absolute symblink, copy contents
+                #   else make link to link
+		# elsif the file is a directory
+		#   recurse (to create dir and contents, unless ignorable)
+		# else
+		#   make symbolic link
+		#   (unless ignorable or exists already)
+
+		if (-l $s) {
+			&should_omit ($f, $s) && next FILE;
+			# Unless $opt_u, the directory was newly
+			# created so should be empty -- so it
+			# shouldn't contain any files -- unless some
+			# other program has created a file meanwhile.
+			if (-e $d) {
+				die "$progname: $d exists already\n"
+					unless ($opt_u);
+			} else {	# Create a link
+				$spath = $fromdst . $s;
+				# Maybe we are treating symblinks specially
+				if ($opt_r || $opt_s) {
+					# Some sorts of link-to-links special
+					# Check type of link
+					$link = (readlink ($s) ||
+						die ("$progname: Can't read "
+							."link $s: $!\n"));
+					if ($link =~ m|^/|) {
+						# It is an absolute link
+						$opt_s	? &dolink ($link, $d)
+							: &dolink ($spath, $d);
+					} else {
+						# It is a relative link
+						$opt_r	? &dolink ($link, $d)
+							: &dolink ($spath, $d);
+					}
+				} else { # No special link treatment
+					&dolink ($spath, $d);
+				}
+			}
+		} elsif (-d $s) {	# It's a directory
+			&rslink($d, $s, $newdepth);
+		} else {		# It's something else
+			&should_omit ($f, $s) && next FILE;
+			if (-e $d) {
+				die "$progname: $d exists already\n"
+					unless ($opt_u);
+			} else {	# Create a link
+				$spath = $fromdst . $s;
+				&dolink ($spath, $d);
+			}
+		}
+	}
+}	
+
+######################################################################
+#
+# Main program
+#
+
+# A few checks
+
+-r $fromdir || die "$progname: Can't read $fromdir\n";
+-d $fromdir || die "$progname: $fromdir is not a directory\n";
+
+$debug && warn "$progname: DEBUGGING MODE\n";
+
+if ($opt_a) {	# Don't automatically find ancestor
+	# Remove any `/' from directory names
+	chop $todir if (substr($todir, -1) eq "/");
+	chop $fromdir if (substr($fromdir, -1) eq "/");
+
+	if ($fromdir =~ m|^/|) {	# Create absolute symlinks (via root)
+
+		# Make absolute symbolic links
+
+		&rslink($todir, $fromdir, $ABSOLUTE);
+
+	} else {		# Create symlinks via cwd
+
+		unless ($opt_q) {
+			# Check whether todir path contains symbolic links
+
+			@todir = split(/\//, $todir);
+
+			# Perl wierdness?  If foo is a symbolic link
+			# to a directory, then -l "foo" && -d "foo" is
+			# true, but -l "foo/" is false.  Maybe not
+			# perl; ls does the same.
+
+			$nextdir = ".";
+			foreach $dir (@todir) {
+				$nextdir .= "/" . $dir;
+				-l $nextdir && warn ("$progname: Warning: "
+					. " $nextdir is a symbolic link\n");
+			}
+		}
+
+		&rslink($todir, $fromdir, $#todir + 1);
+	}
+} else {
+	# Do relative symbolic link via common ancestor
+
+	# Work out path from destination to source:
+	#   canonicalize the paths
+	#   ignore common initial directories
+	#   add "../"s to get back to common starting point
+
+	# Canonicalize names with cd $path; pwd
+	# It might be better to remember the current directory with
+	# pwd and then use chdir; or to fork.
+
+	open (FROMDIR, "cd $fromdir; pwd|")
+		|| die "$progname: Can't find absolute path of $fromdir\n";
+	$fromdir = <FROMDIR>;
+	chop $fromdir;
+
+	# We can't cd to $todir since it may not exist yet,
+	# so cd to the parent.
+
+	$todir =~ m|[^/]*$|;	# Match last component
+	$tonewdir = $&;
+	$toparent = $` || ".";	# Supply "." if $todir is simple name
+	$toparent_saved = $toparent;
+
+	open (TODIR, "cd $toparent; pwd|")
+		|| die "$progname: Can't find absolute path of " .
+			"$toparent_saved\n";
+	$toparent = <TODIR>;
+	defined ($toparent)
+		|| die "$progname: Can't find absolute path of "
+			. "$toparent_saved\n";
+	chop $toparent;
+
+	# Now work out relative path from dir2 (dest) to dir1 (source)
+
+	# Delete leading '/' from path names
+
+	substr($fromdir,0,1) = "";
+	substr($toparent,0,1) = "";
+
+	# Split into directory names
+
+	@fromdir = split(/\//, $fromdir);
+	@toparent = split(/\//, $toparent);
+
+	# Remove common initial path
+
+	while (@fromdir != 0 && @toparent != 0
+		&& $fromdir[0] eq $toparent[0]) {
+		shift(@fromdir);
+		shift(@toparent);
+	}
+
+	# Sensible arguments?
+
+	(@fromdir == 0)
+		&& die "$progname: Won't link child to parent directory\n";
+
+	# For every remaining component in toparent, we have to go up
+
+	$rel = "../" x @toparent;
+
+	# Join on rest of fromdir
+
+	if (@fromdir != 0) {
+		$rel .= join("/", @fromdir);
+	}
+
+	$opt_v && print "cd /$toparent\n";
+	chdir "/".$toparent || die "$progname: Can't cd to /$toparent: $!\n";
+	&rslink($tonewdir, $rel, 1);
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

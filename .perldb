@@ -1,0 +1,187 @@
+package My::Debugger::Helper {
+    use Data::Dumper ();
+    use Clone 'clone';
+    use Scalar::Util qw(looks_like_number blessed reftype);
+    my $rc = eval { require Term::ANSIColor; 1; };
+    my $HAVE_TERM_ANSI_COLOR = $rc;
+    $rc = eval { require Perl::Tidy; 1; };
+    my $HAVE_PERL_TIDY = $rc;
+
+    sub colored {
+        my ( $color, $message ) = @_;
+        if ($HAVE_TERM_ANSI_COLOR) {
+            return Term::ANSIColor::colored(@_);
+        }
+        return $message;
+    }
+
+    sub Dumper {
+        local $Data::Dumper::Indent   = 1;
+        local $Data::Dumper::Sortkeys = 1;
+        local $Data::Dumper::Terse    = 1;
+        my $thing  = shift;
+        my $output = Data::Dumper::Dumper($thing);
+        return $output unless $HAVE_PERL_TIDY;
+
+        my ( $tidied, $stderr );
+
+# Prevents the error: You may not specify any filenames when a source array is given
+# That's because even when we use this interface directly, Perl::Tidy
+# checks to see if @ARGV has any filenames.
+        local @ARGV;
+        my $error = Perl::Tidy::perltidy(
+            source      => \$output,
+            destination => \$tidied,
+            stderr      => \$stderr,
+        );
+        if ($error) {
+            die "Perl::Tidy ERROR: $stderr";
+        }
+        return $tidied;
+    }
+
+    sub show {
+        # Oops! Turned out we were stringifying some references inside of the
+        # debugger, causing divergent behavior in our code. This is an attempt
+        # to avoid that issue.
+        my $thing = clone(shift);
+        my $ref = ref $thing or return $thing;
+        my $result;
+        if ( blessed $thing ) {
+            if ( 'HASH' eq reftype $thing ) {
+                my $message = "Class: $ref";
+                $result = join "\n" => colored(
+                    ['bright_red on_black'],
+                    $message
+                  ),
+                  Dumper( _dflat_hash($thing) );
+            }
+            else {
+                $result = _stringify($thing);
+            }
+        }
+        if ( 'HASH' eq $ref ) {
+            $result = Dumper( _dflat_hash($thing) );
+        }
+        elsif ( 'ARRAY' eq $ref ) {
+            $result = Dumper( _dflat_array($thing) );
+        }
+        return $result;
+    }
+
+    sub _dflat_hash {
+        my $hashref = shift;
+        my %hash;
+        while ( my ( $k, $v ) = each %$hashref ) {
+            my $ref = ref $v;
+            if ( 'HASH' eq $ref ) {
+                $v = _dflat_hash($v);
+            }
+            elsif ( 'ARRAY' eq $ref ) {
+                $v = _dflat_array($v);
+            }
+            else {
+                $v = _stringify($v);
+            }
+            $hash{$k} = $v;
+        }
+        return \%hash;
+    }
+
+    sub _dflat_array {
+        my $arrayref = shift;
+        my @array;
+        foreach my $element (@$arrayref) {
+            my $ref = ref $element;
+            if ( 'HASH' eq $ref ) {
+                $element = _dflat_hash($element);
+            }
+            elsif ( 'ARRAY' eq $ref ) {
+                $element = _dflat_array($element);
+            }
+            else {
+                $element = _stringify($element);
+            }
+            push @array => $element;
+        }
+        return \@array;
+    }
+
+    sub _stringify {
+        my $thing = shift;
+        return
+            blessed $thing ? colored( ['bold blue'], "$thing" )
+          : looks_like_number($thing) ? $thing
+          :                             "$thing";
+    }
+}
+
+my $skip;
+my @classes;
+
+BEGIN {
+  @classes = sort
+    (
+     'Catalyst',
+     'Moose',
+     'DateTime::Format',
+     'DBIx::Class',
+     'Eval::Closure',
+     'Class::MOP',
+     'Attribute::Handlers',
+     'SQL::Abstract',
+     'Test::',
+     'Try::Tiny',
+     'mro',
+     'Class::Accessor',
+    );
+    if ( $ENV{DB_ALLOW} ) {
+        if ( ':all' eq $ENV{DB_ALLOW} ) {
+            @classes = ();
+        }
+        else {
+            @classes = grep { !/$ENV{DB_ALLOW}/ } @classes;
+        }
+    }
+    my $classes = join "\n    " => @classes;
+    my $re      = join '|'      => @classes;
+    $skip = "^(?:$re)";
+#     print STDERR <<"END";
+
+# Debugger skipping:
+
+#     $classes
+
+# See ~/.perldb if you don't like this behavior, or set NO_DB_SKIP=1
+
+# END
+}
+
+unless ( $ENV{NO_DB_SKIP} ) {
+    eval "use DB::Skip pkgs => [qr/$skip/]" if @classes;
+}
+
+$DB::alias{'len'}  = 's/^len\s+(.*)/p length($1)/';
+$DB::alias{'ps'}   = 's/^ps\b/p scalar /';
+$DB::alias{'quit'} = 's/^q\b/exit\$/';
+$DB::alias{'keys'} = 's/^keys\s+%?(\S+)/p "\@{[keys(%$1)]}"/';
+$DB::alias{'vals'} = 's/^vals\s+%?(\S+)/p "\@{[values(%$1)]}"/';
+
+# sub afterinit { push @DB::typeahead, '{l'; }
+
+# $DB::deep=1000 ;
+# sub afterinit { push @DB::typeahead, "{{v" unless $DB::already_curly_curly_v++; } ;
+# parse_options('dumpDepth=2 NonStop=1') ;
+
+sub DB::afterinit {
+    no warnings 'once';
+
+    # give me a window of lines instead of a single line
+    push @DB::typeahead => "{{v"
+      unless $DB::already_curly_curly_v++;
+
+    # quick 'n dirty dumped data structure # stringifies anything which is not
+    # a hash or array reference so you can see the structure of your data
+    $DB::alias{p}
+      = 's/^\s*p/My::Debugger::Helper::show/; eval "print {\$DB::OUT} $cmd"';
+}

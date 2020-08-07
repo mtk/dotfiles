@@ -1,0 +1,40 @@
+# display-independent session customization (shared by .bash_profile &
+# my .xsession files)
+
+shopt -s extglob
+
+# set up my environment variables
+. ~/.bash_exports
+
+# set up my PATH 
+. ~/.bash_path
+
+# arrange for convenient default file protections (friendly
+# rwxrwxr-x).  n.b. group read/write access is only useful as a
+# default when you have a private (e.g. per-user) group.  this is the
+# default policy for most linux systems.  you'll typically have to ask
+# for a 'per user' group in other unix environments.  this is useful
+# because directories can be made to inherit the group label from
+# their parent (so-called "berkeley" semantics.
+umask 002
+
+# tweak core & open files limits
+ulimit -S -c 0 -n 1024
+
+# the soft nfds limit is 64 on some platforms.  the hard nfds limit is
+# usually at least 256.  some systems have undocumented problems with
+# various values.  e.g. STDIO breaks on solaris v2.5 (2.6 too?) when
+# it is >256.  select(2) (but not poll(2)) breaks when it is >1024.
+#ulimit -S -n 256
+
+# the ways of bash initialization are mysterious
+. ~/.bashrc
+
+# host/user hooks
+[ -f ~/.$HOSTNAME-hook ] && . ~/.$HOSTNAME-hook
+[ -f ~/.$USER-hook ] &&     . ~/.$USER-hook
+
+# Local Variables:
+# mode: sh
+# End:
+

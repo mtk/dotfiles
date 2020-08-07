@@ -1,0 +1,116 @@
+# export anything we set automatically
+set -a
+
+# platform independent
+
+# our envy use sets these but it is not preferred.
+# we capture them.
+unset           \
+    PERL5LIB    \
+    PERL5PREFIX \
+    PERL_MM_OPT
+
+## general
+auto_resume='substring'
+#http_proxy='http://blah/'
+#ftp_proxy='http://blah/'
+ARCH=$(arch)
+ARCHBIN=~/.bin/$ARCH
+#BW_PRINTER=mets
+CDHISTFILE=~/.cdhist
+CDHISTSIZE=100
+CDPATH=.:~/proj:~/proj/git:~:/usr/local/src
+CDVARIGNORE='d|n|s|u'
+COLOR_PRINTER=color
+EDITOR='emacsclient -c'
+EMACS=/usr/local/bin/emacs
+EMACS_SERVER_FILE=/home/mtk/.emacs.d/server/server
+ENSCRIPT='-C -E -G -H -r --color'
+ESHELL=bash
+EXA_COLORS="da=32"
+FPATH=~/.bash_functions:
+GOPATH=/usr/local/go
+# hostname does not seem to work w/v23 emacs??
+HISTCONTROL='ignorespace:erasedups'
+HISTIGNORE='\$\(@(split|type)*\)'
+HISTSIZE=1000
+HOSTNAME=$(hostname)
+GNU_HOST=${HOSTNAME%%.*}
+HOSTFILE=~/.bash_hosts
+USER=${USER:-$LOGNAME}
+HISTFILE=~/.$USER-bash_history
+ICAROOT=/opt/Citrix/ICAClient
+INPUTRC=~/.inputrc
+LESS='-m -q -w -b50 -C -g -i -S -R -f'
+LS_COLORS='ex=00;32:sg=30;33'
+MORE='-lc'
+PAGER=less
+PERL_INLINE_DIRECTORY=~/.Inline/$(hostname -s)
+PRINTER=$COLOR_PRINTER
+RSYNC_RSH=ssh
+SHELL=/usr/local/bin/bash
+SSH_ASKPASS=/usr/bin/ksshaskpass
+SPARK_HOME=/usr/local/spark
+
+CVSEDITOR=$EDITOR
+FCEDIT=$EDITOR
+
+# x windows-specific. yeah, i'm using *six*
+# different screens.  
+D0=d1:0
+D1=md10:0
+#D2=
+#D3=
+#D4=
+#D5=
+
+# local screen shortcuts
+LD0=':0.0'
+LD1=':0.1'
+
+## abbreviations (cdable_vars is ON)
+b=/run/media/mtk/backup
+bb=~/.bash_builtins
+bf=~/.bash_functions
+e=/usr/local/share/emacs/site-lisp
+f=/cifs/newfills/raw
+h=/home/mtk
+in=/usr/include
+ins=/usr/include/sys
+is=/home/mtk/Insync/mark.t.kennedy@gmail.com
+md="/cifs/md10/Documents and Settings/mkennedy/Desktop"
+n=/dev/null
+r=/net/thunder/home/mtk
+
+# local hacking
+l=/usr/local
+lb=$l/bin
+ld=$l/doc
+le=$l/etc
+li=$l/include
+lin=$l/info
+ll=$l/lib
+lm=$l/man
+lr=$l/rfa
+ls=$l/src
+lt=$l/tar
+
+# dependent
+
+## arch-dependent
+case $ARCH in
+sun*)
+;;
+i*86)
+;;
+esac
+
+set +a
+
+# unsets
+unset MAIL MAILCHECK
+
+# Local Variables:
+# mode: sh
+# End:
+

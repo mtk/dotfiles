@@ -1,0 +1,16 @@
+function rp
+{
+    local path
+    for path; do
+	if [[ $path == /* ]]; then
+	    realpath $path
+	else
+	    realpath $PWD/$path
+	fi
+     done
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

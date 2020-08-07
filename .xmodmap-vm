@@ -1,0 +1,15 @@
+keysym Caps_Lock = Hyper_L Hyper_L
+keycode 64       = Meta_L Meta_L Meta_L Meta_L
+keycode 108      = Alt_R Alt_R Alt_R Alt_R
+
+clear lock
+
+clear mod1
+clear mod2
+clear mod3
+clear mod4
+
+add mod1    = Meta_L
+add mod2    = Alt_R
+add mod3    = Super_L
+add mod4    = Hyper_L

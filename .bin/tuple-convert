@@ -1,0 +1,17 @@
+#!/usr/local/bin/perl
+
+$/ = '';
+
+while (<>)
+{
+    my %tuple = grep (/^./, split /^([^:]+): (.*)$/m);
+    my ($k, $v);
+    my @keys = sort keys %tuple;
+    foreach (@keys)
+    {
+	$tuple{$_} =~ s/\s/_/g;
+	print $tuple{$_}, ' ';
+    }
+    print "\n";
+}
+

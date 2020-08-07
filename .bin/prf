@@ -1,0 +1,37 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Number::Format;
+use Math::Round;
+
+#my $nf = Number::Format->new (-thousands_sep => ',');
+
+my %conversion =
+(
+ 'T' => 1024 * 1024 * 1024,
+ 'G' => 1024 * 1024,
+ 'M' => 1024,
+ 'K' => 1,
+);
+
+sub convert
+{
+  my ($value, $unit) = @_;
+  $value *= $conversion{$unit};
+  $value = round ($value);
+#  $nf->format_number ($value);
+}
+
+while (<>)
+{
+  s/(\d+(?:[.]\d+)?)(K|M|G|T)/convert ($1, $2)/ge;
+  print;
+}
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

@@ -1,0 +1,4 @@
+function gds
+{
+	git log -p -z | perl -ln0e "print if /[+-].*$*/"
+}

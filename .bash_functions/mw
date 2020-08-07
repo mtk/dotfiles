@@ -1,0 +1,23 @@
+function mw
+{
+    local page=$1
+    local IFS=':'
+    local mpath=${MANPATH:-$(man --path)}
+    set -- $mpath
+    IFS=' '
+    local dir result
+    for dir in $*; do
+        local file
+	for file in $dir/man*/${page}.*; do
+	    if [ -f $file ]; then
+		if [[ $result ]]; then result="$result $file"; else result=$file; fi
+	    fi
+	done
+    done
+    if [[ $result ]]; then echo $result; fi
+}    
+
+# Local Variables:
+# mode: sh
+# End:
+

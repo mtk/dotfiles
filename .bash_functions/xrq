@@ -1,0 +1,9 @@
+function xrq
+{
+    command xrdb -query | grep -i ${*:-.}
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

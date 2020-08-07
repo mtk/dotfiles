@@ -1,0 +1,28 @@
+keysym  quoteleft = Escape     Escape
+keysym  Escape    = quoteleft  asciitilde
+ 
+keysym  Caps_Lock = Control_L Control_L
+keysym  Alt_L     = Meta_L Meta_L
+keysym  Control_L = Alt_L Alt_L
+!super already set to the windows key
+! fn key aka keycode 227 does not work
+keysym  Alt_R     = Hyper_R
+ 
+clear Lock
+clear Control
+
+clear   Mod1
+clear   Mod2
+clear   Mod3
+clear   Mod4
+clear   Mod5
+ 
+add     Control   = Control_L
+
+add     Mod1      = Meta_L     
+add     Mod2      = Alt_L      
+add     Mod3      = Super_R
+add     Mod4      = Hyper_R
+add     Mod5      = Num_Lock
+
+

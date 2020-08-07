@@ -1,0 +1,38 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Getopt::Std;
+use Sys::Info;
+
+our ($opt_n, $opt_t, $opt_x);
+getopts ('ntx');
+
+my $pattern = join ('|', @ARGV) || getpwuid $<;
+
+$opt_t = Sys::Info->new->os->name ('long' => 1) =~ /Fedora/ ? '-L' : 'm' if $opt_t;
+
+my $header;
+my $cmd = "ps -ef -www $opt_t";
+if ($opt_x)
+  {
+    print $cmd, "\n";
+    exit;
+  }
+open (PS, "$cmd |") || die "$0: $!\n";
+while (<PS>)
+{
+    if ($. == 1) { $header = $_; next }
+    if (/$pattern/o and not /perl\s+.*$0/o and not /\bps\b/o)
+    {
+	unless ($opt_n) { print $header if $header; undef $header }
+	print;
+    }
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

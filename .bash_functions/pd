@@ -1,0 +1,19 @@
+function pd
+{
+    local args
+
+    if [ $# == 0 ]; then
+	command perl -d -e 1
+    elif [[ $1 != /* && $1 != -* && $1 != ./* ]]; then
+        args=$(w $1)
+	shift
+	command perl -d:ptkdb $args "$@"
+    else
+	command perl -d "$@"
+    fi	
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

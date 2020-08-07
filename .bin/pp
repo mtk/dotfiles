@@ -1,0 +1,61 @@
+#!/usr/local/bin/perl
+
+# mark t. kennedy - 10/26/2001
+
+# ping the icmp/udp/tcp echo port of a host using a hi-res timer.
+# report results in units of milliseconds.  be careful when using
+# tcp.  you can chew up sockets at a tremendous rate.  the choice
+# of tcp vs udp/icmp should depend on your routing environment
+# and resource considerations.  many routers do session based routing
+# which can assign tcp traffic to particular instances of redundant
+# routers.
+
+use strict;
+
+use Net::Ping;
+use Time::HiRes qw(time sleep);	# a microsecond timer interface
+use Getopt::Std;
+use Socket qw(inet_ntoa inet_aton);
+
+use constant TRUE    	       => 1;
+use constant TIMEOUT 	       => 5;	# the Net::Ping default.
+use constant MSGSIZE 	       => 1024;	# the Net::Ping max, for realism's sake.
+use constant MILLIS_PER_SECOND => 1000;
+
+sub ts
+{
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
+    return sprintf '%4d-%02d-%02d-%02d:%02d:%02d', $year+1900, $mon+1, $mday, $hour, $min, $sec;
+}
+
+our ($opt_i, $opt_t);
+getopt ('it:');
+$opt_i ||= 1;			# default interval between UDP echo pings.
+$opt_t ||= 'udp';		# default protocol (can specify tcp,
+                                # udp, or icmp).
+
+my $host = inet_ntoa (inet_aton (shift));
+my $pinger = Net::Ping->new ($opt_t, TIMEOUT, MSGSIZE);
+
+while (TRUE)
+  {
+    my $start = time;
+    my $result = $pinger->ping ($host);
+    my $stop =  time;
+
+    my $delta = $stop - $start;
+
+    # microsecond timer + millis for units means 3 decimal places
+    print STDERR ts, ' ', $result ? sprintf ('%0.3f', $delta * MILLIS_PER_SECOND) : 'failed', "\n";
+
+    my $remaining = $opt_i - $delta;
+    sleep ($remaining) if $remaining > 0;
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

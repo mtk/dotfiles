@@ -1,0 +1,90 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use constant NAME => 0;
+use constant CODE => 1;
+
+use DBI;
+use Getopt::Long;
+
+sub usage (;$)
+{
+    exit 1
+}
+
+my %option;
+GetOptions (\%option, 'count', 'help') or usage;
+
+my ($server, $database, $table, $user, $pwd);
+
+if (@ARGV == 1)
+{
+    $table = shift;
+}
+elsif (@ARGV == 2)
+{
+    $database = shift;
+    $table = shift;
+}
+elsif (@ARGV == 3)
+{
+    $server = shift;
+    $database = shift;
+    $table = shift;
+}
+elsif (@ARGV == 4)
+{
+    $server = shift;
+    $database = shift;
+    $table = shift;
+    $user = shift;
+}
+elsif (@ARGV == 5)
+{
+    $server = shift;
+    $database = shift;
+    $table = shift;
+    $user = shift;
+    $pwd = shift;
+}
+
+$server ||= 'SYBASE';
+$database ||= 'master';
+$user ||= 'sa';
+$pwd ||= '';
+
+die "no table name!\n" unless $table;
+
+my $dbh = DBI->connect ("dbi:Sybase:server=$server;database=$database",  # dsn
+			$user,			      # user
+			$pwd,			      # pwd
+			{			      # attributes
+			    'RaiseError' => 1,	      # does a 'die' on error
+			    'AutoCommit' => 1,	      # implicit transaction boundary
+			});
+my $sth;
+if ($option{'count'})
+{
+    $sth = $dbh->prepare ("select count (*) from $table");
+}
+else
+{
+    $sth = $dbh->prepare ("select * from $table");
+}
+
+$sth->execute;
+while (my $row = $sth->fetchrow_arrayref)
+{
+    print "@{$row}\n";
+}
+
+$dbh->disconnect;
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

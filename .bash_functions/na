@@ -1,0 +1,9 @@
+function na
+{
+    NEW=$(/bin/ls -t1 /tmp/ssh-*/agent.* | head -1)
+    if [[ $SSH_AUTH_SOCK != $NEW ]]; then
+	echo old $SSH_AUTH_SOCK
+	SSH_AUTH_SOCK=$NEW
+	echo new $SSH_AUTH_SOCK
+    fi
+}

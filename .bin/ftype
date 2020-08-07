@@ -1,0 +1,45 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+my $recurse;
+
+if ($ARGV[0] =~ /^-r/)
+  {
+    $recurse = 1;
+    shift;
+  }
+
+my $arg = $ARGV[0] || '.';
+
+$arg .= " -maxdepth 1" unless $recurse;
+
+open (FIND, "find $arg -type f -follow |") or
+    die "$0: could not run 'find' cmd: $!\n";
+
+my %ftype;
+
+while (<FIND>)
+{
+    chomp;
+    s@^.*/@@;
+    next if /^[.]/;
+    next unless /[.]/;
+    s/^.*[.]//;
+    next unless $_;
+    next if m@/@;
+    $ftype{$_}++;
+}
+
+while (my ($k, $v) = each %ftype)
+{
+    print $k, ' ', $v, "\n";
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

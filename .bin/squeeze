@@ -1,0 +1,13 @@
+#!/usr/local/bin/perl -p
+
+s/^[ 	]+//;
+s/[ 	]+/ /g;
+s/[ 	]+$//;
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

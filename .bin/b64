@@ -1,0 +1,18 @@
+#!/usr/local/bin/perl
+
+use strict;
+use MIME::Base64;
+
+while (<>)
+  {
+    chomp;
+    print decode_base64 ($_), "\n";
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

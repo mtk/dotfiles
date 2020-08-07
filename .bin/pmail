@@ -1,0 +1,128 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use MIME::Lite;
+use MIME::Types;
+use File::Type;
+use Getopt::Long;
+use File::Basename;
+use English qw(-no_match_vars);
+use Net::Domain qw(hostdomain);
+use File::Slurp qw(slurp);
+
+our $from;
+our $reply_to;
+our $to;
+our $subject;
+our $body;
+our @attachments;
+our $debug;
+our $verbose;
+our $help;
+
+sub usage
+{
+  my $msg = shift;
+  print STDERR $msg, ': ' if $msg;
+  print STDERR
+    "usage: $0 [" .
+    '-from f|' .
+    '-reply_to r|' .
+    '-to t|' .
+    '-subject s|' .
+    '-body b|' .
+    '[-attachment a]+|' .
+    '-debug|' .
+    '-verbose|' .
+    '-help] ' .
+    'to? body? attachments?' .
+    "\n";
+  print STDERR "  - attachments are just a filename or filename=mimtype\n";
+  exit ($msg ? 1 : 0);
+}
+
+GetOptions
+  (
+   'from=s'	  => \$from,
+   'reply_to=s'	  => \$reply_to,
+   'to=s'         => \$to,
+   'subject=s'	  => \$subject,
+   'body=s'       => \$body,
+   'attachment=s' => \@attachments,
+   'debug'	  => \$debug,
+   'verbose'      => \$verbose,
+   'help'         => \$help,
+  )
+or usage ("Error");
+
+usage () if $help;
+
+$from     ||= scalar (getpwuid ($UID)) . '@' . hostdomain;
+$reply_to ||= $from;
+$to       ||= shift;
+$body     ||= shift;
+
+if (defined $body)
+  {
+    if (-f $body or $body =~ m@^[\w\/.]+$@)
+      {
+	my $contents = slurp ($body, 'err_mode' => 'quiet');
+	die "$0: failed to read body file '$body': $!\n"
+	  unless defined $contents;
+	$body = $contents;
+      }
+  }
+else
+  {
+    $body = slurp (\*STDIN);
+  }
+
+push @attachments, $_ foreach @ARGV;
+
+# btw, for some reason the invocation of MIME::Types->new
+# is necessary to make attachments work in thunderbird
+# (the MIME encoding isn't computed correctly without it)
+my $mt = MIME::Types->new;
+my $ft = File::Type->new;
+
+my $msg = MIME::Lite->new
+  (
+   'From'     => $from,
+   'Reply-To' => $reply_to,
+   'To'       => $to,
+   'Subject'  => $subject,
+   'Data'     => $body,
+  );
+
+foreach my $path (@attachments)
+  {
+    my $mimetype;
+    ($path, $mimetype) = split /=/, $path;
+
+    my $basename    = basename ($path);
+    my ($extension) = $basename =~ /([.][^.]+)$/;
+
+    $mimetype ||=
+      $mt->mimeTypeOf ($extension) ||
+      $ft->mime_type  ($path)      ||
+      'application/octet-stream';
+
+    $msg->attach
+      (
+       'Type'        => $mimetype,
+       'Path'        => $path,
+       'Filename'    => $basename,
+       'Disposition' => 'attachment',
+      );
+  }
+
+$debug ? $msg->print : $msg->send;
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

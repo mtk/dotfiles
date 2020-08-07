@@ -1,0 +1,4 @@
+function np
+{
+	netpcm-client -nsp -t cons++ "$@" | halign -r
+}

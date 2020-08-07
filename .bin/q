@@ -1,0 +1,41 @@
+#!/usr/local/bin/perl
+
+use strict;
+use Getopt::Long;
+use Net::DNS;
+
+use vars qw($opt_debug $opt_servers $opt_type $opt_norecurse);
+GetOptions ('debug!', 'servers=s', 'type=s', 'norecurse!');
+
+my $res = new Net::DNS::Resolver;
+$res->debug (1) if $opt_debug;
+$res->recurse (1) unless $opt_norecurse;
+$res->nameservers (split /,/, $opt_servers) if $opt_servers;
+
+print "usage: q [-debug|-servers=a,b,c|-type=blah|-recurse]\n" unless @ARGV;
+
+my $host;
+foreach $host (@ARGV)
+{
+    my $query = $res->query ($host, $opt_type);
+
+    if ($query)
+    {
+	my $rr;
+	foreach $rr ($query->answer)
+	{
+	    $rr->print;
+	}
+    }
+    else
+    {
+	print "query failed: ", $res->errorstring, "\n";
+    }
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

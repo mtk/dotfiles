@@ -1,0 +1,7 @@
+#!/usr/local/bin/bash
+exec mpage -t -1 "$@" | lpr -h
+
+# Local Variables:
+# mode: sh
+# End:
+

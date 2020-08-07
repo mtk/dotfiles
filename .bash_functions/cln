@@ -1,0 +1,13 @@
+function cln
+{
+    if [ -z "$1" ]; then
+	rm -f ./*~* ./.*~* >/dev/null
+    else
+	find $1 \( -name '*~*' -o -name '.*~*' \) -print | tee /dev/stderr | xargs rm -f
+    fi
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

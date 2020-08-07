@@ -1,0 +1,35 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Cwd;
+use English;
+
+my @jars;
+my $cwd = cwd;
+
+foreach my $arg (@ARGV)
+{
+    $arg = "$cwd/$arg" unless $arg =~ m@^/@;
+
+    if (-f $arg)
+    {
+	push @jars, $arg if $arg =~ /.jar$/;
+    }
+    elsif (-d _)
+    {
+	next unless opendir (D, $arg);
+	push @jars, grep /.jar$/, map { m@^/@ ? $_ : "$arg/$_" } readdir (D);
+    }
+}
+
+$LIST_SEPARATOR = ":";
+print "@jars\n";
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

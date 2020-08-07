@@ -1,0 +1,23 @@
+Emacs*Background: DarkSlateGray
+Emacs*Foreground: green
+Emacs*pointerColor: cyan
+Emacs*cursorColor: yellow
+Emacs*bitmapIcon: on
+!Emacs*font: Bitstream Vera Sans Mono-11
+Emacs.font: Inconsolata-14
+Emacs.default.attributeBackground:	darkslategrey
+Emacs.default.attributeForeground:	green
+
+xcalc.rpn: true
+
+xterm*geometry: 80x48+0+0
+xterm.cursorColor: yellow
+xterm.ttyModes: erase ^h
+xterm.visualBell: true
+xterm*charClass: 33:48,37:48,45-47:48,64:48
+xterm*saveLines: 200
+xterm.waitForMap: false
+xterm.VT100.scrollBar:  true
+xterm.VT100*internalBorder: 2
+xterm*VT100.Font:       lucidasanstypewriter-12
+

@@ -1,0 +1,13 @@
+#!/usr/local/bin/perl
+
+use strict;
+use Cwd 'abs_path';
+print abs_path ($_), "\n" foreach @ARGV;
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

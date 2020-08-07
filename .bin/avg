@@ -1,0 +1,11 @@
+#!/usr/local/bin/perl -ln
+$total += $_;
+$n++;
+END { printf ("%0.4f\n", $total/$n) }
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

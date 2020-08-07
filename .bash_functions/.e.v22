@@ -1,0 +1,49 @@
+function e
+{
+    local args background noexec opt OPTIND OPTARG CMD options
+
+    n=/dev/null
+    noexec=0
+    background=1
+    OPTIND=''
+    OPTARG=''
+    opt=''
+    CMD='emacsclient'
+
+    while getopts 'fnd:' opt
+      do
+      case $opt in
+	  d) options="$options -d $OPTARG";;
+	  f) background=0;;
+	  n) noexec=1;;
+	  *) echo 'e: usage: e [-nf] [file|file:lineno|file:lineno:blah]' >&2; return 1;;
+      esac
+    done
+
+    shift $(($OPTIND-1))
+
+    # ahhh... so much magic here :-)
+    xform_emacsclient_filename "$@" |
+
+    while read args; do
+	if [[ $noexec == 1 ]]; then
+	    echo $CMD $options $args
+	elif [[ $background == 1 ]]; then
+	    ($CMD $options $args >$n 2>&1 &)
+	else
+	    $CMD $options $args >$n 2>&1
+	fi
+    done
+
+}
+
+# Local Variables:
+# mode: sh
+# End:
+
+
+
+
+
+
+

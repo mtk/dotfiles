@@ -1,0 +1,12 @@
+function split
+{
+    local IFS=$1;
+    local arg=$2;
+    set -- $arg
+    echo $@
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

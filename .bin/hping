@@ -1,0 +1,267 @@
+#!/usr/local/bin/perl
+
+# $Id: hping,v 1.32 1997/05/22 19:58:50 kennedm Exp mtk $
+
+use strict;
+
+use LWP::UserAgent;
+use LWP::Debug;
+use Getopt::Long;
+use English;
+use FileHandle;
+use Time::HiRes qw(gettimeofday tv_interval);
+
+my $url;
+my $copy_of_url;
+# assume we're going to fail.  any positive ping sets $rc to 0.
+my $rc = -1;
+my $successful = +0;
+my $cumulative = +0;
+my $attempts = +0;
+my $max = +0;
+my $min = +0;
+my $exception = "hping: interrupted by the user\n";
+
+$PROGRAM_NAME =~ s@^.*/@@;
+
+
+
+# this routine is very fast :-)
+sub ignore_data { }
+
+sub poked
+{
+    die $exception;
+}
+
+sub usage ()
+{
+    print STDERR <<"MSG";
+Usage: $PROGRAM_NAME [ options ] url
+Poll a URL and fail if there is no response within the timeout period.
+If successful, report how much time the poll took.
+
+        -count <N>       Exit after <N> polls.
+                         The default is to poll once.  An arg of -1 means poll forever.
+	-help		 Print this message.
+	-iheaders <H>    List of comma-separated header/value pairs to add to each request.
+	                 Default is none.  
+        -interval <I>	 Only poll every <I> seconds (if possible).  Defaults to 0, which 
+	                 means "don't delay between polls".
+	-method <M>      Specify HTTP method to use.  Currently only HEAD and GET work.
+	                 Defaults to HEAD.
+	-oheaders <H>    List of comma-separated headers to print from a successful response.  
+	                 Default is none.  Specifying '-oheaders' prints them all (for experts only).
+	-proxy <P>	 Work through an HTTP proxy.  <P> has the syntax
+		         'hostname:port'.  'port' defaults to 80.
+        -nocache         Blast through any caches and always fetch directly from the server.			    
+	                 Same as '-iheader "Pragma,nocache"'.
+        -s               For old-style IP ping heads.  Equivalent to "-count -1 -interval 1".
+	-timeout <T>	 Give up after <T> seconds and fail.  Defaults to 120 seconds (2 minutes).
+        -credentials <C> Specify a user and password with the syntax 'user:password'.  If you do not
+                         and they are required, it will prompt for them (and unfortunately the time
+                         it takes to enter them will be recorded as part of the first ping.									 
+	-verbose         Turn on verbose reporting of web-related activity (useful for debugging).
+MSG
+	exit 1;
+}
+
+sub ts ()
+{
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
+    return sprintf '%d-%02d-%02d %02d:%02d:%02d', $year+1900, $mon+1, $mday, $hour, $min, $sec;
+}
+
+
+
+use vars qw($opt_timeout $opt_proxy $opt_interval $opt_count $opt_credentials
+	    $opt_help $opt_verbose $opt_method @opt_iheaders @opt_oheaders $opt_s $opt_nocache);
+GetOptions ('help', 'h', \$opt_help,
+	    'timeout=i', 't=i', \$opt_timeout,
+	    'interval=i', 'i=i', \$opt_interval,
+	    'verbose', 's', 'nocache',
+	    'credentials=s',
+	    'count=i',
+	    'proxy=s', 'method=s',
+	    'iheaders:s@', 'oheaders:s@',) or
+    die "$PROGRAM_NAME: bogus command line options\n";
+usage if $opt_help;
+$opt_timeout ||= 120;
+$opt_method ||= 'HEAD';
+$opt_method = uc $opt_method;
+
+if ($opt_s)
+{
+    $opt_count = -1;
+    $opt_interval = 1;
+    $opt_timeout = 30;
+}
+
+# idea and some code stolen from libwww-perl
+{
+    package LWP::UserAgent;
+
+    my ($user, $password);
+
+    if ($main::opt_credentials)
+    {
+	($user, $password) = split /:/, $main::opt_credentials, 2;
+    }
+
+    sub get_basic_credentials
+    {
+	my( $self, $realm, $url) = @_;
+
+	if (-t and not $user)
+	{
+	    my $netloc = $url->netloc;
+	    print "Enter username for $realm at $netloc: ";
+	    $user = <STDIN>;
+	    chomp ($user);
+	    print "Password: ";
+	    system ("stty -echo");
+	    $password = <STDIN>;
+	    system ("stty echo");
+	    print "\n";		# because we disabled echo
+	    chomp ($password);
+	}
+
+	return ($user, $password);
+    }
+}
+
+
+
+my %opt_iheaders = map (split (/,/, lc ($_)), @opt_iheaders) if defined @opt_iheaders;
+my %opt_oheaders = map (($_, 1), map (split (/,/, lc ($_)), @opt_oheaders)) if defined @opt_oheaders;
+
+
+
+$SIG{'INT'} = \&main::poked;
+STDOUT->autoflush (1);
+
+$copy_of_url = $url = shift;
+die "$PROGRAM_NAME: no url specified\n" unless $url;
+$url = "http://$url/" unless $url =~ m@//@;
+
+my $ua = new LWP::UserAgent;
+$ua->agent ('HPing/1.0');
+$ua->timeout ($opt_timeout);
+$ua->use_eval (0);
+$ua->proxy ('http', "http://$opt_proxy/") if $opt_proxy;
+
+my $req = new HTTP::Request $opt_method, $url;
+# otherwise microsoft IIS servers will bounce the request
+$req->header ('Accept' => '*/*');
+$req->header ('Pragma' => 'no-cache') if $opt_nocache;
+$req->header (%opt_iheaders) if defined %opt_iheaders;
+
+LWP::Debug::level('+') if $opt_verbose;
+
+# so we can make "-count 1" do the right thing
+my $count = $opt_count;
+$count ||= 1;
+
+# (from rct) force a dummy request which will fail so that
+# everything gets preloaded and this doesn't count
+# in the overall times.
+my $dummy_req = new HTTP::Request "HEAD", "http:///";
+eval { my $res = $ua->request ($dummy_req,\ &ignore_data); };
+
+eval {
+  POLL: while ($count-- != 0)
+  {
+      my $res;
+      my $before = time;
+
+      # do it
+      my $just_before = [gettimeofday];
+      eval { $res = $ua->request ($req, \ &ignore_data) }; 
+      my $just_after = [gettimeofday];
+
+      $attempts++;
+
+      # re-throw any exception
+      die $exception if $@ and $@ eq $exception;
+
+      my $delta = sprintf '%3.3f', tv_interval ($just_before, $just_after);
+      print ts;
+      print ' [', $attempts, ']' if $opt_count;
+      print ': ', $delta, ' secs';
+
+      # report what happened
+      if ($@)
+      {
+	  chomp (my $msg = $@);
+
+	  # valid transformations??  need to experiment.
+	  $msg =~ s/ at .*$//;
+	  $msg =~ s/ to .*$//;
+	  $msg =~ s/[\n\r]+(^\s+)?/ /smg;
+
+	  print ', failed [', $msg, "]\n";
+      }
+      elsif ($res->is_success)
+      {
+	  $successful++;
+	  $min = (($delta < $min) or ($min == 0)) ? $delta : $min;
+	  $max = $delta > $max ? $delta : $max;
+	  $cumulative += $delta;
+
+	  if (defined @opt_oheaders)
+	  {
+	      my %hdrs = grep (/^./, split (/^([^:]+): (.*)$/m, $res->headers_as_string ()));
+	      print ' [';
+	      my ($hdr, $val);
+	      my $first = 1;
+	      while (($hdr, $val) = each %hdrs)
+	      {
+		  if (defined $opt_oheaders{lc $hdr} or not $opt_oheaders[0])
+		  {
+		      print ' ' unless $first;
+		      print $hdr, "='", $val, "'";
+		      $first = 0;
+		  }
+	      }
+	      print ']';
+	  }
+
+	  print "\n";
+	  $rc = 0;
+      }
+      else
+      {
+	  print ', failed [', $res->code, ' ', $res->message, "]\n";
+      }
+
+      # arrange to nap if we're faster than the polling interval
+      my $nap = $opt_interval - (time - $before);
+      sleep ($nap) if $nap > 0;
+  }
+};
+
+
+if (not $@ or $@ eq $exception)
+{
+    if ($opt_count)
+    {
+	print "\n----- $copy_of_url statistics -----\n";
+	my $rate = $successful ? sprintf ('%3.0f', $successful/$attempts * 100) : '0';
+	print "$attempts attempt(s), $successful successful, $rate% success rate\n";
+	my $avg = $successful ? sprintf '%3.3f', $cumulative / $successful : 0;
+	printf "round-trip (secs) min/avg/max = $min/$avg/$max\n";
+    }
+    exit $rc;
+}
+else
+{
+    print STDERR "$PROGRAM_NAME: $@\n";
+    exit 1;
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

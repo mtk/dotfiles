@@ -1,0 +1,10 @@
+function w
+{
+    w=($(type -a -p "$1"))
+    echo ${w[@]}
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

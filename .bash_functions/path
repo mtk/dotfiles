@@ -1,0 +1,17 @@
+# todo - have it check $1 to see if is a valid ENV var (both lower &
+# upper case forms).  if it is, use the value as the arg to the j steppter.
+
+function path
+{
+    local IFS j
+    IFS=${2:-':'}
+    for j in ${1:-$PATH}; do
+	echo $j
+    done | perl -lpe 's@//@/@g'
+}
+
+# Local Variables:
+# mode: sh
+# End:
+
+

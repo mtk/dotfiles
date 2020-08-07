@@ -1,0 +1,9 @@
+xtitle () 
+{ 
+	[[ $DISPLAY ]] && echo -n -e "\033]0;$*\007"
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

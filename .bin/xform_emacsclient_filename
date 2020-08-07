@@ -1,0 +1,83 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Cwd 'abs_path';
+use Sys::Hostname;
+use File::Basename;
+
+my $hostname = hostname;
+$hostname =~ s/[.].*$//;
+my $gnuhost = $ENV{'GNU_HOST'}
+  or die "$0: forgot to set 'GNU_HOST'\n";
+
+my ($lineno, $colno);
+
+foreach my $filename (@ARGV)
+  {
+    undef $lineno;
+    undef $colno;
+
+    # strip off :lineno:colno if there.  tolerate
+    # ':lineno:' since it was a double mouse click
+    # often picks up in the ':lineno' case.
+    $filename =~ s/(.):(\d+)(?:(?::(\d+))?|:)$/$1/;
+    ($lineno, $colno) = ($2, $3);
+
+    # if already a tramp filename, it's global so we're done
+    next if $filename =~ m@^/[^:]+:@;
+
+    # convert relative name to absolute
+    my $absolute_filename = abs_path ($filename);
+    $filename = $absolute_filename if defined $absolute_filename;
+
+    # if we discover a /net name, must be global, so we're done
+    next if $filename =~ m@/net/@;
+
+    # if a local file, we're done
+    if ($hostname eq $gnuhost)
+      {
+	if (-f $filename)
+	  {
+	    $filename = "/root\@localhost:$filename" unless -w $filename;
+	  }
+	else
+	  {
+	    my $dirname = dirname ($filename);
+	    $filename = "/root\@localhost:$filename" unless -w $dirname;
+	  }
+	next;
+      }
+
+    if ($filename =~ m@^/export/(home|data)(/|$)@)
+      {
+	# avail via nfs, so go through the automounter
+	$filename = "/net/$hostname" . $filename;
+      }
+    else
+      {
+	my $choice = -e $filename ? $filename : dirname ($filename);
+
+	$filename = -w $choice ?
+	          "/$hostname:$filename" :
+	    "/root\@$hostname:$filename" ;
+      }
+  }
+continue
+  {
+    my $position;
+
+    $position = "+$lineno" if defined $lineno;
+    $position .= ":$colno" if defined $colno;
+    $filename = "$position $filename" if defined $position;
+
+    print $filename, "\n";
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

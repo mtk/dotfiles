@@ -1,0 +1,49 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Mail::Address;
+use Mail::IMAPClient;
+
+sub email_account_info
+{
+  open (P, '< ' . ($ARGV[0] || '/home/mtk/.p'));
+  chomp (my $server   = <P>);
+  chomp (my $user     = <P>);
+  chomp (my $password = <P>);
+  close (P);
+  return ('Server'   => $server,
+          'User'     => $user,
+          'Password' => $password);
+}
+
+Mail::IMAPClient->Peek (1);	# don't modify the "seen" bit
+my $imap = Mail::IMAPClient->new (email_account_info);
+$imap->examine ("INBOX");
+
+my ($personal, $email, $subject);
+
+format =
+# name (20) email (35) subject (*)
+@<<<<<<<<<<<<<<<<<<<<| @<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<| @*
+$personal, $email, $subject
+.
+
+foreach my $unseen ($imap->unseen)
+{
+  my $headers = $imap->parse_headers ($unseen, 'ALL');
+  my $from = $headers->{'From'}->[0];
+  $subject = $headers->{'Subject'}->[0];
+  my $address = (Mail::Address->parse ($from))[0];
+  $personal = $address->name;
+  $email = $address->address;
+
+  write;
+}
+
+
+
+# Local Variables:
+# mode: perl
+# mode: auto-fill
+# End:

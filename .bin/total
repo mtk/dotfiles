@@ -1,0 +1,10 @@
+#!/usr/local/bin/perl -ln
+$total += $_;
+END { print $total }
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

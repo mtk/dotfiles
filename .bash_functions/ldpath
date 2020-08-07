@@ -1,0 +1,13 @@
+function ldpath
+{
+    local IFS j
+    IFS=':' 
+    for j in $LD_LIBRARY_PATH; do
+	echo $j
+    done
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

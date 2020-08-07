@@ -1,0 +1,18 @@
+#!/usr/local/bin/bash
+
+SESSION=$1
+
+if ! tmux has-session -t $SESSION 2>/dev/null; then
+    TMUX='' tmux new-session -d -s $SESSION
+fi
+
+if [[ $TMUX ]]; then
+    tmux switch-client -t $SESSION
+else
+    tmux attach-session -t $SESSION
+fi
+
+# Local Variables:
+# mode: sh
+# End:
+

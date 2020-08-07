@@ -1,0 +1,68 @@
+#!/usr/bin/env perl
+
+# find .ivy2/cache -name '*.jar' | latest-jars
+
+my $list;
+
+if ($ARGV[0] eq '-l') {
+  $list = 1;
+  pop @ARGV;
+}
+
+my %h;
+
+# open (STDIN, "find ~/.coursier/cache -name '*.jar' |")
+#   or die "$0: failed to run the 'find' command: $!\n";
+
+open (STDIN, "find ~/.cache/coursier -name '*.jar' |")
+  or die "$0: failed to run the 'find' command: $!\n";
+
+while (<>) {
+  chomp;
+  next if /bundle/;
+  # map /foo/bar/blah.jar to blah
+  my ($name) = m@^.*/(.*)[.]jar$@;
+  next if $name =~ /(sources|javadoc)$/;
+  next if $name =~ /2[._](8|9|10)/;
+  next if $name =~ /__/;
+  next if $name =~ /-M[0-9]$/;
+  next if $name =~ /compiler-interface-bin/;
+  next if $name =~ /ivy.*sbt/;
+  next if $name =~ /[Rr][Cc][0-9]/;
+  next if $name =~ /-(r|jdbc[0-9]+|no_aop|b01)$/;
+  next if $name =~ /beta/;
+  next if $name =~ /highlightjs/;
+  next if $name =~ /scoverage/; # if it is in your classpath, it initializes?
+  my ($version) = $name =~ /^.*[-](.*)$/;
+  $name =~ s/-${version}$//;
+  $h{$name}->{$version} = $_;
+}
+
+my @jars;
+
+foreach my $name (sort keys %h)
+  {
+    my @versions = sort keys %{$h{$name}};
+    if ($list) {
+      print "$name $versions[-1] $h{$name}->{$versions[-1]}\n";
+    }
+    else
+      {
+	push @jars, $h{$name}->{$versions[-1]};
+      }
+  }
+
+print join (':', @jars), "\n" unless $list;
+
+
+
+
+
+
+
+
+
+
+
+
+

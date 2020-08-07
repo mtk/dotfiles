@@ -1,0 +1,11 @@
+function tpnl
+{
+	local direction
+
+	if [[ "$1" = '-r' ]]; then
+		direction="$1"
+		shift
+	fi
+	
+	omi-client -t $1 pos | trade-pnl | (read x; echo $x; sort $direction -n -k10) | halign -r
+}

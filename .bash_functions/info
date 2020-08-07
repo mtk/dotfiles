@@ -1,0 +1,4 @@
+function info
+{
+	emacsclient -n -c -e "(info \"${1:-emacs}\")" >$n 2>&1
+}

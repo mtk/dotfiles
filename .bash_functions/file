@@ -1,0 +1,14 @@
+function file
+{
+    if [ $# = 0 -a "$w" ]; then
+	/usr/bin/file $w
+    else
+	/usr/bin/file "$@"
+	w="$1"
+    fi
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

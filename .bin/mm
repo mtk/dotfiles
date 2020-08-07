@@ -1,0 +1,17 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+my $arg = (grep /^[^-]/, @ARGV)[-1];
+$arg =~ s/[Mm]akefile[.]//;
+my $log = $arg ? "$arg.log" : 'make.log';
+my $cmd = "make 2>&1 @ARGV | tee $log";
+print $cmd, "\n";
+exec $cmd;
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

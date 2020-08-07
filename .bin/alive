@@ -1,0 +1,51 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Net::Ping;
+use Getopt::Long;
+
+our $help;
+our $quiet;
+our $timeout = 1;
+our $protocol = 'tcp';
+
+GetOptions
+(
+ 'h'   => \$help,
+ 'q'   => \$quiet,
+ 'p=s' => \$protocol,
+ 't=s' => \$timeout,
+)
+  or die "$0: failed to parse cmdline args\n";
+
+my @valid_protcols = qw(tcp udp icmp stream syn external);
+die "$0: invalid protocol specified '$protocol'\n"
+  unless grep { $protocol eq $_ } @valid_protcols;
+
+if ($help)
+{
+  print "usage: $0 [-h][-t timeout] host\n";
+  exit 1;
+}
+
+
+
+my $host = shift;
+
+
+my $pinger = Net::Ping->new ($protocol);
+my $result = $pinger->ping ($host, $timeout);
+
+print "$host ", $result ? "alive" : "dead", "\n" unless $quiet;
+
+exit not $result;
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+
+

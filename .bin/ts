@@ -1,0 +1,37 @@
+#!/usr/local/bin/perl
+
+use IO::Handle;
+use Getopt::Std;
+
+our $opt_r;
+getopts ('r');
+
+STDOUT->autoflush (1);
+
+sub ts ()
+{
+    my ($y, $m, $d, $h, $mi, $s) = (localtime)[5, 4, 3, 2, 1, 0];
+    $y += 1900;
+    $m += 1;
+    if ($opt_r)
+      {
+	sprintf ('%04d%02d%02d-%02d:%02d:%02d', $y, $m, $d, $h, $mi, $s);
+      }
+    else
+      {
+	sprintf ('%04d%02d%02d%02d%02d%02d', $y, $m, $d, $h, $mi, $s);
+      }
+}
+
+while (<>)
+{
+    print '[', ts, '] ', $_;
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

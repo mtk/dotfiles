@@ -1,0 +1,11 @@
+function once
+{
+    trap 'exec $BASH' SIGINT
+    eval $(echo ${@:-$ONCE})
+    exec $BASH -s "${@:-$ONCE}"
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

@@ -1,0 +1,12 @@
+#!/usr/local/bin/perl
+
+use strict;
+print map { join '/', @{$_} } sort { $a->[-1] cmp $b->[-1] } map { [split m@/@] } <>;
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

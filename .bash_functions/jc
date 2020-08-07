@@ -1,0 +1,23 @@
+function jc
+{
+    local arg
+    local -a args
+
+    for arg
+    do
+	if [[ $arg == *.class ]]; then continue; fi
+	if [[ $arg != *.java && $arg != -* && $arg != . && ! -d $arg ]]; then arg="$arg.java"; fi
+	if [[ $arg == -cp ]]; then arg='-classpath'; fi
+	args[${#args[@]}]=$arg
+    done
+
+    if [[ ${#args[@]} -gt 0 ]]; then
+	javac ${args[@]}
+    fi
+    
+}	
+
+# Local Variables:
+# mode: sh
+# End:
+

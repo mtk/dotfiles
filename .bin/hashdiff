@@ -1,0 +1,35 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Perl6::Slurp;
+
+my %one = map { chomp; $_ => 1 } split /\n/, slurp (shift);
+my %two = map { chomp; $_ => 1 } split /\n/, slurp (shift);
+
+my %both = map { $_ => 1 } (keys %one, keys %two);
+my @both = sort keys %both;
+
+foreach my $key (@both)
+  {
+    print $key, ' ';
+    my $one = exists $one{$key};
+    my $two = exists $two{$key};
+    if ($one and $two)
+      {
+	print 'both';
+      }
+    else
+      {
+	print $one ? 'left' : 'right';
+      }
+    print "\n";
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

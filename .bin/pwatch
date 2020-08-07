@@ -1,0 +1,89 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Getopt::Std;
+use Proc::ProcessTable;
+
+sub usage
+{
+  warn "usage: $0 [-h|-l|-f f1,f2,f3|-p pid] [interval in seconds]\n";
+  warn "  -h  print this help message\n";
+  warn "  -l  list the /proc fields on this box\n";
+  warn "  -f  only print the specified /proc fields\n";
+  warn "  -p  only print the specified process\n";
+}
+
+sub ts ()
+{
+    my ($y, $m, $d, $h, $mi, $s) = (localtime)[5, 4, 3, 2, 1, 0];
+    $y += 1900;
+    $m += 1;
+    sprintf ('%04d-%02d-%02d-%02d:%02d:%02d', $y, $m, $d, $h, $mi, $s);
+}
+
+sub list_fields
+{
+  return join (',', new Proc::ProcessTable ('cache_ttys' => 1)->fields);
+}
+
+sub watch_fields
+{
+  my ($pid, $fields, $interval) = @_;
+  $interval ||= 1;
+  my @fields = split /,/, $fields;
+  my %fields = map { $_ => 1 } @fields;
+
+  my $pt = new Proc::ProcessTable ('cache_ttys' => 1);
+  my $t = $pt->table;
+
+  print "# @fields\n";
+
+  while (1)
+    {
+      foreach my $p (@{$t})
+	{
+	  next unless $p->{'pid'} == $pid;
+
+	  print ts, ': ';
+	  foreach my $field (@fields)
+	    {
+	      print $p->{$field}, ' ' if $fields{$field};
+	    }
+	  print "\n";
+	}
+
+      sleep $interval;
+    }
+}
+
+my %opts;
+getopt ('fp', \%opts);
+
+if ($opts{'h'})
+  {
+    usage;
+  }
+elsif ($opts{'l'})
+  {
+    foreach my $field (list_fields)
+      {
+	print $field, "\n";
+      }
+  }
+elsif ($opts{'f'})
+  {
+    watch_fields ($opts{'p'}, $opts{'f'}, shift);
+  }
+else
+  {
+    watch_fields ($opts{'p'}, list_fields (), shift);
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

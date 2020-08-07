@@ -1,0 +1,49 @@
+function grid
+{
+	local xplus yplus openwindows
+ 
+	if [[ -z "$GRID_X" || -z "$GRID_Y" ]]; then
+		echo "grid: scaling factors GRID_X or GRID_Y not set" 1>&2
+		return 1
+	fi
+
+	if [[ $1 = '-n' ]]; then
+		shift
+		openwindows=1
+	fi
+
+	if [[ $1 = '-xplus' ]]; then
+		shift
+		xplus=$1
+		shift
+	fi
+
+	if [[ $1 = '-yplus' ]]; then
+		shift
+		yplus=$1
+		shift
+	fi
+
+	local X Y
+	X="$(expr $2 \* $GRID_X)"
+	Y="$(expr $1 \* $GRID_Y)"
+
+	if (($xplus)); then
+		X="$(expr $X + $xplus)"
+	fi
+	
+	if (($yplus)); then
+		Y="$(expr $Y + $yplus)"
+	fi
+
+	if (($openwindows)); then
+		echo $X $Y
+	else
+		echo $X+$Y
+	fi
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

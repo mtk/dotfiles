@@ -1,0 +1,17 @@
+#!/usr/local/bin/perl
+
+# Mark T. Kennedy
+# mtk@acm.org
+
+use strict;
+use Date::Manip;
+my $to   = Date_ConvTZ (ParseDate ('now'), Date_TimeZone (), 'utc');
+print UnixDate ($to, "%Y-%m-%d %H:%M:%S"), "\n";
+
+
+
+# Local Variables:
+# mode: perl
+# mode: auto-fill
+# End:
+

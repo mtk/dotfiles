@@ -1,0 +1,780 @@
+#!/usr/local/bin/perl
+
+# $Id: cali,v 1.21 1997/04/17 14:56:31 kennedm Exp $
+
+use strict;
+use FileHandle;
+use Getopt::Long;
+
+use English;
+
+use vars qw($opt_aopt $opt_bopt $opt_dopt $opt_fpat $opt_ftime
+	    $opt_help $opt_highlight $opt_hopt $opt_input $opt_init
+	    $opt_lastd $opt_link $opt_ltrim $opt_pat $opt_reverse
+	    $opt_root $opt_ropt $opt_rtrim $opt_separate $opt_server
+	    $opt_test $opt_title $opt_topt $opt_today $opt_trim
+	    $opt_width );
+
+
+
+# padding for empty months;
+my $spaces;
+
+# for highlighting
+my ($today, $lastd);
+
+my %highlight_color = (
+    'today' => 'green',
+    'last' => 'red'
+    );
+
+my %ftime_to_index =
+    (
+     'atime'    => 0,
+     'accessed' => 0,
+     'mtime'    => 1,
+     'modified' => 1,
+     'ctime'    => 2,
+     'created'  => 2,
+     );
+
+my %default_pattern_length =
+    (
+     'y' => 4,
+     'm' => 2,
+     'd' => 2,
+     );
+
+my %short_to_long_name =
+    (
+     'y' => '$year',
+     'm' => '$month',
+     'd' => '$day',
+     );
+
+# padded with the above in mind
+my @month_name =
+    (
+     'Lambada',
+     'January',
+     'February',
+     'March',
+     'April',
+     'May',
+     'June',
+     'July',
+     'August',
+     'September',
+     'October',
+     'November',
+     'December',
+     );
+
+sub usage ()
+{
+    print STDERR <<"US";
+usage: $PROGRAM_NAME [options] [list-of-pages]
+
+    'cali' is a program that builds a calendar-style HTML index
+for a set of files.  Both the files and the index page created from
+them are presumed to be available from some web server.  'cali' does
+this by associating a date (i.e. a year, a month, and a day) with each
+page and then converting the corresponding calendar entry into a link
+to the page.  When there is more than one file for a given link,
+'cali' turns the link into a reference to a psuedo-page that contains
+a list of all the files for that day.
+
+     The look-and-feel of the calendar is derived from the unix
+'cal(1)' command.  Each month is just the output from 'cal(1)' wrapped
+with '<pre></pre>' tags and each year is just a table of months.
+'cali' has been written to be (somewhat) independent of the 'cal(1)'
+format (e.g. AIX does two columns, everyone else does three :-).  It
+has been tested with the Solaris, SunOS, AIX, and Linux versions of
+'cal(1)'.
+
+  There are a small number of options:
+
+  general
+  =======
+
+  '-help' prints the message you are reading.
+
+  specifying the pages to be indexed
+  ==================================
+
+  the names of the files to be indexed can be specified on the command
+  line after any options (the typical case), or via standard input
+  (perhaps as part of some pipeline), or via the -input option.  for
+  stdin and -input, more than one name can appear on each line.
+
+  -input <file>: specify the name of a file containing a list of the names
+  of the pages from which to build the index page.  this is useful in
+  situations where the list of pages is large, updated frequently but
+  only in small increments, and the overhead of scanning the file
+  system for all of the pages is too great.
+
+  specifying the date/time used to index the page
+  ===============================================
+
+  -pat <pat>: specify a simple pattern to identify the date encoded in
+  the name of each page to be indexed.  the pattern consists of a
+  string with the symbols '%y', '%m', and '%d' embedded in it.  '%y'
+  stands for any four-digit year.  '%m' stands for any two-digit
+  month.  and '%d' stands for any two-digit year.  these symbols can
+  be separated by arbitrary text, e.g. "%y-%m-%d" or "%m/%d/%y" or
+  even "logfiles/daily/errors-%d-%m-%y.gz".  however, they may not be
+  repeated.  if the size of your years, months, and days is not four,
+  two, and two digits respectively, you can give the correct size by
+  placing it between the '%' and the corresponding letter.
+  e.g. "%2y/%m/%d" will match "97/07/25".
+
+  N.B. when a two-digit year is specified, 'cali' will automatically
+  add 1900 to its value if it is greater than 50, and 2000 to its
+  value if it is 50 or less.  please do not tell any year 2000 gurus!
+
+  this option defaults to the value '%y%m%d'.  i.e. it looks for dates
+  like '19570725'.
+
+  -ftime <type>: specify a file system timestamp to associate
+  with each file in order to index it.  Choose one from:
+
+     'mtime' or 'modified' => time of last modification
+     'atime' or 'accessed' => time of last access
+     'ctime' or 'created'  => time of creation
+
+  specifying the form of the generated links
+  ==========================================
+
+  this program assumes that the collection of pages to be indexed
+  reside within a directory tree that is part of some web document
+  collection.  it also assumes that the pages to be indexed are
+  specified as relative file names (i.e. they do not begin with a '/').
+  when these assumptions are true, the generated links simply use the
+  relative file name directly.  if the output of this program is
+  placed in the directory which contains the root of the relative
+  names, then the links will make correct relative references to the
+  pages being indexed.
+
+  but when these assumptions are not true, then the following two
+  options may help.
+
+  -root <directoryname>: if the files being indexed are specified with
+  absolute file names (i.e. they begin with '/'), then <directoryname>
+  specifies a left-prefix to be stripped from each file name.  the
+  remaining name is used directly as the link target.  this option is
+  also useful for relative filenames if you need to adjust the relationship
+  between the location of the generated calendar index page and the target
+  files.
+
+  -server <hostname>: specifying this causes the generated HTML links
+  to be absolute, i.e. to begin with 'http://hostname/'.  this makes
+  it possible to move the index page to any location in your web
+  server.  make sure that the objects to be indexed are named either
+  relative to the document root of the web server or that the "-root"
+  option strips the right amount off the filenames to make this true.
+
+  controlling the display of the calendar
+  =======================================
+
+  -title string: by default, the output of the program is not a
+  complete HTML page but just an HTML-encoded table, suitable for
+  inclusion in another page, e.g. via an "<!--#include virtual='index.table'-->"
+  HTML directive.  however, when -title is specified, a small HTML
+  wrapper is included which is sufficient to display the page
+  directly.
+
+  -rtrim: output an empty table cell for months that contain no links,
+  but only for months that are newer than the last non-empty month
+  within a year.  i.e. if you are building a calendar index daily
+  and you have only gotten 1/4th of the way through a year, do not bother
+  outputing months you have not hit yet.
+
+  -ltrim: ditto, but for months that are older than the earliest 
+  non-empty month within a year.
+  
+  -trim: shortcut for '-ltrim -rtrim' (presumably a common request).
+
+  -highlight [today|last]: when 'today' is specified, if the current
+  date has a valid link associated with it, it will be displayed with
+  the background color 'green'.  if 'last' is specified, the most
+  recent index entry will be displayed with background color 'red'.
+
+  the following options allow the specification of HTML tag attributes
+  in the output.  they occur after any hard-coded attributes and can
+  therefore override them.
+
+  -topt <'table' tag options, defaults to 'border=5 cellpadding=10'>
+  -ropt <'tr' tag options>
+  -dopt <'td' tag options>
+  -hopt <'th' tag options>
+  -bopt <'body' tag options, defaults to 'bgcolor=white'>
+  -aopt <'a' tag options, i.e. link tag options>
+  -today <'font color' attribute>
+  -last <'font color' attribute>
+
+  -separate: instead of generating one file that contains a calendar
+  per year, it outputs a file per calendar using the year in the
+  filename.  if the '-title' option is specified, the file extension
+  is '.html'.  if there is no '-title' option, the file extension is '.table'.
+
+  -reverse: when more than one calendar (i.e. more than one year) is
+  output, they are generated in most-recent to least-recent order.  
+  this reverses the order.
+
+  -width number: by default, the output contains three months per
+  row.  this lets you override it.
+
+  magic (i.e. you have to be a perl programmer)
+  =============================================
+
+  sometimes the options above just do not do enough for you.  when
+  then happens, you can try using some of the following three 'hooks'.
+  each takes a bit of perl code as an argument.  the code can either
+  be specified directly as the value of the option or it can be
+  stored in a file and the filename can be given as an option.
+
+  -fpat <magic>: called once for each page to be indexed.  the
+  filename of the page is given by \$_.  the code is expected to set
+  the values of the variables \$year, \$month, and \$day.  the code
+  should NOT modify \$_ in any way.
+
+  -link <magic>: called once for each link to be generated.  the value
+  produced by the code is used in the HTML 'A' tag as the value of the
+  HREF attribute.  the variables \$year, \$month, \$day, and \$key are
+  available.  \$key is the concatenation of \$year, \$month, and
+  \$day.  \$items{\$key} is a reference to a hash that maps strings of
+  the form 'hhmmss-filename' to 'filename'.  in forming the link, you
+  can call the javascript helper function 'do_link' (the default).
+  'do_link' takes a title string and a list of links to create.  if
+  there is only one item on the list, 'do_link' acts like a normal URL
+  and causes the page to be fetched.  if there is more than one item
+  in the list, 'do_link' creates a dynamic page containing a list of
+  links to the items.  examples you can return:
+
+      http://server/file.html
+      javascript:do_link ('19570725', 'birthday-greetings.html')
+      javascript:do_link ('19970801', 'rct-vacation.html', 'rrg-vacation.html', 'tree-vacation.html')
+
+  -test <magic>: called once for each link to be generated.  if the code
+  returns a non-null value, the link is included.  if the code returns
+  a null value, the link is skipped.  this can be used to include
+  tests for empty or missing pages.
+
+  -init <magic>: called once per program invocation.  if you need to
+  defined procedures or constants that will be used by other hooks,
+  you can load them here for efficiency.
+
+SOME EXAMPLES
+
+(1) Simple
+
+    % cali \\
+       -title 'Region NA Daily Content Report' \\
+       -root '/u/d/apache.zed/Web/reports/daily/content/rep' \\
+       /u/d/apache.zed/Web/reports/daily/content/rep/*/top.html \\
+       > /u/d/apache.zed/Web/reports/daily/content/rep/index.html
+
+(2) Complex
+
+    % cali \\
+       -separate \\
+       -title 'Region NA Daily Content Reports' \\
+       -ltrim -rtrim \\
+       -root '/u/d/apache.zed/Web/reports/daily' \\
+       -test '-f "/u/d/logs.zed/daily/content/rep/\$year\$month\$day/top.html" and \\
+              (\$year > 1996 or (\$year == 1996 and (\$month > 8 or (\$month == 8 and \$day > 21))))' \\
+       /u/d/apache.zed/Web/reports/daily/content/rep/*/top.html
+       > /u/d/apache.zed/Web/reports/daily/index.html
+US
+    exit -1;
+}
+
+sub link_description ($$)
+{
+    my $tag;
+    my ($day, $key) = @_;
+
+    if ($opt_highlight)
+    {
+	if (($opt_highlight eq 'today' and $key eq $today) or
+	    ($opt_highlight eq 'last' and $key eq $lastd))
+	{
+	    $tag = "<font color=$highlight_color{$opt_highlight}>$day</font>";
+	}
+	elsif ($opt_highlight eq 'both')
+	{
+	    if ($key eq $today)
+	    {
+		$tag = "<font color=$highlight_color{'today'}>$day</font>";
+	    }
+	    elsif ($key eq $lastd)
+	    {
+		$tag = "<font color=$highlight_color{'last'}>$day</font>";
+	    }
+	}
+    }
+
+    $tag ||= $day;
+}
+
+sub make_link ($)
+{
+    my $link;
+    my $item = shift;
+    $item =~ s/^(\d\d\d\d\d\d)-//;
+    
+    if ($opt_root)
+    {
+	my ($suffix) = $item =~ m@$opt_root/(.*)$@o;
+	# use absolute links if we know the server name
+	if ($opt_server)
+	{
+	    $link = "http://$opt_server/$suffix";
+	}
+	# otherwise use "root"-relative links
+	else
+	{
+	    $link = "$suffix";
+	}
+    }
+    # no info, so if items are relative, make links relative
+    elsif (substr ($item, 0, 1) ne '/')
+    {
+	$link = $item;
+    }
+    # no info, with absolute items, so what else can we do?
+    else
+    {
+	warn "$PROGRAM_NAME: defaulting to using absolute file name for link target ($item)\n";
+	$link = "file:$item";
+    }
+
+    $link;
+}
+
+sub get_items ($)
+{
+    my $file = shift;
+    open (INPUT, "<$file") or die "$PROGRAM_NAME: open $file: $!, stopped at ";
+    my @items = <INPUT> or die "$PROGRAM_NAME: read $file, $!, stopped at ";
+    close (INPUT) or die "$PROGRAM_NAME: close $file: $!, stopped at ";
+    @items;
+}
+
+sub trim ($$)
+{
+    my ($aref, $direction) = @_;
+    my $cursor;
+    my $start = $direction eq 'right' ? $#$aref : 1;
+    my $end = $direction eq 'right' ? 0 : $#$aref + 1;
+    my $incr = $direction eq 'right' ? -1 : 1;
+    for ($cursor = $start; 
+	 $cursor != $end;
+	 $cursor += $incr)
+    {
+	last if $$aref[$cursor] =~ />/;
+    }
+    $cursor;
+}
+
+sub xlate_simple_pattern ($)
+{
+    my $pattern = shift;
+    # like quotemeta except we don't quote '%' since that is the one metachar we use
+    $pattern =~ s/([^A-za-z0-9_%])/\\$1/g;
+    my @ordering = $pattern =~ /%(?:\d*)([ymd])/gi;
+    die "$PROGRAM_NAME: simple pattern '$pattern' invalid, did not find exactly three % vars\n"
+	unless @ordering == 3;
+    my %ordering;
+    die "$PROGRAM_NAME: simple pattern '$pattern' invalid, duplicate % vars detected\n"
+	if grep ($_ > 1, map (++$ordering{$_}, @ordering));
+    my $year_modifier;
+    my $var;
+    foreach $var (qw(y m d))
+    {
+	$pattern =~ s/%(\d*)$var/'(' . '\d' x ($1 ? $1 : $default_pattern_length{$var}) . ')'/ei;
+	$year_modifier = $1 if $var eq 'y';
+    }
+    my $result = '(' . join (',', map ($short_to_long_name{$_}, @ordering)) . ") = /$pattern/";
+    $result .= '; $year < 50 ? $year += 2000 : $year += 1900' if $year_modifier == 2;
+    $result;
+}
+
+# works for sunos, solaris, linux, and even AIX (which uses a
+# two-column calendar format and i never, never in a million years
+# would have guessed that - losers :-).
+
+sub gen_year ($)
+{
+    my @cal;
+    my $yearno = shift;
+    my $year = qx(cal $yearno);
+    # strip off some 'year' header chrome
+    $year =~ s/\A(?:[ \t]*\n)*[ \t]*\d\d\d\d[ \t]*\n(?:[ \t]*\n)*//s;
+    # strip off some trailing whitespace chrome
+    $year =~ s/(?:[ \t]*\n)*\Z/\n/s;
+    # this is a bit unsatisfactory.  the only way we distinguish between
+    # month headers and day-of-the-week headers is that we assume there
+    # are six or less month names per row (there are always seven day
+    # names).  oh well...
+    my @rows = split /^(?:[ \t]+[A-Za-z]+){1,6}[ \t]*\n/m, $year;
+    # where does the blank entry come from??
+    shift @rows unless length $rows[0];
+    my $month_cursor = 1;
+    my ($max_length, $num_cells, $cell_padding, $cell_size);
+    my $row;
+    foreach $row (@rows)
+    {
+	# trim a bizarre trailing space on weekday label line of (at least)
+	# the linux version of cal(1)
+	$row =~ s/\A([^\n]+) \n/$1\n/;
+	my @lines = split /\n/, $row;
+
+	# this is only done once even though it is embedded in a loop
+	unless ($max_length)
+	{
+	    # assume first line of first row is a prototype.
+	    # it should contain weekday labels since they are always
+	    # maximal in size (unlike actual days in a week).
+	    $max_length = length ($lines[0]);
+	    # can't get size of padding between months nor even size
+	    # of a week easily because dates can be ' 1' and because
+	    # conventions for day labels vary (i.e. ' S' vs 'Su').
+	    # i think this should get around it.
+	    my $label_padding;
+	    my @ternary_columns;
+	    ($label_padding, $cell_padding, $cell_size, @ternary_columns) = $lines[0] =~
+		/^
+		    (\s*)                       # the problem: some start with ' S', some with 'Su'
+		     (?: \w+ \s+){6} \w+  (\s+) # capture white space between columns 1 & 2
+		    ((?: \w+ \s+){6} \w+)       # capture size of a cell
+	    (?: (\2) (?: \w+ \s+){6} \w+)*      # additional columns must have same spacing
+		  \s*
+		$/x;
+	    # have captured white space and week labels, so measure things
+	    $cell_padding = length ($cell_padding) - length ($label_padding);
+	    $cell_size = length ($cell_size) + length ($label_padding);
+	    $num_cells = 2 + @ternary_columns;
+	    $spaces = ' ' x $cell_size;
+	}
+
+	# use size of padding and size of a week to break out data for each column.
+	# fill each line with spaces first so substr works correctly.
+	my $line;
+	foreach $line (@lines)
+	{
+	    my $delta = $max_length - length $line;
+	    $delta = 0 unless $delta > 0;
+	    $line .= ' ' x $delta;
+	    my $cursor;
+	    for ($cursor = 0; $cursor < $num_cells; $cursor++)
+	    {
+		$cal[$month_cursor+$cursor] .= substr ($line, $cursor*($cell_size+$cell_padding), $cell_size) . "\n";
+	    }
+	}
+	$month_cursor += $num_cells;    
+    }
+    \@cal;
+}
+
+
+
+# get cmdline args
+GetOptions ('h', \$opt_help, 'help', 'i=s', \$opt_input, 'input=s', 'pat=s', 'fpat=s', 'link=s', 
+	    'title=s', 'test=s', 'rtrim', 'ltrim', 'trim', 'width=i', 'root=s',
+	    'server=s', 'topt', 'ropt', 'dopt', 'hopt', 'bopt', 'aopt', 'reverse',
+	    'separate', 'ftime=s', 'highlight:s', 'today=s', 'last=s', \$opt_lastd)
+   or exit;
+# may still be null after this
+$opt_ftime = $ftime_to_index{$opt_ftime};
+
+if ($opt_help)
+{
+    usage;
+}
+elsif (@ARGV and $opt_input)
+{
+    warn "$PROGRAM_NAME: can't have both command-line filenames and -input filenames\n";
+    usage;
+}
+elsif ($opt_trim and ($opt_ltrim or $opt_rtrim))
+{
+    warn "$PROGRAM_NAME: -trim implies both -ltrim and -rtrim\n";
+    usage;
+}
+# probably would have been easier to count the true's
+elsif (($opt_fpat and $opt_pat and $opt_ftime) or
+       (($opt_fpat or $opt_pat or $opt_ftime) and not ($opt_fpat xor $opt_pat xor $opt_ftime)))
+{
+    warn "$PROGRAM_NAME: can only specify one of -pat, -ftime, and -fpat\n";
+    usage;
+}
+elsif ($opt_reverse and $opt_separate)
+{
+    warn "$PROGRAM_NAME: nothing to -reverse when -separate\n";
+    usage;
+}
+elsif (defined $opt_today and defined $opt_lastd and $opt_today eq $opt_lastd)
+{
+    warn "$PROGRAM_NAME: -today and -last colors are the same and may obscure each other\n";
+#   usage
+}
+elsif ($opt_today and $opt_highlight ne 'today')
+{
+    warn "$PROGRAM_NAME: color for -today specified, but -highlight did not request 'today'\n";
+    usage;
+}
+elsif ($opt_lastd and $opt_highlight ne 'last')
+{
+    warn "$PROGRAM_NAME: color for -last specified, but -highlight did not request 'last'\n";
+    usage;
+}
+	
+unless (defined $opt_ftime)
+{
+    $opt_fpat ||= xlate_simple_pattern $opt_pat if $opt_pat;
+    $opt_fpat ||= '($year, $month, $day) = /(\d\d\d\d)(\d\d)(\d\d)/';
+}
+$opt_test ||= 1;
+$opt_width ||= 3;
+$opt_ltrim = $opt_rtrim = 1 if $opt_trim;
+$opt_topt ||= 'border=5 cellpadding=10';
+$opt_bopt ||= 'bgcolor=white';
+$highlight_color{'last'} = $opt_lastd if $opt_lastd;
+$highlight_color{'today'} = $opt_today if $opt_today;
+
+# handle hooks specified as file names
+foreach ([$opt_fpat, 'fpat'], [$opt_link, 'link'], [$opt_test, 'test'], [$opt_init, 'init'])
+{
+    my ($hook, $hookname) = @$_;
+    if (-f $hook)
+    {
+	my $filename = $hook;
+	open (HOOK, "<$filename") or die "$PROGRAM_NAME: for -$hookname open $filename: $!, stopped at ";
+	local $INPUT_RECORD_SEPARATOR = undef;
+	$hook = <HOOK>;		# the big suck
+	close (HOOK) or die "$PROGRAM_NAME: for -$hookname, close $filename: $!, stopped at ";
+    }
+}
+
+eval $opt_init if $opt_init;
+die "$PROGRAM_NAME: eval of init hook said '$@', stopped at " if $@;
+
+# get the names of pages to index.
+# isn't perl beautiful?
+chomp (my @items = map (split, $opt_input ? get_items ($opt_input) : @ARGV ? @ARGV : <>));
+
+warn "$PROGRAM_NAME: links with local hostname '$opt_server' may fail globally\n"
+    if $opt_server and $opt_server !~ /[.]/;
+
+# calculate timestamps and build a sorted list of them.  
+# build a map of keys to items as a side-effect.
+my %items;
+my @keys = sort grep $_, map {
+    my ($major_key, $minor_key, $year, $month, $day, $hour, $min, $sec);
+    if ($opt_fpat)
+    {
+	eval $opt_fpat;
+	die "$PROGRAM_NAME: eval said '$@', stopped at " if $@;
+	$hour ||= '00'; $min ||= '00'; $sec ||= '00';
+    }
+    else
+    {
+        #  @ftimes = ($atime, $mtime, $ctime)
+	my @ftimes = (stat)[8..10];
+	($sec, $min, $hour, $day, $month, $year) = localtime ($ftimes[$opt_ftime]);
+	$year += 1900;	$month += 1;
+    }
+
+    if ($year and $month and $day)
+    {
+	$major_key = sprintf '%04d%02d%02d', $year, $month, $day;
+	$minor_key = sprintf '%02d%02d%02d-%s', , $hour, $min, $sec, $_;
+
+	$items{$major_key}{$minor_key} = $_;
+
+	$major_key;
+    }
+    else
+    {
+	warn "$PROGRAM_NAME: warning - no date found for '$_'\n";
+	undef;
+    }
+} @items;
+
+my ($min_year) = $keys[0] =~ /^(\d\d\d\d)/;
+my ($max_year) = $keys[$#keys] =~ /^(\d\d\d\d)/;
+warn "$PROGRAM_NAME: range of years '$max_year-$min_year=${\($max_year-$min_year)}' is large\n"
+    if ($max_year - $min_year) > 40;
+my @today = (localtime)[5,4,3];
+$today[0] += 1900; $today[1] += 1;
+# this relies on: sprintf ('%02d', '1997') eq '1997'
+$today = join ('', map (sprintf ("%02d", $_), @today));
+$lastd = $keys[$#keys];
+
+# build raw calendar
+my @cal;
+my $year;
+for ($year = $min_year; $year <= $max_year; $year++)
+{
+    $cal[$year] = gen_year ($year);
+}
+
+# build cal links from items
+my $key;
+foreach $key (@keys)
+{
+    my $link;
+    my ($year, $month, $day) = unpack ('a4 a2 a2', $key);
+
+    # make a pattern to match with
+    my $searchable_day = '(' . (substr ($day, 0, 1) eq '0' ? ' ' : '') . ')(' . (0+$day) . ')';
+
+    # choose a replacement for the match
+    # (1) maybe do it yourself?
+    if ($opt_link)
+    {
+	$link = eval $opt_link;
+	die "$PROGRAM_NAME: eval said '$@', stopped at " if $@;
+	die "$PROGRAM_NAME: your link hook did not return anything\n" unless $link;
+    }
+    # (2) let cali do it for you.  'do_link' is a bit of js code that
+    # sets the window location if it has only one arg and builds a
+    # fake page containing a list of links when it has more than one
+    # arg.  the links on a fake page are sorted first by any minor_key
+    # and then by filename.
+    else
+    {
+	$link = "javascript:do_link('$key', '";
+	$link .= join ("', '", map (make_link ($_), sort { $b cmp $a } keys %{$items{$key}}));
+	$link .= "')";
+    }
+
+    # create the link
+    $cal[$year][$month] =~
+	s@([^>]|^)$searchable_day( |\n|$)@"$1$2<a href=\"$link\" $opt_aopt>" . link_description ($3, $key) . "</a>$4"@e
+            if eval $opt_test;
+    die "$PROGRAM_NAME: eval said '$@', stopped at " if $@;
+}
+
+# dump the calendar
+my $year_start = $opt_reverse ? $min_year : $max_year;
+my $year_end = $opt_reverse ? $max_year+1 : $min_year-1;
+my $year_incr = $opt_reverse ? 1 : -1;
+
+my $file = *STDOUT;
+my $filename;
+my $header_not_printed = 1;
+
+for ($year = $year_start; $year != $year_end; $year += $year_incr)
+{
+    next if ($opt_ltrim or $opt_rtrim) and not grep (/</, @{$cal[$year]}[1..12]);
+
+    if ($opt_separate)
+    {
+	$filename = "$year." . ($opt_title ? 'html' : 'table');
+	open (F, ">$filename") or die "$PROGRAM_NAME: open $filename: $!, stopped at ";
+	$file = *F;
+    }
+
+    if ($opt_title and ($opt_separate or $header_not_printed))
+    {
+	print $file <<"HTML";
+
+<html>
+<script language="JavaScript">
+<!--
+
+function do_link (day)
+{
+	var num_args = arguments.length;
+	if (num_args == 2)
+	{
+		location = arguments[1];
+	}
+	else 
+	{
+		document.clear ();
+		document.write ("<html><head><title>" + day + "</title></head>" +
+				"<body $opt_bopt><h1>" + day + "</h1><ul>");
+		for (var cursor = 1; cursor < num_args; cursor++)
+		{
+			document.write ("<li><a href=" + arguments[cursor] + ">" + arguments[cursor] + "</a></li>");
+		}
+		document.write ("</ul></body></html>");
+	}
+}
+
+// -->
+</script>
+<head>
+<title>$opt_title</title>
+</head>
+<body $opt_bopt>
+<center>
+<h1>$opt_title</h1>
+
+HTML
+
+        $header_not_printed = 0;
+    }
+	
+    print $file "<table $opt_topt>\n";
+    print $file "<tr $opt_ropt><th colspan=$opt_width $opt_hopt><h1>$year</h1></th></tr>\n";
+
+    my $first_month = $opt_ltrim ? trim ($cal[$year], 'left')  : 1;
+    my  $last_month = $opt_rtrim ? trim ($cal[$year], 'right') : 12;
+
+    my $start = ($opt_width*(int (($first_month-1) / $opt_width)))+1;
+    my $end = ($opt_width*(int (($last_month-1) / $opt_width)))+$opt_width;
+
+    my $month_cursor;
+    for ($month_cursor = $start; $month_cursor <= $end; $month_cursor++)
+    {
+	my $row_pos = ($month_cursor-1) % $opt_width;
+	print $file "<tr $opt_ropt>" if $row_pos == 0;
+	print $file "<td $opt_dopt><pre>";
+	if ($month_cursor < $first_month or $month_cursor > $last_month)
+	{
+	    print $file $spaces;
+	}
+	else
+	{
+	    print $file "<center><b>$month_name[$month_cursor]</b></center>\n";
+	    print $file $cal[$year][$month_cursor];
+	}
+	print $file "</pre></td>\n";
+	print $file "</tr>\n" if $row_pos == ($opt_width-1);
+    }
+
+    print $file "</table>\n";
+    print $file "<p>\n" if $opt_title;
+    print $file <<"HTML" if $opt_title and ($opt_separate or (($year + $year_incr) == $year_end));
+
+<p>
+<hr>
+<h5>Produced by <em>Cali</em>, another fine
+<a href="http://phone.ny.ubs.com/cgi-bin/wdb/phonebook/users/query?unit2==WEBS&status==A">
+<b>Region NA WEBS Group</b></a> product
+<a href="http://phone.ny.ubs.com/cgi-bin/wdb/phonebook/users/query?code==NNYMTK&status==A">.</a>
+</h5>
+
+</center> 
+</body>
+</html>
+
+HTML
+
+    if ($opt_separate)
+    {
+	close (F) or die "$PROGRAM_NAME: close $filename: $!, stopped at ";
+    }
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

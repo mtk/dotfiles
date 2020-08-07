@@ -1,0 +1,29 @@
+# non-interactive ssh session
+# this is run *after* .bashrc 
+
+shopt -s extglob
+
+# set up my environment variables
+. ~/.bash_exports
+
+# set up my PATH 
+#. ~/.bash_path
+
+# arrange for convenient default file protections (friendly
+# rwxrwxr-x).  n.b. group read/write access is only useful as a
+# default when you have a private (e.g. per-user) group.  this is the
+# default policy for most linux systems.  you'll typically have to ask
+# for a 'per user' group in other unix environments.  this is useful
+# because directories can be made to inherit the group label from
+# their parent (so-called "berkeley" semantics.
+umask 002
+
+# tweak core & open files limits
+ulimit \
+    -c 0 \
+    -n 1024
+
+# Local Variables:
+# mode: sh
+# End:
+

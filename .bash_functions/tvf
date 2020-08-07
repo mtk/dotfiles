@@ -1,0 +1,19 @@
+#!/usr/local/bin/bash
+
+function tvf
+{
+    local c
+    local f=$(eval echo \$$#)
+
+    case $f in
+	*.bz2)      c='-j';;
+	*.gz|*.tgz) c='-z';;
+    esac
+	
+    tar $c -tvf $*
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

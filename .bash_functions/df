@@ -1,0 +1,9 @@
+function df
+{
+	/bin/df -h -P -T "$@" | (read x; echo $x; sort) | ~mtk/.bin/halign -a lrrrrrl
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

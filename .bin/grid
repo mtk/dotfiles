@@ -1,0 +1,43 @@
+#!/usr/local/bin/perl
+
+use strict;
+use Getopt::Long;
+
+my $gridx = $ENV{'GRID_X'}   or
+  die "$0: GRID_X env var not set\n";
+my $gridy = $ENV{'GRID_Y'}   or
+  die "$0: GRID_Y env var not set\n";
+
+my $currx = 0;
+my $curry = 0;
+
+if (my $winid = $ENV{'WINDOWID'})
+  {
+    my $xwininfo = qx/xwininfo -id $winid -size/;
+    ($currx, $curry) = $xwininfo =~ /User supplied location: (\d+), (\d+)/;
+  }
+
+use vars qw($opt_n $opt_xplus $opt_yplus);
+
+GetOptions ('n', 'xplus=i', 'yplus=i') and @ARGV == 2 or
+  die "usage: $0 [-h|-xplus N|-yplus N] X Y\n";
+
+my $x = ($ARGV[1] * $gridx) + $opt_xplus - $currx;
+my $y = ($ARGV[0] * $gridy) + $opt_yplus - $curry;
+
+if ($opt_n)
+  {
+    print "$x $y\n";
+  }
+else
+  {
+    print '+', $x, '+', $y, "\n";
+  }
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

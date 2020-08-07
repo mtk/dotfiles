@@ -1,0 +1,25 @@
+#!/usr/local/bin/perl
+
+# Mark T. Kennedy
+# mtk@acm.org
+
+use strict;
+use Date::Manip;
+
+my $default_time_zone = Date_TimeZone ();
+
+my $from_zone = $ARGV[0];
+my $from_time = $ARGV[1];
+
+my $date = new Date::Manip::Date;
+$date->parse($from_time . ' ' . $from_zone);
+$date->convert($default_time_zone);
+print $default_time_zone,' ', $date->printf("%i:%M%p"), "\n";
+
+
+
+# Local Variables:
+# mode: perl
+# mode: auto-fill
+# End:
+

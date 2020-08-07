@@ -1,0 +1,52 @@
+# vars
+
+set bind-tty-special-chars off
+set blink-matching-paren on
+set bell-style visible
+set expand-tilde on
+set horizontal-scroll-mode on
+set mark-directories on
+set mark-modified-lines on
+set show-all-if-ambiguous on
+set visible-stats on
+
+#?: possible-completions
+
+$if bash
+
+# macros (better than ksh)
+
+"\ej": "\C-e 2>&1 | t\C-j"			# view stdout/stderr w/less
+"\eJ": "\C-e 2>&1 | tx\C-j"			# view stdout/stderr w/less, exit leaves content on screen
+
+"\eh": "\C-e 2>&1 | halign 2>&1 -r | t\C-j"     # view stdout/stderr w/less through halign
+"\eH": "\C-e      | halign      -r | t\C-j"	# view stdout        w/less through halign
+
+"\eq": "\C-a\"\C-e\""				# quote w/double quotes
+"\eQ": "\C-a'\C-e\'"				# quote w/single quotes
+
+"\ee": "\C-a\eu\C-a\C-k\C-y=$\C-y\e\C-e"	# upcase name and edit env var
+"\eE": "\C-a\C-k\C-y=$\C-y\e\C-e"		# same   name and edit env var
+
+"\eP": "\C-a\C-kPATH=$PATH\e\C-e\C-a\e5\C-f"	# edit PATH
+"\eC": "\C-a\C-kCLASSPATH=$CLASSPATH\e\C-e\C-a\e10\C-f" # edit CLASSPATH
+"\eL": "\C-a\C-kLD_LIBRARY_PATH=$LD_LIBRARY_PATH\e\C-e\C-a\e16\C-f" # edit LD_LIBRARY_PATH
+
+"\en": "\C-a\C-kecho \C-y\C-j\C-y"		# expand file meta chars??
+
+"\C-]c":    "\eb\ec"				# backward capitalize word
+"\C-]\C-u": "\eb\eu"				# backward upcase     word
+"\C-]\C-l": "\eb\el"				# backward lowcase    word
+
+"\C-w": backward-kill-word			# nuke a path component
+"\C-]w": unix-word-rubout			# nuke a complete path
+"\C-]\C-w": unix-word-rubout			# nuke a complete path
+
+"\C-xa": alias-expand-line
+
+$endif
+
+# Local Variables:
+# mode: sh
+# End:
+

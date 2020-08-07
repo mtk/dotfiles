@@ -1,0 +1,20 @@
+#!/usr/local/bin/perl
+
+# run cmd on pty so stdio is line-buffered
+
+use strict;
+use Expect;
+
+die "usage: $0 cmd\n" unless @ARGV;
+STDOUT->autoflush (1);
+my $p = Expect->spawn (@ARGV)
+  or die "$0: failed to spawn '@ARGV': $!\n";
+$p->expect (undef);
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

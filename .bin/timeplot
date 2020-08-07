@@ -1,0 +1,77 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use IO::File;
+use Getopt::Long;
+use File::Copy;
+use File::Temp qw(tempfile);
+
+sub usage
+{
+  print <<"MSG";
+usage: $0 [-help|-timefmt format|-datastyle style] datafile
+
+   datafile consists of "time value" records.  STDOUT is a PDF graph.
+
+  -timefmt   defaults to '%Y%m%d'
+  -datastyle defaults to 'linespoints'
+
+MSG
+  exit 1;
+}
+
+my $help;
+my $timefmt   = '%Y%m%d';
+my $datastyle = 'linespoints';
+my $title     = 'Time Plot';
+
+GetOptions
+(
+ 'title=s'     => \$title,
+ 'timefmt=s'   => \$timefmt,
+ 'datastyle=s' => \$datastyle,
+ 'help'        => \$help,
+)
+  or usage;
+
+usage if $help;
+
+my $filename = shift;
+
+my $t;
+unless ($filename)
+  {
+    $t = File::Temp->new;
+    $filename = $t->filename;
+    copy (\*STDIN, $t);
+  }
+
+my $cmd = <<"CMD";
+
+set xdata time
+set timefmt '$timefmt'
+set title '$title'
+set style data $datastyle
+set term postscript color
+plot '$filename' using 1:2
+
+CMD
+
+open (T, ">>/tmp/c.txt");
+print T $cmd;
+print T "\n\n";
+close (T);
+
+my $p = IO::File->new ("| gnuplot | ps2pdf -")
+  or die "$0: failed to open gnuplot/ps2pdf chain: $!\n";
+
+print $p $cmd, "\n";
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

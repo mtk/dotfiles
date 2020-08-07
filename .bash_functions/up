@@ -1,0 +1,4 @@
+function up
+{
+    ping -q -W 1 -w 1 -c 1 $* >/dev/null 2>/dev/null
+}

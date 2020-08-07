@@ -1,0 +1,16 @@
+function term
+{
+    if [[ $# = 0 ]]; then   
+	# show current settings
+	echo TERM=$TERM
+	stty -a
+    else
+	TERM=$1
+	stty sane erase ^h
+    fi
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

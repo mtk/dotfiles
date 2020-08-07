@@ -1,0 +1,9 @@
+function manp
+{
+	man -t $@ | lpr
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

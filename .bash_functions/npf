@@ -1,0 +1,4 @@
+function npf
+{
+	netpcm-client.fast -nsp "$@" | halign -r
+}

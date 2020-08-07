@@ -1,0 +1,4 @@
+function tpnlt
+{
+	omi-client -t $1 pos | trade-pnl | field -1 | total | commify -m
+}

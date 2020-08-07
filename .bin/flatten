@@ -1,0 +1,97 @@
+#!/usr/local/bin/perl
+
+use Getopt::Long;
+use URI::Escape;
+
+use vars qw(@opt_attrs $opt_nokeys $opt_help @opt_ignored $opt_delimiter $opt_encode $opt_separator $opt_pairdelim);
+
+sub encode ($)
+{
+    my $value = shift;
+
+    if ($value =~ /,/)
+    {
+        # \x22 is a literal '"'
+	unless (substr ($value, 0, 1) eq "\x22" and substr ($value, -1, 1) eq "\x22")
+	{
+	    # tricky: the first \x22 is '"' but the second is the literal string '\x22'
+	    $value =~ s@(^|[^/])\x22@\x22@g;
+            $value = "\x22" . $value . "\x22";
+	}
+    }
+
+    $opt_encode ? uri_escape $value : $value;
+}
+
+sub usage
+{
+    print STDERR <<USAGE;
+
+usage: flatten [options] <ldif-input
+
+    -help	prints this message
+    -nokeys	print just 'value' list instead of 'key: value'
+    -attrs      list of keys to use, defaults to all
+    -ignored    list of keys to ignore
+    -encode     URL encode attr values
+    -delimiter  string used to delimit output fields, defaults to ', '
+    -separator  string used to separate input fields, defaults to ':'
+    -pairdelim  string used to separate key/value pairs, defaults to ':'
+
+USAGE
+    exit -1;
+}
+
+GetOptions ('help', 'nokeys', 'attrs=s@', 'ignored=s@', 'delimiter=s', 'encode', 'separator=s', 'pairdelim=s') or die "$0: bad options\n";
+usage if $opt_help;
+
+@opt_attrs = map (lc $_, map (split (/,/), @opt_attrs));
+@opt_ignored = map (lc $_, map (split (/,/), @opt_ignored));
+my %ignored = map (($_, 1), @opt_ignored);
+@opt_attrs = grep ((not $ignored{$_}), @opt_attrs);
+$opt_delimiter = ', ' unless defined $opt_delimiter;
+$opt_separator = ':' unless defined $opt_separator;
+$opt_pairdelim = ': ' unless defined $opt_pairdelim;
+
+# paragraph mode.  eat an entire tuple at a time.
+$/ = '';
+
+while (<>)
+{
+    my $even = 1;
+    my %tuple = map ((($even++ % 2) ? lc $_ : $_), /^([^$opt_separator]+)$opt_separator\s*(.*)$/mgo);
+
+    my $attr;
+    my $first = 1;
+
+    if (@opt_attrs)
+    {
+	foreach $attr (@opt_attrs)
+	{
+	    unless ($first) { print $opt_delimiter; } else { $first = 0; }
+	    print $attr, $opt_pairdelim unless $opt_nokeys;
+	    print encode $tuple{$attr};
+	}
+    }
+    else
+    {
+	my @attrs = sort keys %tuple;
+	foreach $attr (@attrs)
+	{
+	    next if $ignored{$attr};
+	    unless ($first) { print $opt_delimiter; } else { $first = 0; }
+	    print $attr, $opt_pairdelim unless $opt_nokeys;
+	    print encode $tuple{$attr};
+	}
+    }
+
+    print "\n";
+}
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

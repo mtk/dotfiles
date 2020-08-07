@@ -1,0 +1,37 @@
+#!/usr/local/bin/perl
+
+# example for Event integration
+
+use Event;
+use Linux::Inotify2;
+
+my $inotify = new Linux::Inotify2;
+
+Event->io (fd => $inotify->fileno, poll => 'r', cb => sub { $inotify->poll });
+
+foreach my $object (@ARGV)
+{
+  $inotify->watch
+    (
+     $object,
+     IN_ALL_EVENTS,
+     sub
+     {
+       my $e = shift;
+       my $name = $e->{'w'}->{'name'};
+       print scalar localtime, ': ';
+       print "$name was accessed\n" if $e->IN_ACCESS;
+       print "$name was modified\n" if $e->IN_MODIFY;
+       print "$name metadata changed\n" if $e->IN_ATTRIB;
+       print "$name was opened\n" if $e->IN_OPEN;
+       print "$name was closed\n" if $e->IN_CLOSE;
+       print "$name was created\n" if $e->IN_CREATE;
+       print "$name was deleted\n" if $e->IN_DELETE;
+       print "$name was deleted\n" if $e->IN_DELETE_SELF;
+       print "$name was moved\n" if $e->IN_MOVE;
+       print "$name was moved\n" if $e->IN_MOVE_SELF;
+     });
+}
+
+Event::loop;
+

@@ -1,0 +1,182 @@
+#!/usr/local/bin/perl
+
+# schema browser
+# mark t. kennedy, mtk@acm.org
+
+use strict;
+
+use XML::Twig;
+use Getopt::Long;
+
+my $message_definitions = '/usr/local/share/quickfix/FIX42.xml';
+my $list_msg_types;
+my $list_header;
+my $list_trailer;
+my $list_msg;
+my $list_required_fields;
+my $list_all_fields;
+
+sub usage
+{
+  warn "usage: $0 [-def blah.xml | -list | -header | -trailer | -required | -msgtype msgname ]\n";
+}
+
+GetOptions
+(
+ 'def=s' 	=> \$message_definitions,
+ 'listmsgtypes' => \$list_msg_types,
+ 'header'     	=> \$list_header,
+ 'trailer'    	=> \$list_trailer,
+ 'msgtype=s'  	=> \$list_msg,
+ 'required'   	=> \$list_required_fields,
+)
+  or usage;
+
+die "$0: only one of header, trailer, or msgtype allowed\n"
+  if $list_header + $list_trailer + $list_msg > 1;
+
+my %longnames =
+(
+ 'new'	  => 'NewOrderSingle',
+ 'cxr'	  => 'OrderCancelReplaceRequest',
+ 'cxl'	  => 'OrderCancelRequest',
+ 'fill'	  => 'ExecutionReport',
+ 'bust'	  => 'ExecutionReport',
+ 'refill' => 'ExecutionReport',
+ 'reject' => 'OrderCancelReject',
+ 'ack'	  => 'ExecutionReport',
+ 'nack'	  => 'ExecutionReport',
+);
+
+my %nicknames;
+foreach my $nickname (keys %longnames)
+  {
+    $nicknames{$longnames{$nickname}}->{$nickname} = 1;
+  }
+
+$list_msg = $longnames{$list_msg} if exists $longnames{$list_msg};
+
+usage
+  unless defined ($list_header) + defined ($list_trailer) + defined ($list_msg) + defined ($list_msg_types) > 0;
+
+my @elements;
+
+sub header_field
+{
+  my ($t, $elt) = @_;
+  if ($list_header)
+    {
+      push @elements, $elt;
+      # if ($list_required_fields)
+      # 	{
+      # 	  print "$elt->{'att'}->{'name'} => $elt->{'att'}->{'required'}\n" if $elt->{'att'}->{'required'} eq 'Y';
+      # 	}
+      # else
+      # 	{
+      # 	  print "$elt->{'att'}->{'name'} => $elt->{'att'}->{'required'}\n";
+      # 	}
+    }
+}
+
+sub trailer_field
+{
+  my ($t, $elt) = @_;
+  if ($list_trailer)
+    {
+      push @elements, $elt;
+      # if ($list_required_fields)
+      # 	{
+      # 	  print "$elt->{'att'}->{'name'} => $elt->{'att'}->{'required'}\n" if $elt->{'att'}->{'required'} eq 'Y';
+      # 	}
+      # else
+      # 	{
+      # 	  print "$elt->{'att'}->{'name'} => $elt->{'att'}->{'required'}\n";
+      # 	}
+    }
+}
+
+sub message
+{
+  my ($t, $elt) = @_;
+
+  if ($list_msg_types)
+    {
+      my $longname = $elt->{'att'}->{'name'};
+      my $shortnames = join (', ', keys %{$nicknames{$longname}});
+      print $longname;
+      print " ($shortnames)" if $shortnames;
+      print "\n";
+      return;
+    }
+
+  if (lc $elt->{'att'}->{'name'} eq lc $list_msg)
+    {
+      push @elements, $elt;
+      # foreach my $child ($elt->children)
+      # 	{
+      # 	  if ($list_required_fields)
+      # 	    {
+      # 	      print "$child->{'att'}->{'name'} => $child->{'att'}->{'required'}\n" if $child->{'att'}->{'required'} eq 'Y';
+      # 	    }
+      # 	  else
+      # 	    {
+      # 	      print "$child->{'att'}->{'name'} => $child->{'att'}->{'required'}\n";
+      # 	    }
+      # 	}
+    }
+}
+
+my %fieldnum;
+
+sub field
+{
+  my ($t, $elt) = @_;
+  $fieldnum{ $elt->{'att'}->{'name'} } = $elt->{'att'}->{'number'};
+}
+
+# roots: header trailer messages
+# header/field
+# trailer/field
+# messages/message/field
+# field: name, required
+# also field: number
+
+# all the magic is here
+my $twig = XML::Twig->new
+  (
+   'twig_roots'    =>
+   {
+    'header/field'     => \&header_field,
+    'trailer/field'    => \&trailer_field,
+    'messages/message' => \&message,
+    'fields/field'     => \&field,
+   },
+  );
+
+$twig->parsefile ($message_definitions);
+
+# for messages, there is only one element so we fetch the children (fields)
+@elements = $elements[0]->children if @elements == 1;
+
+foreach my $elt (@elements)
+  {
+    my $name = $elt->{'att'}->{'name'};
+    my $number = $fieldnum{$name};
+    $name .= "[$number]";
+
+    if ($list_required_fields)
+      {
+	print "$name => $elt->{'att'}->{'required'}\n" if $elt->{'att'}->{'required'} eq 'Y';
+      }
+    else
+      {
+	print "$name => $elt->{'att'}->{'required'}\n";
+      }
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:

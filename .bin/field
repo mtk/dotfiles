@@ -1,0 +1,52 @@
+#!/usr/local/bin/perl
+
+my $separator = ' ';
+
+if ($ARGV[0] =~ /^-f/)
+  {
+    if (length ($ARGV[0]) > 2)
+      {
+	$separator = substr ($ARGV[0], 2);
+	shift;
+      }
+    else
+      {
+	shift;
+	$separator = shift;
+      }
+  }
+
+my $keep_whitespace;
+
+if ($ARGV[0] =~ /^-k/)
+  {
+    $keep_whitespace = 1;
+    shift;
+  }
+
+my $n = shift;
+
+while (<>)
+  {
+    chomp;
+
+    # \s *includes* \t (tab) - sigh
+    unless ($keep_whitespace)
+      {
+	s/^\s+//;
+	s/\s+/ /g;
+	s/\s+$//;
+      }
+
+    my @f = split /$separator/o;
+    # the 'eval' in a list context makes values of n like 3..5 work
+    print "@f[eval $n]\n";
+  }
+
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

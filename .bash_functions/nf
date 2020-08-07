@@ -1,0 +1,4 @@
+function nf
+{
+	netfill "$@" | halign -r
+}

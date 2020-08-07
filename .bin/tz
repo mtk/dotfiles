@@ -1,0 +1,59 @@
+#!/usr/local/bin/perl
+
+# Mark T. Kennedy
+# mtk@acm.org
+
+use strict;
+
+BEGIN { $Date::Manip::Backend = 'DM5' }
+
+use Date::Manip;
+use Getopt::Long;
+
+my $help;
+my $list_zones;
+
+GetOptions
+ (
+  'h'       => \$help,
+  'l'       => \$list_zones,
+ );
+
+my $default_time_zone = Date_TimeZone ();
+
+if ($help)
+{
+  print "usage: tz [ -l | to-zone [from-time [from-zone]]]\n";
+  print " convert 'from' time/zone to equivalent in to-zone\n"; 
+  print "   from-time defaults to 'now'\n";
+  print "   from-zone defaults to '$default_time_zone'\n";
+  print "   -l prints a list of recognized time zones and their offsets to '$default_time_zone'\n";
+  exit 1;
+}
+
+if ($list_zones)
+{
+  foreach my $zone (sort keys %{$Date::Manip::Zone{'n2o'}})
+    {
+      print $zone, ' ', $Date::Manip::Zone{'n2o'}->{$zone}, "\n";
+    }
+  exit;
+}
+
+my $to_zone   = $ARGV[0] || 'GMT';
+my $from_time = $ARGV[1] || 'now';
+my $from_zone = $ARGV[2] || $default_time_zone;
+
+my $from = ParseDate ($from_time);
+my $to   = Date_ConvTZ ($from, $from_zone, $to_zone);
+
+print 'Here  (', $from_zone, '): ', UnixDate ($from,  "%Y-%m-%d %H:%M:%S"), "\n";
+print 'There (', $to_zone,   '): ', UnixDate ($to,    "%Y-%m-%d %H:%M:%S"), "\n";
+
+
+
+# Local Variables:
+# mode: perl
+# mode: auto-fill
+# End:
+

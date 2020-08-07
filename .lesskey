@@ -1,0 +1,16 @@
+#line-edit
+\t        forw-complete
+\e\t      back-complete
+^L        expand
+^Q        literal
+^A        home
+^F        right
+^B        left
+\eb       word-left
+\ef       word-right
+^D        delete
+\ed       word-delete
+^W        word-backspace
+^E        end
+^P        up
+^N        down

@@ -1,0 +1,19 @@
+#"xvkbd -text "\[Left]""
+# b:6
+#"xvkbd -text "\[Right]""
+# b:7
+
+#"xvkbd -text "\[Page_Down]""
+#b:6
+#"xvkbd -text "\[Page_Up]""
+#@b:17
+
+# work-around extra events.
+#"click 4"
+# b:11
+#"click 5"
+# b:12
+
+"mousealert"
+	shift + Delete
+

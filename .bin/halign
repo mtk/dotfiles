@@ -1,0 +1,248 @@
+#!/usr/local/bin/perl
+
+# possibly the most useful and simultaneously the worst program i've ever written.
+# - mtk
+
+use strict;
+
+my %options;
+my $num_fields;
+my @field_size;
+my @cleanup;
+
+sub usage (;$)
+{
+    my $msg = shift;
+    print STDERR "$0: $msg\n" if $msg;
+    print STDERR <<"MSG";
+usage: $0 [-left|-right|-center|-alignment arg|-gap arg|-pad arg|-fs arg|-info|-every|-help] [files...]
+    -left		align all columns on left boundary (the default)
+    -right		align all columns on right boundary
+    -center     	center all columns
+    -alignment arg	list of 'l', 'r', 'c', and 'd' chars specifying per column alignments
+	                'd' means use the default alignment.  a numeric repeat count may
+			prefix each char.  if the list is shorter then the number of fields,
+                        the default alignment will be used for the remaining fields.
+    -gap arg            string to use between columns, defaults to ' '
+    -pad char           char to use in filling columns, defaults to ' '
+    -fs pattern         pattern to use in splitting columns, defaults to ' +'
+    -info               do not output the columns, just the column info.
+    -null               show null fields as '<N>'
+    -bracket            wrap values with "<" and ">"
+    -every              don't collapse repeated instances of the field separator
+    -ebn                shorthand for '-every -bracket -null'
+    -help               print this message
+MSG
+    exit -1;
+}
+
+sub info ()
+{
+    print STDERR <<"INFO";
+$0: number of fields=$num_fields
+$0: maximum field sizes=@field_size
+$0: field alignment (long form)  = $options{alignment}
+INFO
+    $options{alignment} =~ s/(([lrcd])\2*)/(length ($1)) . $2/ge;
+    print STDERR "$0: field alignment (short form) = $options{alignment}\n";
+}
+
+sub max ($$) { $_[0] > $_[1] ? $_[0] : $_[1] }
+
+{
+  my $counter = 0;
+  sub tmpnam { $counter++; "/tmp/$0-$<-$$-$^T-$counter"; }
+}
+
+sub cleanup
+{
+  foreach my $victim (@cleanup)
+    {
+      next unless -f $victim;
+      my $rc = unlink $victim;
+      die "$0: delete ('$victim') failed (rc=$rc): $!\n" unless $rc == 1;
+    }
+}
+
+sub final_cleanup
+{
+  cleanup;
+  exit;
+}
+
+$SIG{'__DIE__'} = \ &final_cleanup;
+$SIG{'INT'} 	= \ &final_cleanup;
+$SIG{'HUP'} 	= \ &final_cleanup;
+$SIG{'PIPE'} 	= \ &final_cleanup;
+
+$0 =~ s@^.*/@@;
+
+use Getopt::Long;
+GetOptions 
+  (
+   \%options,
+   qw(left right center alignment=s gap=s pad=s fs=s info null help every bracket ebn)
+  )
+  or usage;
+usage if $options{help};
+usage ('only one of -left|-right|-center allowed')
+    if $options{left}+$options{right}+$options{center} > 1;
+$options{right} = 1 unless $options{left} or $options{center};
+my $default_alignment_char = ($options{left} && 'l') || ($options{right} && 'r') || 'c';
+usage ("alignment args must be 'l', 'r', 'c', or 'd'")
+    if $options{alignment} and $options{alignment} !~ /^(?:(?:\d+)?[lrcd])+$/;
+my $gap  = $options{gap} || ' ';
+my $pad  = $options{pad} || ' ';
+my $fs 	 = $options{fs} || ' ';
+if ($options{ebn})
+  {
+    $options{every} = 1;
+    $options{bracket} = 1;
+    $options{null} = 1;
+  }
+
+my $fs_pattern = "(?:\Q$fs\E)";
+$fs_pattern .= '+' unless $options{every};
+
+$ARGV[0] = '-' unless @ARGV;
+
+# pass 1 - get column sizes, squirrel away non-file data in files
+foreach my $file (@ARGV)
+{
+  my $tmpfile;
+  my $ephemeral = ! -f $file;
+
+  if ($ephemeral)
+    {
+      $tmpfile = tmpnam;
+      open (EPHEM, ">$tmpfile") or die "$0: open ('$tmpfile') for writing failed: $!\n";
+    }
+
+  open (IN, "<$file") or die "$0: open ('$file') for reading failed: $!\n";
+  while (<IN>)
+    {
+      chomp;
+      s/$//;
+
+      s/^[ \t]+//;
+      s/[ \t]+$//;
+
+      my @f = split /$fs_pattern/o;
+
+      if ($options{null})
+	{
+	  foreach (@f)
+	    {
+	      $_ = '<N>' unless length;
+	    }
+	}
+
+      if ($options{bracket})
+      	{
+	  foreach (@f)
+	    {
+	      $_ = "<$_>" unless $_ eq '<N>';
+	    }
+      	}
+
+      $num_fields = max $num_fields, scalar @f;
+      foreach (0..$#f) { $field_size[$_] = max $field_size[$_], length $f[$_] }
+      #print EPHEM join ($fs, @f) if $ephemeral;
+      #print EPHEM "\n";
+      print EPHEM $_, "\n";
+    }
+  close (IN) or die "$0: close ('$file') failed: $!\n";
+
+  if ($ephemeral)
+    {
+      close (EPHEM) or die "$0: close ('$tmpfile') failed: $!\n";
+      push @cleanup, $tmpfile;
+      # oh god this is horrible and i wrote it.
+      # relies on '$file' being an alias for argv name.
+      $file = $tmpfile;
+    }
+}
+
+$options{alignment} =~ s/(\d+)(.)/$2 x $1/ge;
+$options{alignment} =~ s/d/$default_alignment_char/go;
+my $delta = $num_fields - length $options{alignment};
+$options{alignment} .= $default_alignment_char x $delta if $delta > 0;
+my @alignment = split //, $options{alignment};
+
+if ($options{info})
+{
+  info;
+  cleanup;
+  exit;
+}
+
+# pass 2
+while (<>)
+{
+  chomp;
+  s/$//;
+
+  s/^[ \t]+//;
+  s/[ \t]+$//;
+
+  my @f = split /$fs_pattern/o;
+
+  if ($options{null})
+    {
+      foreach (@f)
+	{
+	  $_ = '<N>' unless length;
+	}
+    }
+
+  if ($options{bracket})
+    {
+      foreach (@f)
+	{
+	  next if $_ eq '<N>';
+	  $_ = "<$_>";
+	}
+    }
+
+  foreach (0..$#f)
+    {
+      my ($left, $right);
+      my $delta = $field_size[$_] - length $f[$_];
+
+      if ($alignment[$_] eq 'l')
+	{
+	  $left = 0;
+	  $right = $delta;
+	}
+      elsif ($alignment[$_] eq 'r')
+	{
+	  $left = $delta;
+	  $right = 0;
+	}
+      else			# if ($alignment[$_] eq 'c')
+	{
+	  $left = int ($delta/2);
+	  $right = int ($delta/2);
+	  $right += 1 if $delta % 2 != 0;
+	}
+
+      print $pad x $left;
+      print $f[$_];
+      print $pad x $right;
+      print $gap;
+    }
+
+ print "\n";
+}
+
+END
+{
+  cleanup;
+}
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

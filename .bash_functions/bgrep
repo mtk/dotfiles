@@ -1,0 +1,21 @@
+function bgrep
+{
+    if [[ $# != 2 ]]; then
+	echo usage: bgrep value array-variable 1>&2
+	return 1;
+    fi
+
+    local value=$1; shift
+    local array=$1; shift
+
+    local i
+
+    eval "for i in \${$array[*]}; do if [[ \$i == $value ]]; then return 0; fi; done"
+    
+    return 1
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

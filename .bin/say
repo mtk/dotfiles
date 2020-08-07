@@ -1,0 +1,5 @@
+#!/usr/local/bin/bash
+echo "$@" | text2wave </dev/stdin >/tmp/f.wav
+play /tmp/f.wav
+rm /tmp/f.wav
+

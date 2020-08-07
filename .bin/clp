@@ -1,0 +1,12 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+print join (':', @ARGV), "\n";
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+

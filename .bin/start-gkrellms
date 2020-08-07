@@ -1,0 +1,113 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+use Net::Ping;
+use Getopt::Long;
+use Proc::ProcessTable;
+use Sys::Hostname;
+use Data::Dumper;
+
+my $localhost = hostname ();
+$localhost =~ s/[.].*$//;
+
+my $debug;
+my $dont_execute;
+my $verbose;
+my @cmds;
+my $help;
+
+GetOptions
+(
+ 'd'   => \$debug,
+ 'n'   => \$dont_execute,
+ 'v'   => \$verbose,
+ 'c=s' => \@cmds,
+ 'h'   => \$help,
+)
+  or die "$0: failed to parse cmdline args\n";
+
+if ($help)
+{
+  print "usage: $0 [-h|-v|-n|-c cmdlist]\n";
+  exit 1;
+}
+
+my @desired =
+(
+ 'new2',
+ 'rh',
+ 'pi3',
+ 'thor',
+);
+
+my $pinger = Net::Ping->new();
+
+my %live;
+my $t = new Proc::ProcessTable;
+
+foreach my $p (@{Proc::ProcessTable->new->table})
+{
+  my $cmd = $p->{'cmndline'};
+  next if $$ == $p->{'pid'};
+  next unless $cmd =~ /(?:gkrellm|ssh.*gkrellm)(?: |$)/;
+  if ($cmd =~ /ssh.*gkrellm()/)
+    {
+      my ($host) = $cmd =~ /ssh -f ([\w@]+) gkrellm(?: |$)/;
+      $live{$host} = 1;
+    }
+  else
+    {
+      $live{$localhost} = 1;
+    }
+}
+
+foreach my $desired (@desired)
+{
+  # don't recall what this is for
+  next if grep /$desired/, @cmds;
+
+  my $desired_host = $desired;
+  $desired_host =~ s/^.*@//;
+
+  if ($debug)
+    {
+      print
+	"$desired_host: gkrellm ",
+	$live{$desired} ? "exists" : "missing", ', ',
+	'host ',
+	$pinger->ping ($desired_host, 2) ? "alive" : "dead",
+	"\n";
+    }
+
+ # l1 hack because we can't reach it directly
+  unless ($live{$desired} or ($desired_host ne 'l1' and not scalar ($pinger->ping ($desired_host, 2))))
+    {
+      my @cmd = $desired eq $localhost ? ('gkrellm') : ('ssh', '-f', $desired, 'gkrellm');
+
+      print "@cmd\n" if $verbose or $dont_execute or $debug;
+
+      unless ($dont_execute)
+	{
+	  unless (fork)
+	    {
+	      unless ($verbose)
+		{
+		  open (STDOUT, '/dev/null');
+		  open (STDERR, '/dev/null');
+		}
+	      exec @cmd;
+	      die "failed to exec '@cmd': $!\n";
+	    }
+	}
+    }
+}
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+
+

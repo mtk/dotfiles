@@ -1,0 +1,9 @@
+function dp
+{
+	echo ${1%/*}
+}
+
+# Local Variables:
+# mode: sh
+# End:
+

@@ -1,0 +1,18 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+my $counter = 0;
+
+while (<>)
+  {
+    print '[', $counter++, '] ', $_;
+  }
+
+
+
+# Local Variables:
+# mode: cperl
+# mode: auto-fill
+# End:
+

@@ -1,0 +1,53 @@
+#!/usr/local/bin/perl
+
+use strict;
+
+if (grep /-n/, @ARGV)
+{
+    print "GRID_X GRID_Y NATURAL_WIDTH NATURAL_HEIGHT CHAR_WIDTH CHAR_HEIGHT\n";
+    exit;
+}
+
+# these should be determined automatically using a default
+# fixed-size font.
+my ($height_pixels_per_char,
+    $width_pixels_per_char);
+
+my $arch = $ENV{'ARCH'};
+
+if ($arch =~ /^sun/)
+{
+    # lucidasanstypewriter-12
+    $height_pixels_per_char = 13.4;
+    $width_pixels_per_char = 6.7;
+}
+elsif ($arch =~ /^(i|x)/)
+{
+    # font?
+    $height_pixels_per_char = 15;
+    $width_pixels_per_char = 6.4;
+}
+else
+{
+    $height_pixels_per_char = 15;
+    $width_pixels_per_char = 6.4;
+}
+
+# everything else is calculated from the display info
+my $dims = (grep /dimensions/, `xdpyinfo`)[0];
+my ($x, $y) = $dims =~ /(\d+)x(\d+) pixels/;
+$x = 1600 if $x > 1600;
+my $nw = int (0.80 * $x);
+my $nh = $y;
+my $ch = int ($nh / $height_pixels_per_char);
+my $cw = int ($nw / $width_pixels_per_char);
+
+print "export GRID_X=$x GRID_Y=$y NATURAL_WIDTH=$nw NATURAL_HEIGHT=$nh CHAR_WIDTH=$cw CHAR_HEIGHT=$ch\n";
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

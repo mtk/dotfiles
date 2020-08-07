@@ -1,0 +1,3 @@
+function jprop {
+	jcmd $1 VM.system_properties
+}

@@ -1,0 +1,13 @@
+#!/usr/local/bin/perl
+
+use strict;
+$! = $ARGV[0]+0;
+print $!, "\n";
+
+
+
+# Local Variables:
+# mode: perl
+# End:
+
+

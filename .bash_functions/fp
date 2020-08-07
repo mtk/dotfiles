@@ -1,0 +1,9 @@
+function fp
+{
+	echo ${1##*/}
+}
+
+# Local Variables:
+# mode: sh
+# End:
+
