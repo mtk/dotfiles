@@ -15,6 +15,7 @@
 .cdhist
 .cmake
 .config/
+!.config/autostart-scripts
 .dbus/
 .ddd
 .dmrc
