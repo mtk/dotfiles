@@ -79,11 +79,7 @@
 .sbt/launchers
 .sqlite_history
 .sqlsecrets
-.ssh/config
-.ssh/id_ed25519
-.ssh/known_hosts
-.ssh/known_hosts
-.ssh/ssh_auth_sock
+.ssh/
 .supertux2/
 .thumbnails/
 .thunderbird/
