@@ -255,6 +255,7 @@
  ccls-executable "/bin/ccls"
 
  custom-file "~/.emacs.d/custom.el"
+
 )
 
 
@@ -534,6 +535,8 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (use-package flycheck)
 ;  :init (global-flycheck-mode))
 
+(setq lsp-keymap-prefix "s-s")
+
 (use-package lsp-mode
   ;; Optional - enable lsp-mode automatically in scala files
   :hook  (scala-mode . lsp)
@@ -552,7 +555,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 ;;(use-package yasnippet)
 
 ;; Add company-lsp backend for metals
-(use-package company-lsp)
+;(use-package company-lsp)
 
 ;; Posframe is a pop-up tool that must be manually installed for dap-mode
 (use-package posframe)
