@@ -9,9 +9,9 @@ else
 	new-window -n bluetooth                   bash   -i -c 'ONCE=bluetoothctl once'                                               \; \
 	new-window -n chrome                                                                                                          \; \
 	new-window -n idea                                                                                                            \; \
-	new-window -n ammonite   -c ~/proj/ammonite               bash -i -c 'CLASSPATH=$(latest-jars) ONCE="amm" once'               \; \
+	new-window -n ammonite   -c ~/proj/ammonite               bash -i -c 'ONCE="amm" once'                                        \; \
         new-window -n psql                                        bash -i -c 'ONCE="psql" once'                                       \; \
-        new-window -n sbt        -c ~/IdeaProjects/NewSimple12    bash -i -c 'CLASSPATH=$(latest-jars) ONCE="wfsa.sh git pull; sbt" once' \; \
+        new-window -n sbt        -c ~/IdeaProjects/NewSimple12    bash -i -c 'ONCE="wfsa.sh git pull; sbt" once'                      \; \
 	new-window -n ugt                                                                                                             \; \
 	new-window
 fi

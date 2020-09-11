@@ -77,7 +77,7 @@
 (define-key global-map [S-down-mouse-3] 'imenu)
 
 ;; control-x characters
-(define-key ctl-x-map "\C-[" 'electric-command-history) ; nifty m-x review/edit
+;;(define-key ctl-x-map "\C-[" 'electric-command-history) ; nifty m-x review/edit
 (define-key ctl-x-map "\C-b" 'bs-show) ; nifty buffer menu
 (define-key ctl-x-map "'"    'next-error) ; for jde mode & cc-mode & maybe perl mode
 (define-key ctl-x-map "="    'what-cursor-position) ; newer & better
@@ -164,7 +164,7 @@
  ;; behavior
  abbrev-file-name "~/.emacs.d/abbrev_defs.el"
  default-major-mode 'text-mode		; might as well
- x-stretch-cursor t			; ,bloat for tabs
+ x-stretch-cursor t			; bloat for tabs
  default-indicate-empty-lines t		; show noise at the bottom of buffers
  comment-style 'indent			; default aligns on right margin (ugh)
  next-line-add-newlines t		; so C-N doesn't beep at you
@@ -194,7 +194,7 @@
  undo-strong-limit 500000		; max at GC time (def 30,000)
  undo-tree-visualizer-timestamps t	; can "go back in time" more easily with them
  kill-ring-max 200			; can be bigger but never smaller
- gc-cons-threshold 1000000		; default 600,000
+ gc-cons-threshold 100000000		; 100 million, an LSP recommendation
  mark-ring-max 32			; default 16
  regexp-search-ring-max 32		; default 16
  search-ring-max 32			; default 16
@@ -253,6 +253,8 @@
 
  ;; source code indexer for lsp-mode & friends
  ccls-executable "/bin/ccls"
+
+ read-process-output-max (* 1024 1024)	; for LSP
 
  custom-file "~/.emacs.d/custom.el"
 
@@ -444,36 +446,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
         ialign-initial-repeat t
 	ialign-pcre-mode t))
 
-;; (use-package ialign
-;;   :config
-;;   (setq ialign-initial-regexp "(\s+)"
-;;         ialign-initial-repeat t)
-;;   (defun ialign-update (&optional no-error)
-;;   "Align the region with regexp in the minibuffer for preview.
-;; Does temporary alignment for preview only.
-;; The argument NO-ERROR, if non-nil means ignore any errors.
-;; Use `ialign-commit' to actually align the region in the buffer."
-;;   (interactive)
-;;   (when (and (ialign--active-p) (minibufferp))
-;;     (condition-case err
-;; 	(progn
-;; 	  (ialign--update-minibuffer-prompt)
-;; 	  (when (or (called-interactively-p 'interactive)
-;; 		    (ialign--autoupdate-p))
-;; 	    (let ((regexp (rxt-pcre-to-elisp (minibuffer-contents-no-properties))))
-;; ;	    (let ((regexp (minibuffer-contents-no-properties)))
-;; 	      (setq ialign--regexp regexp)
-;; 	      (ialign--align)
-;; 	      (redisplay))))
-;;       (error
-;;        (progn
-;; 	 (setq ialign--error
-;; 	       (if (eq (car err) 'invalid-regexp)
-;; 		   (cadr err) (error-message-string err)))
-;; 	 (ialign--update-minibuffer-prompt)
-;; 	 (unless no-error
-;; 	   (signal (car err) (cdr err)))))))))
-
 (use-package markdown-mode
   :ensure t
   :commands (markdown-mode gfm-mode)
@@ -497,6 +469,11 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
   (define-key hl-todo-mode-map (kbd "C-c H o") 'hl-todo-occur)
   (define-key hl-todo-mode-map (kbd "C-c H i") 'hl-todo-insert)
   (add-hook 'prog-mode-hook 'hl-todo-mode))
+
+(use-package importmagic
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'importmagic-mode))
 
 
 
@@ -544,7 +521,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
          (lsp-mode . lsp-enable-which-key-integration)
   :config (setq lsp-prefer-flymake nil))
 
-;; Add metals backend for lsp-mode
+;; Add metals backend for scala lsp-mode
 (use-package lsp-metals)
 
 ;; Enable nice rendering of documentation on hover
@@ -573,7 +550,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 ; (setq lsp-metals-treeview-show-when-views-received t))
 
 ;; for lsp-java
-
 (use-package projectile)
 (use-package flycheck)
 (eval-after-load 'flycheck
@@ -588,6 +564,26 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
 (use-package dap-java :ensure nil);
 (use-package lsp-treemacs)
+
+;; for lsp-python
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda () (require 'lsp-pyright) (lsp))))
+
+(use-package python
+  :delight "π "
+  :bind (("M-[" . python-nav-backward-block)
+         ("M-]" . python-nav-forward-block))
+  :preface
+  (defun python-remove-unused-imports()
+    "Removes unused imports and unused variables with autoflake."
+    (interactive)
+    (if (executable-find "autoflake")
+        (progn
+          (shell-command (format "autoflake --remove-all-unused-imports -i %s"
+                                 (shell-quote-argument (buffer-file-name))))
+          (revert-buffer t t t))
+      (warn "python-mode: Cannot find autoflake executable."))))
 
 
 
@@ -607,12 +603,11 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 	    (yas-minor-mode)		; expansions of templates from single keyword
 	    (subword-mode)		; backward-delete-word stops on Caps or dashes or underbars
 	    (flycheck-mode)		; syntax checking
-;	    (linum-mode)		; line numbers in left margin
 	    (hlinum-activate)		; highlight current line number
 	    (electric-indent-mode)	; automatic re-indenting
 	    (indent-guide-mode)		; show some kind of indentation helper?
 	    (setq comment-column 40)
-	    (local-set-key [tab] 'hippie-expand))) ; not sure if this is best wish lsp mode?
+	    (local-set-key [tab] 'hippie-expand))) ; not sure if this is best with lsp mode?
 
 (add-hook 'java-mode-hook #'lsp)
 
@@ -631,25 +626,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 ; this tells desktop to save the packages frame info, etc so it can restore it later.
 (add-hook 'package-menu-mode-hook
 	  (lambda () (setq desktop-save-buffer t))) ; buffer local to trigger saving
-
-;; ;; the magic needed to persist the *Packages* buffer using emacs desktop
-
-;; (require 'paradox)
-
-;; ; this restores the buffer contents via a fresh 'paradox-list-packages' call
-;; (defun paradox-menu-restore-desktop-buffer (file-name buffer-name misc-data)
-;;   "Restore a 'Paradox Menu' buffer specified in a desktop file by freshly loading it."
-;;   (paradox-list-packages t)		; 't' means don't refresh.  refreshing breaks on startup!
-;;   (current-buffer))
-
-;; ; this connects the handler to desktop-restore
-;; (add-to-list 'desktop-buffer-mode-handlers ; tells how to restore 'Paradox Menu' from major mode ID
-;; 	     '(paradox-menu-mode . paradox-menu-restore-desktop-buffer))
-
-;; ; this tells desktop to save the packages frame info, etc so it can restore it later.
-;; ; yes, package-menu-mode-hook.  
-;; (add-hook 'paradox-menu-mode-hook
-;; 	  (lambda () (setq desktop-save-buffer t))) ; buffer local to trigger saving
 
 
 
@@ -676,6 +652,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (pcre-mode)			        ; all perl regexps, all the time!
 (elpy-enable)				; snazzy python support, just in case
 (beacon-mode)				; cursor gets some attention as you scroll the buffer
+(global-display-line-numbers-mode)	; hmm... why did i only add this recently?
 ;(key-chord-mode)			; allow binding to chords until it screws up something :-)
 ;(lsp-treemacs-sync-mode)		; bi-directional sync between treemacs & lsp
 (desktop-save-mode)			; persist *everything*!  so wonderful!

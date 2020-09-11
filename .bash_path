@@ -8,6 +8,8 @@ function add_before { [[ -n "$1" && -d $1 ]] && notinpath $1 && PATH=$1:$PATH; }
 # local versions of std programs.  top-to-bottom is least-to-most specific.
 add_before $ARCHBIN
 add_before ~/.bin
+# pipx drops things here (like gdbgui)
+add_before ~/.local/bin
 
 # these are used less frequently.  top-to-bottom is most-to-least frequent.
 # empty
@@ -18,8 +20,6 @@ add_before /usr/local/scala/bin
 add_before /usr/local/spark/bin
 add_before /usr/local/visualvm/bin
 
-# pipx drops things here (like gdbgui)
-add_after ~/.local/bin
 # haskell's cabal leaves things here
 add_after ~/.cabal/bin
 
