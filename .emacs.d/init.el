@@ -475,6 +475,11 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
     :config
     (add-hook 'python-mode-hook 'importmagic-mode))
 
+(use-package git-grep
+    :commands (git-grep git-grep-repo)
+    :bind (("C-c g g" . git-grep)
+           ("C-c g r" . git-grep-repo)))
+
 
 
 ;;; lsp
@@ -653,6 +658,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (elpy-enable)				; snazzy python support, just in case
 (beacon-mode)				; cursor gets some attention as you scroll the buffer
 (global-display-line-numbers-mode)	; hmm... why did i only add this recently?
+(global-undo-tree-mode)			; try this
 ;(key-chord-mode)			; allow binding to chords until it screws up something :-)
 ;(lsp-treemacs-sync-mode)		; bi-directional sync between treemacs & lsp
 (desktop-save-mode)			; persist *everything*!  so wonderful!

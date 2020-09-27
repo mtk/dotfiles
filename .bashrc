@@ -57,32 +57,13 @@ alias ugt=update-git-trees
 alias x='xargs '		# the trailing space causes alias expansion in the first arg to xargs
 
 # renames
-alias bu='./Build'
-alias bin=builtin
-alias dc=dtrade-client
-alias dfrl=dropcopy-fills-from-raw-log
-alias ec=exsim-client
 alias ff=locate
-alias flf=fix-log-filter
 alias gc=google-chrome
 alias get=GET
-alias gp=gnuplot
-alias grep=egrep --color=auto
-alias is=insync
-alias ka=killall
-alias kss=kill-screen-sessions
-alias lds=ldapsearch
-alias mc=megacli
-alias npc=netpcm-client
-alias npac=netpcm-admin-client
-alias oc=omi-client
-alias oo=ooffice
-alias ooc=open-order-chains
+alias pm=podman
 alias rd=rmdir
 alias sns=snap-to-stanza
-alias sss=start-screen-session
 alias t=less
-alias tc=tick-client
 
 # real aliases
 [[ $TERM && $TERM != dumb ]] && alias b="echo -nE \"$(clear)\""
@@ -99,6 +80,7 @@ alias diff='diff --color=auto'
 alias du='du -h'
 alias dus='for i in *; do if [ -d $i ]; then du -ks $i; fi; done'
 alias ee='emacsclient -e'
+alias grep=egrep --color=auto
 alias ew='e $w'
 alias fills='for i in $f/$(date +%Y%m%d)-*-fills.csv; do echo $i; done'
 alias fs='fps fix | GREP_OPTIONS='' grep -v "[.]log" | sort -k8'
@@ -120,7 +102,6 @@ alias lc='wc -l'
 alias lpa='path $LD_LIBRARY_PATH'
 alias ls='ls -CFLh --color=auto'
 alias lsz='ls -Z'
-alias pm='perl Makefile.PL'
 alias manx='LESS="$LESS -X" man'
 alias md='mkdir -p'
 alias mi='mm install';

@@ -15,6 +15,7 @@ add_before ~/.local/bin
 # empty
 
 # scala stuff
+add_before ~/.local/share/coursier/bin
 add_before /usr/local/dotty/bin
 add_before /usr/local/scala/bin
 add_before /usr/local/spark/bin
