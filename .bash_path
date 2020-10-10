@@ -20,6 +20,7 @@ add_before /usr/local/dotty/bin
 add_before /usr/local/scala/bin
 add_before /usr/local/spark/bin
 add_before /usr/local/visualvm/bin
+add_before /usr/local/kafka/bin
 
 # haskell's cabal leaves things here
 add_after ~/.cabal/bin

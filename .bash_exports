@@ -17,6 +17,7 @@ auto_resume='substring'
 ARCH=$(arch)
 ARCHBIN=~/.bin/$ARCH
 #BW_PRINTER=mets
+BROWSER=google-chrome
 CDHISTFILE=~/.cdhist
 CDHISTSIZE=100
 CDPATH=.:~/proj:~/proj/git:~:/usr/local/src
