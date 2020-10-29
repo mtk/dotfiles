@@ -10,6 +10,7 @@
 .bash_git_prompt/
 .bash_history
 .bash_hosts
+.bash_protected
 .bin/aarch64/
 .cache/
 .ccache/
