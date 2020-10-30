@@ -209,7 +209,7 @@ for i in ~/.bash_functions/*; do autoload ${i##*/}; done
 for i in ~/.bash_builtins/*; do enable -f $i ${i##*/}; done
 
 # now decorate commands/functions/builtins with completion knowledge.
-# . ~/.bash_completion
+. ~/.bash_completion
 
 # anal, ain't i?
 unset i
