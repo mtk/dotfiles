@@ -30,7 +30,7 @@ ENSCRIPT='-C -E -G -H -r --color'
 ESHELL=bash
 EXA_COLORS="da=32"
 FPATH=~/.bash_functions:
-GITHUB_TOKEN="$(grep oauth_token ~/.config/hub | field 1)"
+GITHUB_TOKEN="$(grep oauth_token ~/.config/hub | ~/.bin/field 1)"
 # hostname does not seem to work w/v23 emacs??
 HISTCONTROL='ignorespace:erasedups'
 HISTIGNORE='\$\(@(split|type)*\)'

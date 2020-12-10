@@ -35,7 +35,7 @@ if ($help)
 
 my @desired =
 (
- 'new2',
+ 'new',
  'rh',
  'pi3',
  'thor',
