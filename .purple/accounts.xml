@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<account version='1.0'>
+	<account>
+		<protocol>prpl-yahoo</protocol>
+		<name>mtk0002003</name>
+		<password>Vashi0domuz</password>
+		<alias>Yahoo Me</alias>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes>
+					<attribute id='message' value='I&apos;m not here right now'/>
+				</attributes>
+			</status>
+			<status type='brb' name='Be Right Back' active='false'>
+				<attributes/>
+			</status>
+			<status type='busy' name='Busy' active='false'>
+				<attributes/>
+			</status>
+			<status type='notathome' name='Not at Home' active='false'>
+				<attributes/>
+			</status>
+			<status type='notatdesk' name='Not at Desk' active='false'>
+				<attributes/>
+			</status>
+			<status type='notinoffice' name='Not in Office' active='false'>
+				<attributes/>
+			</status>
+			<status type='onphone' name='On the Phone' active='false'>
+				<attributes/>
+			</status>
+			<status type='onvacation' name='On Vacation' active='false'>
+				<attributes/>
+			</status>
+			<status type='outtolunch' name='Out to Lunch' active='false'>
+				<attributes/>
+			</status>
+			<status type='steppedout' name='Stepped Out' active='false'>
+				<attributes/>
+			</status>
+			<status type='invisible' name='Invisible' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<settings>
+			<setting name='picture_expire' type='int'>0</setting>
+			<setting name='local_charset' type='string'>UTF-8</setting>
+			<setting name='xfer_host' type='string'>filetransfer.msg.yahoo.com</setting>
+			<setting name='xfer_port' type='int'>80</setting>
+			<setting name='proxy_ssl' type='bool'>0</setting>
+			<setting name='port' type='int'>5050</setting>
+			<setting name='check-mail' type='bool'>0</setting>
+			<setting name='ignore_invites' type='bool'>0</setting>
+			<setting name='picture_url'/>
+			<setting name='room_list_locale' type='string'>us</setting>
+			<setting name='use-global-buddyicon' type='bool'>1</setting>
+			<setting name='picture_checksum' type='int'>0</setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>1</setting>
+		</settings>
+		<proxy>
+			<type>none</type>
+		</proxy>
+		<current_error/>
+	</account>
+	<account>
+		<protocol>prpl-jabber</protocol>
+		<name>mark.t.kennedy@gmail.com/</name>
+		<password>Vashi0domuz</password>
+		<alias>Google Me</alias>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes/>
+			</status>
+			<status type='mood' name='Feeling' active='false'>
+				<attributes/>
+			</status>
+			<status type='freeforchat' name='Chatty' active='false'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes>
+					<attribute id='message' value='I&apos;m not here right now'/>
+				</attributes>
+			</status>
+			<status type='extended_away' name='Extended away' active='false'>
+				<attributes/>
+			</status>
+			<status type='dnd' name='Do Not Disturb' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<userinfo>&lt;vCard xmlns=&apos;vcard-temp&apos;&gt;&lt;FN&gt;Mark Kennedy&lt;/FN&gt;&lt;URL&gt;https://plus.google.com/+MarkKennedy0&lt;/URL&gt;&lt;PHOTO&gt;&lt;TYPE&gt;image/jpeg&lt;/TYPE&gt;&lt;BINVAL&gt;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&lt;/BINVAL&gt;&lt;/PHOTO&gt;&lt;/vCard&gt;</userinfo>
+		<settings>
+			<setting name='buddy_icon_timestamp' type='int'>0</setting>
+			<setting name='auth_plain_in_clear' type='bool'>0</setting>
+			<setting name='custom_smileys' type='bool'>1</setting>
+			<setting name='port' type='int'>5222</setting>
+			<setting name='ft_proxies' type='string'>proxy.eu.jabber.org</setting>
+			<setting name='check-mail' type='bool'>0</setting>
+			<setting name='connection_security' type='string'>require_tls</setting>
+			<setting name='use-global-buddyicon' type='bool'>1</setting>
+			<setting name='silence-suppression' type='bool'>0</setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>1</setting>
+		</settings>
+		<current_error/>
+	</account>
+	<account>
+		<protocol>prpl-aim</protocol>
+		<name>mtkatwork</name>
+		<password>Vashi0domuz</password>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes/>
+			</status>
+			<status type='free4chat' name='Free For Chat' active='false'>
+				<attributes/>
+			</status>
+			<status type='evil' name='Evil' active='false'>
+				<attributes/>
+			</status>
+			<status type='depression' name='Depression' active='false'>
+				<attributes/>
+			</status>
+			<status type='athome' name='At home' active='false'>
+				<attributes/>
+			</status>
+			<status type='atwork' name='At work' active='false'>
+				<attributes/>
+			</status>
+			<status type='lunch' name='Lunch' active='false'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes>
+					<attribute id='message' value='I&apos;m not here right now'/>
+				</attributes>
+			</status>
+			<status type='invisible' name='Invisible' active='false'>
+				<attributes/>
+			</status>
+			<status type='occupied' name='Occupied' active='false'>
+				<attributes/>
+			</status>
+			<status type='dnd' name='Do Not Disturb' active='false'>
+				<attributes/>
+			</status>
+			<status type='na' name='Not Available' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+			<status type='mood' name='Feeling' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<settings>
+			<setting name='encryption' type='string'>opportunistic_encryption</setting>
+			<setting name='buddy_icon_timestamp' type='int'>0</setting>
+			<setting name='allow_multiple_logins' type='bool'>1</setting>
+			<setting name='always_use_rv_proxy' type='bool'>0</setting>
+			<setting name='port' type='int'>5190</setting>
+			<setting name='check-mail' type='bool'>0</setting>
+			<setting name='use_clientlogin' type='bool'>1</setting>
+			<setting name='server' type='string'>slogin.oscar.aol.com</setting>
+			<setting name='use-global-buddyicon' type='bool'>1</setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>1</setting>
+		</settings>
+		<current_error/>
+	</account>
+	<account>
+		<protocol>prpl-jabber</protocol>
+		<name>philophiles@gmail.com/</name>
+		<password>T5uaggng0again</password>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes/>
+			</status>
+			<status type='mood' name='Feeling' active='false'>
+				<attributes/>
+			</status>
+			<status type='freeforchat' name='Chatty' active='false'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes/>
+			</status>
+			<status type='extended_away' name='Extended away' active='false'>
+				<attributes/>
+			</status>
+			<status type='dnd' name='Do Not Disturb' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<settings>
+			<setting name='buddy_icon_timestamp' type='int'>0</setting>
+			<setting name='auth_plain_in_clear' type='bool'>0</setting>
+			<setting name='custom_smileys' type='bool'>1</setting>
+			<setting name='port' type='int'>5222</setting>
+			<setting name='ft_proxies' type='string'>proxy.eu.jabber.org</setting>
+			<setting name='check-mail' type='bool'>0</setting>
+			<setting name='connection_security' type='string'>require_tls</setting>
+			<setting name='use-global-buddyicon' type='bool'>1</setting>
+			<setting name='silence-suppression' type='bool'>0</setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>0</setting>
+		</settings>
+		<current_error/>
+	</account>
+</account>

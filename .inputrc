@@ -17,7 +17,7 @@ $if bash
 # macros (better than ksh)
 
 "\ej": "\C-e 2>&1 | t\C-j"			# view stdout/stderr w/less
-"\eJ": "\C-e 2>&1 | tx\C-j"			# view stdout/stderr w/less, exit leaves content on screen
+"\eJ": "\C-e      | t\C-j"			# view stdout        w/less
 
 "\eh": "\C-e 2>&1 | halign 2>&1 -r | t\C-j"     # view stdout/stderr w/less through halign
 "\eH": "\C-e      | halign      -r | t\C-j"	# view stdout        w/less through halign

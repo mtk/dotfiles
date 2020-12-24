@@ -1,26 +1,21 @@
 [user]
 	name = Mark T. Kennedy
 	email = mtk@acm.org
-
 [core]
 	editor = emacsclient -c
 	autocrlf = input
 	pager = less
-
 [merge]
 	tool = kdiff3
 	conflictstyle = diff3
-
 [color]
 	ui = true
 	diff = auto
 	status = auto
 	branch = auto
-
 [color "status"]
        changed = bold red
        untracked = bold blue
-
 [alias]
 	ammend = commit --amend -C HEAD
 	br = branch
@@ -39,15 +34,14 @@
 	sl = stash list
 	sa = stash apply
 	ss = stash save
-	stashed = stash list --pretty=format:'%gd: %Cred%h%Creset %Cgreen[%ar]%Creset %s'
 	show-patch = format-patch --stdout -1
 	standup = log --since '1 day ago' --oneline
 	undo = reset --soft HEAD^
 
-	new = !bash -c 'git log $!@{1}..$!@{0} $@'
+	new = !bash -c 'git log $!@{1}..$!@{0} "$@"'
 
 	who = !bash -c 'git shortlog -s -- | sort -rn'
-	whois = !bash -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"'
+	whois = "!bash -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"'"
 	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
 
 	alias = "!bash -c '[[ $# = 2 ]] && git config --global alias.\"$1\" \"$2\" && exit 0 || echo \"usage: git alias <new alias> <original command>\" >&2 && exit 1' -"
@@ -56,40 +50,35 @@
 
 	empty-tree-sha1 = hash-object -t tree /dev/null
 
-	lgg = log --pretty=format:%C(yellow)%h\\ -%C(red)%d\\ %C(reset)%s%C(green)\\ (%cr)%C(blue)\\ [%cn] --graph
-	ldn = log --pretty=format:%C(yellow)%h\\ %C(green)%ad%C(reset)%C(red)%d\\ %C(reset)%s%C(bold\\ blue)\\ [%cn]%C(reset) --decorate --numstat
-	lds = log --pretty=format:%C(yellow)%h\\ -\\ %C(green)%ad%C(reset)\\ -\\ %C(blue)[%cn]%C(reset)\\ -\\%C(red)%d\\ %C(reset)%s%C(blue) --decorate --date=short
+	lgg = log --pretty=format:"%C(yellow)%h\\ -%C(red)%d\\ %C(reset)%s%C(green)\\ (%cr)%C(blue)\\ [%cn]" --graph
+	ldn = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%C(reset)%C(red)%d\\ %C(reset)%s%C(bold\\ blue)\\ [%cn]%C(reset)" --decorate --numstat
+	lds = log --pretty=format:"%C(yellow)%h\\ -\\ %C(green)%ad%C(reset)\\ -\\ %C(blue)[%cn]%C(reset)\\ -\\%C(red)%d\\ %C(reset)%s%C(blue)" --decorate --date=short
 	ld1 = log --oneline --abbrev-commit --all --graph --decorate --color
-        lme = !UN=$(git config user.name)&& git log --author=\"$UN\" --pretty=format:'%h %cd %s' --date=short
+        lme = !UN=$(git config user.name)&& git log --author="\"$UN\"" --pretty=format:'%h %cd %s' --date=short
 	lgp = log -p
 
 	dlc = diff --cached HEAD^
-	dr = "!f() { git diff $1^..$1; }; f"
-	diffr = "!f() { git diff $1^..$1; }; f"
+	dr = "!f() { git diff "$1"^.."$1"; }; f"
+	diffr = "!f() { git diff "$1"^.."$1"; }; f"
 	wdiff = diff --word-diff=plain
 
 	assume = update-index --assume-unchanged
 	unassume = update-index --no-assume-unchanged
-	assumed = !git ls-files -v | grep ^h | cut -c 3-
-	unassumeall = !git assumed | xargs git update-index --no-assume-unchanged
+	assumed = "!git ls-files -v | grep ^h | cut -c 3-"
+	unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
 
 	lasttag = describe --tags --abbrev=0
 	lt = describe --tags --abbrev=0
 	ggg = grep --break --heading --line-number
 	ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
-	bisect-oops = "!git bisect log | head -n -2 > /tmp/_bisect; git bisect replay /tmp/_bisect"
-
 [push]
 	default = simple
-
 [grep]
 	extendRegexp = true
 	lineNumber = true
-
 [pull]
 	rebase = true
-
-[rebase]
-	autoStash = true
 [init]
 	defaultBranch = main
+[rebase]
+	autoStash = true

@@ -76,7 +76,6 @@ alias cpanu="perl -MCPAN -e 'CPAN::Shell->install(CPAN::Shell->r)'"
 alias cx='chmod +x'
 alias d='gdb -q'
 alias da='date +"%a %h %d %Y %r"'
-alias diff='diff --color=auto'
 alias du='du -h'
 alias dus='for i in *; do if [ -d $i ]; then du -ks $i; fi; done'
 alias ee='emacsclient -e'

@@ -1,0 +1,10 @@
+[
+    "val v = 100",
+    "val s = \"hi there\"",
+    "s.sizeIs",
+    "val v = 100",
+    "val w = 200.5",
+    "v + w",
+    "v * w",
+    "v - w"
+]

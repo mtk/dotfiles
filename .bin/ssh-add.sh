@@ -1,2 +1,2 @@
-#!/bin/sh
-ssh-add -q < /dev/null
+#!/bin/bash
+ssh-add </dev/null

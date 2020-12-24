@@ -14,8 +14,6 @@ set history expansion
 
 set confirm off
 
-add-auto-load-safe-path /home/mtk/proj/git/emacs/src/.gdbinit
-
 define w
 where
 end
