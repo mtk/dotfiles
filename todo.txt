@@ -1,0 +1,40 @@
+- make ugt cache its output for post-command review
+
+- cd command not working on names with embedded -'s
+
+- cd function still croaks on trailing /
+
+- write tmux session script to create-or-repair-then-connect
+
+- port-knocking?
+
+- where is my blog??
+
+- look into using emacs use-package from github for emacs config
+
+- check out celluloid and smplayer instead of vlc
+
+- fd for find, exa for ls, bat (& batscripts for cat), and starship for prompt
+
+- jmh benchmarking
+
+- build & install bat-extras
+
+- use fzf, pspg, jq, ack, pssh, bat, xdotool, highlight, gomp, gping
+
+- vmware automatic export of guest file systems?
+
+- change emacs tabs/emacsclient interaction so that 'e foo bar baz'
+  either opens foo, bar, and baz as new tabs in existing window or
+  maybe in a new window (but still in tabs)
+
+- review key bindings.  e.g. find something to bind to C-z instead of
+  iconify.  and find open pfk keys.
+
+- emacs windmove bindings
+
+;; Local Variables:
+;; fill-column: 78
+;; eval: (auto-fill-mode)
+;; End:
+

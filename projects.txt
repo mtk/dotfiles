@@ -1,0 +1,10 @@
+- write a discord bot for noah's server
+- write a regexp library for scala/zio
+- write a twitter client using twitter4s (daniella s.)
+- write a scalaJS/zio web server for fullduplexradio
+- write a python version of halign
+
+;; Local Variables:
+;; fill-column: 78
+;; eval: (auto-fill-mode)
+;; End:

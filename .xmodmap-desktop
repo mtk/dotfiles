@@ -1,5 +1,5 @@
-skeysym  quoteleft = Escape     Escape
-kNNsseysym  Escape    = quoteleft  asciitilde
+keysym  quoteleft = Escape     Escape
+keysym  Escape    = quoteleft  asciitilde
  
 ! physical <= logical (bucky bits)
 keysym  Caps_Lock = Control_L Control_L

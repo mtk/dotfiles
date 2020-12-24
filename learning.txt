@@ -1,0 +1,12 @@
+podman/docker/toolbox
+postgres
+java flight recorder?
+java mission control?
+kde activities??
+kubernetes operators
+  - akka cluster
+  - jenkins
+  - postgres (there are three)
+kubernetes operator framework/operator SDK so can do:
+  operator-sdk new my-operator --repo github.com/myuser/my-operator
+gping
