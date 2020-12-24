@@ -658,7 +658,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (elpy-enable)				; snazzy python support, just in case
 (beacon-mode)				; cursor gets some attention as you scroll the buffer
 (global-display-line-numbers-mode)	; hmm... why did i only add this recently?
-(global-undo-tree-mode)			; try this
+;(global-undo-tree-mode)	        ; try this when no ESC ESC conflict
 ;(key-chord-mode)			; allow binding to chords until it screws up something :-)
 ;(lsp-treemacs-sync-mode)		; bi-directional sync between treemacs & lsp
 (desktop-save-mode)			; persist *everything*!  so wonderful!

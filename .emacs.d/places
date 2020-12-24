@@ -1,6 +1,9 @@
 ;;; -*- coding: utf-8; mode: lisp-data -*-
-(("/home/mtk/IdeaProjects/NewSimple12/src/main/scala/ScalaVersionExample.scala" . 147)
- ("/home/mtk/IdeaProjects/NewSimple12/build.sbt" . 749)
+(("/home/mtk/IdeaProjects/NewSimple12/build.sbt" . 749)
+ ("/home/mtk/learning.txt" . 302)
+ ("/home/mtk/IdeaProjects/NewSimple12/src/main/scala/ScalaVersionExample.scala" . 482)
+ ("/home/mtk/todo.txt" . 498)
+ ("/home/mtk/IdeaProjects/ZIO-Playground/src/main/scala/SimpleExample.scala" . 748)
  ("/home/mtk/.emacs.d/elpa/dash-20201223.1755/dash-autoloads.el" . 2412)
  ("/home/mtk/.emacs.d/elpa/flycheck-20201223.2144/flycheck-autoloads.el" . 10998)
  ("/home/mtk/.emacs.d/elpa/key-chord-20201222.2030/key-chord-autoloads.el" . 2804)
