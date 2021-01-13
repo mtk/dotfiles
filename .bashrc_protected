@@ -1,9 +1,0 @@
-# .bashrc_protected
-c=~/proj/cinctive
-alias awsc='aws --profile cinctive'
-alias awsv='aws --profile valens'
-
-# Local Variables:
-# mode: sh
-# End:
-
