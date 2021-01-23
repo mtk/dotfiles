@@ -83,14 +83,14 @@ inet text_format all \t$a\f $l\N$A\f $L
 inet update_interval all 1
 net enables enp0s25 1 1 0
 net enables ens33 1 1 0
-net chart_config ens33 40 200000 0 1 0 0 : 0 0 0 0 500 : 0 0 0 0 500
+net chart_config ens33 40 2000000 0 1 0 0 : 0 0 0 0 500 : 0 0 0 0 500
 net enables lo 0 1 0
+net enables virbr0-nic 1 1 0
 net enables virbr0 1 1 0
 net chart_config virbr0 40 10000 0 1 0 0 : 0 0 0 0 500 : 0 0 0 0 500
-net enables virbr0-nic 1 1 0
 net enables wlp3s0 1 1 0
 net chart_config wlp3s0 40 300000 0 1 0 0 : 0 0 0 0 500 : 0 0 0 0 500
-net timer_enabled 1
+net timer_enabled 0
 net timer_seconds 1
 net timer_iface none
 net timer_on 

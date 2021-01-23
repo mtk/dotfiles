@@ -119,3 +119,4 @@ g/
 proj/
 tmp/
 *.txt
+.bashrc_protected .bashrc_protected
