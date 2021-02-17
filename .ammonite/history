@@ -6,5 +6,11 @@
     "val w = 200.5",
     "v + w",
     "v * w",
-    "v - w"
+    "v - w",
+    "val v = 100",
+    "val j = \"hi\"",
+    "v + j",
+    "System.getenv()",
+    "res0(\"PATH\")",
+    "res0.get(\"PATH\")"
 ]
