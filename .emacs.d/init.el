@@ -126,14 +126,14 @@
 (define-key global-map [S-s-right] 'tab-bar-move-tab)
 
 ;; try some built-in help alternatives
-(define-key help-map "f" 'helpful-callable)
-(define-key help-map "k" 'helpful-key)
-(define-key help-map "v" 'helpful-variable)
-(define-key help-map "C" 'helpful-command) ; don't need coding system help
-(define-key help-map "F" 'helpful-function) ; has link to info node in output anyway
-(global-set-key (kbd "C-c C-d") 'helpful-at-point) ; they claim it is useful for lisps?
-(require 'helpful)
-(define-key helpful-mode-map " " 'quit-window)	   ; this brings back such memories!
+;(define-key help-map "f" 'helpful-callable)
+;(define-key help-map "k" 'helpful-key)
+;(define-key help-map "v" 'helpful-variable)
+;(define-key help-map "C" 'helpful-command) ; don't need coding system help
+;(define-key help-map "F" 'helpful-function) ; has link to info node in output anyway
+;(global-set-key (kbd "C-c C-d") 'helpful-at-point) ; they claim it is useful for lisps?
+;(require 'helpful)
+;(define-key helpful-mode-map " " 'quit-window)	   ; this brings back such memories!
 
 ;; no bindings for these?
 ;(define-key help-map "" 'helpful-symbol)
@@ -258,6 +258,8 @@
  read-process-output-max (* 1024 1024)	; for LSP
 
  custom-file "~/.emacs.d/custom.el"
+
+ ediff-window-setup-function 'ediff-setup-windows-plain
 
 )
 

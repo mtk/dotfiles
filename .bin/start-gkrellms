@@ -39,6 +39,7 @@ my @desired =
  'rh',
  'pi3',
  'thor',
+ 'x1',
 );
 
 my $pinger = Net::Ping->new();
@@ -83,7 +84,8 @@ foreach my $desired (@desired)
  # l1 hack because we can't reach it directly
   unless ($live{$desired} or ($desired_host ne 'l1' and not scalar ($pinger->ping ($desired_host, 2))))
     {
-      my @cmd = $desired eq $localhost ? ('gkrellm') : ('ssh', '-f', $desired, 'gkrellm');
+      # gkrellm -f adds hostname to config file to have one local (no hostname) and one remote config
+      my @cmd = $desired eq $localhost ? ('gkrellm') : ('ssh', '-f', $desired, 'gkrellm', '-f');
 
       print "@cmd\n" if $verbose or $dont_execute or $debug;
 

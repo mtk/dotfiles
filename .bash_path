@@ -10,10 +10,7 @@ add_before $ARCHBIN
 add_before ~/.bin
 # pipx drops things here (like gdbgui)
 add_before ~/.local/bin
-
-# these are used less frequently.  top-to-bottom is most-to-least frequent.
-add_after /home/mtk/.local/share/coursier/bin
-add_before /usr/local/scala/bin
+add_before /home/mtk/.local/share/coursier/bin
 
 # always search connected dir last.  some may consider this a security violation.
 add_after .

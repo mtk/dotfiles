@@ -20,7 +20,7 @@
 
 - build & install bat-extras
 
-- use fzf, pspg, jq, ack, pssh, bat, xdotool, highlight, gomp, gping, ncdu
+- use fzf, pspg, jq, ack, pssh, bat, xdotool, highlight, gomp, gping, ncdu, mtr
 
 - vmware automatic export of guest file systems?
 
