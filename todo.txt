@@ -1,3 +1,5 @@
+- company-idle-delay from 0.5 to 0.1?
+
 - make ugt cache its output for post-command review
 
 - cd command not working on names with embedded -'s
@@ -21,6 +23,7 @@
 - build & install bat-extras
 
 - use fzf, pspg, jq, ack, pssh, bat, xdotool, highlight, gomp, gping, ncdu, mtr
+(for fzf, https://github.com/junegunn/fzf/wiki/examples)
 
 - vmware automatic export of guest file systems?
 

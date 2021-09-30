@@ -88,11 +88,11 @@ cd()
 			builtin cd $1
 		fi
 		;;
-	*) # cd to new dir)
-		# subsume cdable vars and let 'cd VAR/sub1/sub2' work.
-		# could be easily changed to replace any component
-		# which has a matching env var.
-		# used to be simple but recent bash version made ${!foo} fail with an error when foo has no value
+	*) # maybe cd to new dir
+	   # subsume cdable vars and let 'cd VAR/sub1/sub2' work.
+	   # could be easily changed to replace any component
+	   # which has a matching env var.
+	   # used to be simple but recent bash version made ${!foo} fail with an error when foo has no value
 	    if [[ $1 != /* ]]; then
 		local -a parts
 		parts=($(split '/' $1))
@@ -104,6 +104,10 @@ cd()
 		    fi 
 		    set -- $(join '/' ${parts[*]})
 		fi
+	    fi
+
+	    if [[ -f "$1" ]]; then
+		set -- $(dp "$1")
 	    fi
 
             builtin cd $1

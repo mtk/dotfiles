@@ -38,11 +38,12 @@ my @desired =
  'new',
  'rh',
  'pi3',
+ 'pi4',
  'thor',
  'x1',
 );
 
-my $pinger = Net::Ping->new();
+my $pinger = Net::Ping->new('external');
 
 my %live;
 my $t = new Proc::ProcessTable;
