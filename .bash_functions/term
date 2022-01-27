@@ -6,7 +6,8 @@ function term
 	stty -a
     else
 	TERM=$1
-	stty sane erase ^h
+#	stty sane erase ^h
+	stty sane erase ^?
     fi
 }
 
