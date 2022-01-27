@@ -24,3 +24,5 @@ end
 
 # dir <DIR> to find source
 # set scheduler-locking step (friendlier for threads)
+
+ add-auto-load-safe-path /home/mtk/proj/git/emacs/src/.gdbinit
