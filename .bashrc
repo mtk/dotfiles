@@ -57,7 +57,8 @@ alias ugt=update-git-trees
 alias x='xargs '		# the trailing space causes alias expansion in the first arg to xargs
 
 # renames
-alias ff=locate
+#alias ff=locate
+alias ff=plocate
 alias gc=google-chrome
 alias get=GET
 alias pm=podman
@@ -122,6 +123,7 @@ alias pc='perl -cw'
 alias pf='perldoc -f'
 alias plj='path $(latest-jars)'
 alias psc='ps xawf -eo pid,user,cgroup,args'
+alias pst='pstree -T -c -l -a'
 alias qed='while read x; do say $x; done < proj/doc/quotes-from-ed.txt'
 alias qrl='rlog -L -R -l RCS/*'
 alias r='fc -s'

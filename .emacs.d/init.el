@@ -5,20 +5,17 @@
 ;;; this used to be too large to use directly and i went to great
 ;;; lengths to "dump" my own emacs (emacs is a "dumped" lisp
 ;;; environment).  but then i switched to emacsserver which means i
-;;; started emacs infrequently.  but now i've fallen back to the
-;;; traditional style which is simpler since startup is fast enough
-;;; and i can use emacsclient to launch new windows.
-
-;; everyone says they're here :-)
-(defadvice load (before debug-log activate)
-  (message "Advice: now loading: '%s'" (ad-get-arg 0)))
+;;; started emacs infrequently.  and with the advent of native
+;;; compilation, this is a winning strategy.
+;;; 1/22/22
 
 
 
 ;;; requires
+
 (require 'cperl-mode)
 
-;; old favorites, some very old :-)
+;; old favorites, some very old, from the net :-)
 (require 'page-menu)
 (require 'trim)
 
@@ -27,27 +24,31 @@
 ;;; package support
 
 (require 'package)
-;(add-to-list '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 
 
 ;;; key bindings
 
-;; everyone assumes Alt_L is Alt, so using xmodmap to change its
-;; keysym to Meta_L is a losing proposition.  Instead, i make Alt_R be
-;; Meta_R and then these two emacs variable bindings swap Alt and Meta
-;; since Alt_L is much better as meta.
-(setq x-meta-keysym 'alt)
+;; too many things have *keycap* Alt bound to functionality, not
+;; *keysym* Alt (e.g. intellij).  so remapping *keycap* Alt to Meta
+;; borks things outside of emacs big time.  these two neat emacs
+;; options work around that.  note that i use xmodmap to make Alt_R be
+;; Meta for this exercise and leave Alt_L as Alt.  then these options
+;; swap them for emacs.  i do all of this because i want C-M to be all
+;; on my left hand.
 (setq x-alt-keysym 'meta)
+(setq x-meta-keysym 'alt)
+
+;; TODO - switch from define-key to keymap-set.  note that strings
+;; like "\C-w" change to "C-w".
 
 ;; plain & control characters
 (define-key global-map "\C-w" 'backward-kill-word) ; normal delete word
 
 ;; function keys
 
-; f1 - alternate to ^H (help).  needed?
+; f1 - alternate to ^H (help).  needed?  should i free up ^H?
 (define-key global-map [f2] 'fit-frame)
 ; f3 - kmacro start-or-insert-counter
 ; f4 - kmacro end or call macro
@@ -94,7 +95,7 @@
 (define-key esc-map "n" 'down-comment-lines) ; hard to believe this was missing
 (define-key esc-map "p" 'up-comment-lines)   ; this too
 (define-key esc-map "o" 'goto-top-or-bottom) ; just a wrapper function
-(define-key esc-map "s" 'center-line) ; manual says this, but not true?
+(define-key esc-map "s" 'center-line) ; *horizontally*
 (define-key esc-map [?\e] 'teco:command)
 
 ;; make a new prefix char -
@@ -125,28 +126,15 @@
 (define-key global-map [S-s-left]  'tab-bar-move-tab-left)
 (define-key global-map [S-s-right] 'tab-bar-move-tab)
 
-;; try some built-in help alternatives
-;(define-key help-map "f" 'helpful-callable)
-;(define-key help-map "k" 'helpful-key)
-;(define-key help-map "v" 'helpful-variable)
-;(define-key help-map "C" 'helpful-command) ; don't need coding system help
-;(define-key help-map "F" 'helpful-function) ; has link to info node in output anyway
-;(global-set-key (kbd "C-c C-d") 'helpful-at-point) ; they claim it is useful for lisps?
-;(require 'helpful)
-;(define-key helpful-mode-map " " 'quit-window)	   ; this brings back such memories!
-
-;; no bindings for these?
-;(define-key help-map "" 'helpful-symbol)
-;(define-key help-map "" 'helpful-macro)
-
 (define-key global-map (kbd "s-t") 'treemacs)
 
 
 
 ;;; properties
 
-(put 'scroll-left 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
+;; still needed?
+;;(put 'scroll-left 'disabled nil)
+;;(put 'narrow-to-region 'disabled nil)
 
 
 
@@ -252,14 +240,21 @@
  ;; tab bar
  tab-bar-separator "   "		; easier to see them
 
- ;; source code indexer for lsp-mode & friends
- ccls-executable "/bin/ccls"
-
- read-process-output-max (* 1024 1024)	; for LSP
+ ;; for LSP
+ read-process-output-max (* 1024 1024)
 
  custom-file "~/.emacs.d/custom.el"
 
  ediff-window-setup-function 'ediff-setup-windows-plain
+
+ force-load-messages t			; gets everything even before loading init.el
+ package-native-compile t		; in between force-compile & lazy
+
+ ;; to send email, e.g. bug reports, directly from emacs.
+ send-mail-function 'smtpmail-send-it
+ message-send-mail-function 'smtpmail-send-it
+ smtpmail-smtp-server "smtp.gmail.com"
+ smtpmail-smtp-service 587
 
 )
 
@@ -285,7 +280,6 @@
 ;; didn't work for primitives implemented in C, but now they
 ;; do it right (just for this function!).
 (fset 'yes-or-no-p (symbol-function 'y-or-n-p))
-; (defalias 'yes-or-n-p 'y-or-n-p)?
 
 ;; just a wrapper...
 (defun goto-top-or-bottom (arg)
@@ -437,6 +431,18 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
   (interactive)
   (tab-bar-move-tab -1))
 
+;;; so if *info* exists, we make a new frame and run info in it.
+;;; if *info* doesn't exist, we just run info in current frame/buffer??
+(defun my-info (node)
+  (let ((info-buffer (get-buffer "*info*")))
+    (if info-buffer
+	(progn
+          (set-buffer info-buffer)
+          (let ((new-info-buffer (clone-buffer nil t)))
+            (switch-to-buffer-other-frame new-info-buffer)
+            (info node new-info-buffer)))
+	(info node))))
+
 
 
 ;;; use-package invocations
@@ -487,10 +493,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 
 ;;; lsp
 
-; TODO - figure this out
-;(setq lsp-keymap-prefix (kbd "s-q"))
-;(global-set-key (kbd "s-q") lsp-command-map)
-
 ;; lsp mode for scala w/metals
 
 ;; Enable defer and ensure by default for use-package
@@ -523,11 +525,12 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (setq lsp-keymap-prefix "s-s")
 
 (use-package lsp-mode
-  ;; Optional - enable lsp-mode automatically in scala files
-  :hook  (scala-mode . lsp)
-         (lsp-mode . lsp-lens-mode)
-         (lsp-mode . lsp-enable-which-key-integration)
-  :config (setq lsp-prefer-flymake nil))
+    :init (setq lsp-keymap-prefix "s-s")
+    :hook (scala-mode . lsp)
+          (lsp-mode . company-mode)
+          (lsp-mode . lsp-lens-mode)
+	  (lsp-mode . lsp-enable-which-key-integration)
+	  (lsp-after-initialize . (lambda () (keymap-local-set "<tab-bar> <mouse-movement>" #'ignore) (setq my-marker-var 1230))))
 
 ;; Add metals backend for scala lsp-mode
 (use-package lsp-metals)
@@ -557,16 +560,17 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 ; (lsp-metals-treeview-mode)
 ; (setq lsp-metals-treeview-show-when-views-received t))
 
-;; for lsp-java
-(use-package projectile)
-(use-package flycheck)
+;; for lsp-java too
+(use-package projectile
+    :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
+
 (eval-after-load 'flycheck
   '(flycheck-package-setup))
-(use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
-  :config (setq lsp-completion-enable-additional-text-edit nil))
+
 (use-package hydra)
 (use-package company)
-(use-package lsp-ui)
+;(use-package lsp-ui)
 (use-package which-key :config (which-key-mode))
 (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
 (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
@@ -656,12 +660,10 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (winner-mode)		                ; winner-undo pops down help & friends sanely
 (msb-mode)				; better mouse buffer menu
 (dynamic-completion-mode)		; [new]
-(prettify-symbols-mode)
+(global-prettify-symbols-mode)
 (pcre-mode)			        ; all perl regexps, all the time!
-(elpy-enable)				; snazzy python support, just in case
 (beacon-mode)				; cursor gets some attention as you scroll the buffer
 (global-display-line-numbers-mode)	; hmm... why did i only add this recently?
-;(global-undo-tree-mode)	        ; try this when no ESC ESC conflict
 ;(key-chord-mode)			; allow binding to chords until it screws up something :-)
 ;(lsp-treemacs-sync-mode)		; bi-directional sync between treemacs & lsp
 (desktop-save-mode)			; persist *everything*!  so wonderful!
