@@ -1,13 +1,15 @@
 ;; mtks-emacs-init --- what's to summarize??
 
 ;;; Commentary:
+;;; 1/30/22
 ;;;
 ;;; this used to be too large to use directly and i went to great
 ;;; lengths to "dump" my own emacs (emacs is a "dumped" lisp
 ;;; environment).  but then i switched to emacsserver which means i
 ;;; started emacs infrequently.  and with the advent of native
-;;; compilation, this is a winning strategy.
-;;; 1/22/22
+;;; compilation, this is a winning strategy since emacs starts quickly
+;;; again.
+;;;
 
 
 
@@ -15,7 +17,7 @@
 
 (require 'cperl-mode)
 
-;; old favorites, some very old, from the net :-)
+;; old favorites, some very old, from the net.
 (require 'page-menu)
 (require 'trim)
 
@@ -34,9 +36,10 @@
 ;; *keysym* Alt (e.g. intellij).  so remapping *keycap* Alt to Meta
 ;; borks things outside of emacs big time.  these two neat emacs
 ;; options work around that.  note that i use xmodmap to make Alt_R be
-;; Meta for this exercise and leave Alt_L as Alt.  then these options
-;; swap them for emacs.  i do all of this because i want C-M to be all
-;; on my left hand.
+;; Meta for this exercise and leave Alt_L as Alt.  that keeps tools
+;; like intellij happy.  then these two options swap them just for
+;; emacs.  i do all of this because i want C-M to be completely on my
+;; left hand.
 (setq x-alt-keysym 'meta)
 (setq x-meta-keysym 'alt)
 
@@ -433,6 +436,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 
 ;;; so if *info* exists, we make a new frame and run info in it.
 ;;; if *info* doesn't exist, we just run info in current frame/buffer??
+;;; this is used by my bash function 'e' which is an emacsclient wrapper.
 (defun my-info (node)
   (let ((info-buffer (get-buffer "*info*")))
     (if info-buffer
@@ -489,17 +493,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
     :bind (("C-c g g" . git-grep)
            ("C-c g r" . git-grep-repo)))
 
-
-
-;;; lsp
-
-;; lsp mode for scala w/metals
-
-;; Enable defer and ensure by default for use-package
-;; Keep auto-save/backup files separate from source code:  https://github.com/scalameta/metals/issues/1027
-(setq backup-directory-alist `((".*" . ,temporary-file-directory))
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-
 ;; Enable scala-mode for highlighting, indentation and motion commands
 (use-package scala-mode
   :mode "\\.s\\(cala\\|bt\\)$")
@@ -522,6 +515,40 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (use-package flycheck)
 ;  :init (global-flycheck-mode))
 
+(eval-after-load 'flycheck
+  '(flycheck-package-setup))
+
+(use-package projectile
+    :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
+
+(use-package hydra)
+(use-package company)
+(use-package which-key :config (which-key-mode))
+
+(use-package python
+  :delight "π "
+  :bind (("M-[" . python-nav-backward-block)
+         ("M-]" . python-nav-forward-block))
+  :preface
+  (defun python-remove-unused-imports()
+    "Removes unused imports and unused variables with autoflake."
+    (interactive)
+    (if (executable-find "autoflake")
+        (progn
+          (shell-command (format "autoflake --remove-all-unused-imports -i %s"
+                                 (shell-quote-argument (buffer-file-name))))
+          (revert-buffer t t t))
+      (warn "python-mode: Cannot find autoflake executable."))))
+
+
+
+;;; lsp
+
+;; Keep auto-save/backup files separate from source code:  https://github.com/scalameta/metals/issues/1027
+(setq backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+
 (setq lsp-keymap-prefix "s-s")
 
 (use-package lsp-mode
@@ -530,14 +557,14 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
           (lsp-mode . company-mode)
           (lsp-mode . lsp-lens-mode)
 	  (lsp-mode . lsp-enable-which-key-integration)
-	  (lsp-after-initialize . (lambda () (keymap-local-set "<tab-bar> <mouse-movement>" #'ignore) (setq my-marker-var 1230))))
+	  (lsp-mode . (lambda () (keymap-local-set "<tab-bar> <mouse-movement>" #'ignore) (setq my-marker-var 1230))))
+;	  (lsp-after-initialize . (lambda () (keymap-local-set "<tab-bar> <mouse-movement>" #'ignore) (setq my-marker-var 1230))))
 
 ;; Add metals backend for scala lsp-mode
 (use-package lsp-metals)
 
 ;; Enable nice rendering of documentation on hover
 (use-package lsp-ui :commands lsp-ui-mode)
-;(use-package lsp-treemacs)
 
 ;; we turn it on only for prog modes
 ;;(use-package yasnippet)
@@ -561,17 +588,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 ; (setq lsp-metals-treeview-show-when-views-received t))
 
 ;; for lsp-java too
-(use-package projectile
-    :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
-
-(eval-after-load 'flycheck
-  '(flycheck-package-setup))
-
-(use-package hydra)
-(use-package company)
-;(use-package lsp-ui)
-(use-package which-key :config (which-key-mode))
 (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
 (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
 (use-package dap-java :ensure nil);
@@ -581,21 +597,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (use-package lsp-pyright
   :ensure t
   :hook (python-mode . (lambda () (require 'lsp-pyright) (lsp))))
-
-(use-package python
-  :delight "π "
-  :bind (("M-[" . python-nav-backward-block)
-         ("M-]" . python-nav-forward-block))
-  :preface
-  (defun python-remove-unused-imports()
-    "Removes unused imports and unused variables with autoflake."
-    (interactive)
-    (if (executable-find "autoflake")
-        (progn
-          (shell-command (format "autoflake --remove-all-unused-imports -i %s"
-                                 (shell-quote-argument (buffer-file-name))))
-          (revert-buffer t t t))
-      (warn "python-mode: Cannot find autoflake executable."))))
 
 
 
@@ -617,7 +618,8 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 	    (flycheck-mode)		; syntax checking
 	    (hlinum-activate)		; highlight current line number
 	    (electric-indent-mode)	; automatic re-indenting
-	    (indent-guide-mode)		; show some kind of indentation helper?
+            ;breaks my emacsclient wrapper bash function 'e'???
+	    ;(indent-guide-mode)	; show some kind of indentation helper?
 	    (setq comment-column 40)
 	    (local-set-key [tab] 'hippie-expand))) ; not sure if this is best with lsp mode?
 
@@ -657,7 +659,8 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (size-indication-mode)			; put file size in modeline
 (auto-compression-mode)			; handle *.gz and *.Z
 (savehist-mode)				; persist minibuffer history
-(winner-mode)		                ; winner-undo pops down help & friends sanely
+;not sure i use it and may break my emacsclient bash function wrapper 'e'?
+;(winner-mode)		                ; winner-undo pops down help & friends sanely
 (msb-mode)				; better mouse buffer menu
 (dynamic-completion-mode)		; [new]
 (global-prettify-symbols-mode)
@@ -665,7 +668,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (beacon-mode)				; cursor gets some attention as you scroll the buffer
 (global-display-line-numbers-mode)	; hmm... why did i only add this recently?
 ;(key-chord-mode)			; allow binding to chords until it screws up something :-)
-;(lsp-treemacs-sync-mode)		; bi-directional sync between treemacs & lsp
 (desktop-save-mode)			; persist *everything*!  so wonderful!
 
 (load custom-file 'noerror)		; separate custom file

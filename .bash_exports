@@ -56,32 +56,23 @@ SPARK_HOME=/usr/local/spark
 CVSEDITOR=$EDITOR
 FCEDIT=$EDITOR
 
-# x windows-specific. yeah, i'm using *six*
-# different screens.  
-D0=d1:0
-D1=md10:0
-#D2=
-#D3=
-#D4=
-#D5=
+# windows desktop X server
+XWD=w10:0
 
 # local screen shortcuts
 LD0=':0.0'
 LD1=':0.1'
 
 ## abbreviations (cdable_vars is ON)
-b=/run/media/mtk/backup
 bb=~/.bash_builtins
 bf=~/.bash_functions
-e=/usr/local/share/emacs/site-lisp
-f=/cifs/newfills/raw
+e=~/.emacs.d
 h=/home/mtk
 in=/usr/include
 ins=/usr/include/sys
-is=/home/mtk/Insync/mark.t.kennedy@gmail.com
-md="/cifs/md10/Documents and Settings/mkennedy/Desktop"
+md=/smb/w10/C/Users/mtk/Desktop
 n=/dev/null
-r=/net/thunder/home/mtk
+x=/net/x1/home/mtk
 
 # local hacking
 l=/usr/local
