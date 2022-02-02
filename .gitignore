@@ -119,4 +119,7 @@ g/
 proj/
 tmp/
 *.txt
-.bashrc_protected .bashrc_protected
+.bashrc_protected
+.pdm.toml
+__pypackages__/
+

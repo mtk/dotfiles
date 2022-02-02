@@ -495,7 +495,8 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 
 ;; Enable scala-mode for highlighting, indentation and motion commands
 (use-package scala-mode
-  :mode "\\.s\\(cala\\|bt\\)$")
+  :mode        "\\.s\\(cala\\|bt\\)$"
+  :interpreter ("scala" . scala-mode))
 
 ;; Enable sbt mode for executing sbt commands
 (use-package sbt-mode
@@ -523,7 +524,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map))
 
 (use-package hydra)
-(use-package company)
+
 (use-package which-key :config (which-key-mode))
 
 (use-package python
@@ -557,6 +558,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
           (lsp-mode . company-mode)
           (lsp-mode . lsp-lens-mode)
 	  (lsp-mode . lsp-enable-which-key-integration)
+;	  (lsp-mode . lsp-treemacs-symbols)
 	  (lsp-mode . (lambda () (keymap-local-set "<tab-bar> <mouse-movement>" #'ignore) (setq my-marker-var 1230))))
 ;	  (lsp-after-initialize . (lambda () (keymap-local-set "<tab-bar> <mouse-movement>" #'ignore) (setq my-marker-var 1230))))
 
@@ -564,13 +566,21 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (use-package lsp-metals)
 
 ;; Enable nice rendering of documentation on hover
-(use-package lsp-ui :commands lsp-ui-mode)
+;; lsp activates it by default.
+(use-package lsp-ui
+  :config (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+          (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
 ;; we turn it on only for prog modes
-;;(use-package yasnippet)
+(use-package yasnippet)
 
 ;; Add company-lsp backend for metals
-;(use-package company-lsp)
+(use-package company-lsp)
+
+(use-package company
+  :hook (scala-mode . company-mode)
+  :config
+  (setq lsp-completion-provider :capf))
 
 ;; Posframe is a pop-up tool that must be manually installed for dap-mode
 (use-package posframe)
@@ -581,17 +591,15 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
   (lsp-mode . dap-mode)
   (lsp-mode . dap-ui-mode))
 
-;; Use the Tree View Protocol for viewing the project structure and triggering compilation
-;(use-package lsp-treemacs
-; :config
-; (lsp-metals-treeview-mode)
-; (setq lsp-metals-treeview-show-when-views-received t))
-
 ;; for lsp-java too
 (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
 (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
 (use-package dap-java :ensure nil);
+
+;; Use the Tree View Protocol for viewing the project structure and triggering compilation
 (use-package lsp-treemacs)
+;;  :config (lsp-metals-treeview-mode)
+;;          (setq lsp-metals-treeview-show-when-views-received t))
 
 ;; for lsp-python
 (use-package lsp-pyright
