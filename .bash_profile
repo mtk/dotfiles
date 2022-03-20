@@ -12,3 +12,7 @@
 # run the command ONCE 'once' :-). SIGINT's trap to interactive shell
 # afterwards, leaving $ONCE set with the command string.
 [[ $ONCE ]] && exec $BASH -i -c "once $ONCE"
+
+export PATH="$PATH:/home/mtk/proj/git/scala-cli/out/integration/jvm/tmpDirBase.dest/working-dir/run-1367775568/test-76/.scala-build/scala-cli"
+
+export PATH="$PATH:/home/mtk/proj/git/scala-cli/out/integration/jvm/tmpDirBase.dest/working-dir/run-1581174866/test-78/.scala-build/scala-cli"

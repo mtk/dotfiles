@@ -137,7 +137,6 @@
 
 ;; still needed?
 ;;(put 'scroll-left 'disabled nil)
-;;(put 'narrow-to-region 'disabled nil)
 
 
 
@@ -691,3 +690,4 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 ;; comment-start: "; "
 ;; End:
 
+(put 'narrow-to-region 'disabled nil)

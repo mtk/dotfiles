@@ -48,12 +48,11 @@ alias pa=path
 alias pi=ping
 alias py=python
 alias s=sort
-alias sk=start-gkrellms
+alias sc=scala-cli
 alias sq=squeeze
 alias tra=traceroute
 alias ty=type
 alias u=uniq
-alias ugt=update-git-trees
 alias x='xargs '		# the trailing space causes alias expansion in the first arg to xargs
 
 # renames
@@ -63,8 +62,10 @@ alias gc=google-chrome
 alias get=GET
 alias pm=podman
 alias rd=rmdir
+alias sk=start-gkrellms
 alias sns=snap-to-stanza
 alias t=less
+alias ugt=update-git-trees
 
 # real aliases
 [[ $TERM && $TERM != dumb ]] && alias b="echo -nE \"$(clear)\""
