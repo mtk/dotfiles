@@ -1,0 +1,19 @@
+#!/bin/bash
+echo doing git/dotty...
+cd dotty
+git pull
+echo doing git scala-cli...
+cd scala-cli/scala-cli
+git pull
+echo doing git scala-cli for raw proj...
+cd scala-cli/raw-args-feature
+git pull
+echo doing asjad scala-cli...
+cd scala-cli/801
+git pull
+echo doing idea dotty...
+cd IdeaProjects/dotty
+git pull
+echo doing idea scala-cli...
+cd IdeaProjects/scala-cli
+git pull
