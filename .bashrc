@@ -66,6 +66,7 @@ alias sk=start-gkrellms
 alias sns=snap-to-stanza
 alias t=less
 alias ugt=update-git-trees
+alias ugpt=update-git-project-trees
 
 # real aliases
 [[ $TERM && $TERM != dumb ]] && alias b="echo -nE \"$(clear)\""
@@ -89,7 +90,7 @@ alias fgr='GREP_OPTIONS="" fgrep'
 alias gi='grep -i'
 alias gl='grep -l'
 alias gil='grep -il'
-alias gn='grpe -n'
+alias gn='grep -n'
 alias gs='git status'
 alias hg='GIT_DIR=~/proj/git/dotfiles/.git GIT_WORK_TREE=~ git'
 alias hgs='hg status -uno'
