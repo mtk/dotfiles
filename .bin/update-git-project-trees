@@ -1,19 +1,27 @@
 #!/bin/bash
-echo doing git/dotty...
-cd dotty
+echo doing git dotty...
+echo
+cd ~/proj/git/dotty
 git pull
+echo
 echo doing git scala-cli...
-cd scala-cli/scala-cli
+echo
+cd ~/proj/scala-cli/scala-cli
 git pull
+echo
 echo doing git scala-cli for raw proj...
-cd scala-cli/raw-args-feature
+echo
+cd ~/proj/scala-cli/raw-args-feature
 git pull
+echo
 echo doing asjad scala-cli...
-cd scala-cli/801
+cd scala-cli/doctor
 git pull
+echo
 echo doing idea dotty...
 cd IdeaProjects/dotty
 git pull
+echo
 echo doing idea scala-cli...
 cd IdeaProjects/scala-cli
 git pull

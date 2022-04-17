@@ -18,6 +18,7 @@
    '("\\*scratch\\*" "\\*Messages\\*" "\\*server\\*" "\\*tramp/.+\\*" "\\*Warnings\\*" "\\*Packages\\*"))
  '(desktop-globals-to-save
    '(desktop-missing-file-warning tags-file-name tags-table-list search-ring regexp-search-ring register-alist file-name-history kill-ring))
+ '(desktop-load-locked-desktop 'check-pid)
  '(desktop-save t)
  '(desktop-save-mode t)
  '(fci-rule-color "#eee8d5")
@@ -34,9 +35,10 @@
  '(magit-repository-directories
    '(("/home/mtk/IdeaProjects" . 1)
      ("/home/mtk/proj/git" . 1)))
+ '(next-error-message-highlight 'keep)
  '(on-screen-global-mode t)
  '(package-selected-packages
-   '(treemacs-tab-bar evm lsp-mode git-grep python-docstring python-info pipenv importmagic python-black lsp-pyright lxc git-link pandoc pandoc-mode company-lsp elpy company-plsense key-chord pastebin pydoc recursive-narrow restclient slack vline whois windresize comment-tags crontab-mode dad-joke beacon teco elisp-format elpygen projectile helpful hl-indent hl-todo hlinum aws-snippets gist git-timemachine gitattributes-mode smartparens indent-guide ack lsp-metals lsp-java dap-mode lsp-ui ac-etags flycheck-eldev smart-backspace page-break-lines ccls treemacs-icons-dired treemacs-magit auto-yasnippet yasnippet-snippets yasnippet project-explorer company company-c-headers company-nginx eglot aggressive-indent csv-mode filladapt js2-mode json-mode register-list vlf which-key flycheck-package package-lint flycheck flylisp markdown-preview-mode memory-usage elmacro posframe ialign list-register list-utils logview magithub sx 0blayout autofit-frame autofit-frame fit-frame browse-kill-ring ensime fit-frame go-add-tags go-autocomplete go-complete go-direx go-eldoc go-errcheck go-fill-struct go-gen-test go-gopath go-guru go-imports go-mode go-playground go-playground-cli go-rename go-scratch go-snippets go-stacktracer go-tag haskell-mode help-mode+ indent-info jetbrains k8s-mode key-quiz scala-mode browse-kill-ring kubernetes kubernetes-tramp kwin magit magit-filenotify magit-find-file magit-gh-pulls magit-gitflow magit-imerge pcre2el sbt-mode use-package volatile-highlights yaml-mode zenburn-theme zoom-frm zoom-window zop-to-char))
+   '(company-shell treemacs-tab-bar evm lsp-mode git-grep python-docstring python-info pipenv importmagic python-black lsp-pyright lxc git-link pandoc pandoc-mode company-lsp elpy company-plsense key-chord pastebin pydoc recursive-narrow restclient slack vline whois windresize comment-tags crontab-mode dad-joke beacon teco elisp-format elpygen projectile helpful hl-indent hl-todo hlinum aws-snippets gist git-timemachine gitattributes-mode smartparens indent-guide ack lsp-metals lsp-java dap-mode lsp-ui ac-etags flycheck-eldev smart-backspace page-break-lines ccls treemacs-icons-dired treemacs-magit auto-yasnippet yasnippet-snippets yasnippet project-explorer company company-c-headers company-nginx eglot aggressive-indent csv-mode filladapt js2-mode json-mode register-list vlf which-key flycheck-package package-lint flycheck flylisp markdown-preview-mode memory-usage elmacro posframe ialign list-register list-utils logview magithub sx 0blayout autofit-frame autofit-frame fit-frame browse-kill-ring ensime fit-frame go-add-tags go-autocomplete go-complete go-direx go-eldoc go-errcheck go-fill-struct go-gen-test go-gopath go-guru go-imports go-mode go-playground go-playground-cli go-rename go-scratch go-snippets go-stacktracer go-tag haskell-mode help-mode+ indent-info jetbrains k8s-mode key-quiz scala-mode browse-kill-ring kubernetes kubernetes-tramp kwin magit magit-filenotify magit-find-file magit-gh-pulls magit-gitflow magit-imerge pcre2el sbt-mode use-package volatile-highlights yaml-mode zenburn-theme zoom-frm zoom-window zop-to-char))
  '(safe-local-variable-values
    '((flycheck-disabled-checkers emacs-lisp-checkdoc)
      (eval when
@@ -72,6 +74,7 @@
  '(treemacs-is-never-other-window t)
  '(treemacs-width 45)
  '(truncate-lines t)
+ '(use-short-answers t)
  '(user-mail-address "mtk@acm.org")
  '(warning-suppress-types '((comp) (comp) (comp) (comp))))
 (custom-set-faces

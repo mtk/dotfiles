@@ -281,7 +281,8 @@
 ;; don't like to type "yes" all the time.  pre-emacs 19, this
 ;; didn't work for primitives implemented in C, but now they
 ;; do it right (just for this function!).
-(fset 'yes-or-no-p (symbol-function 'y-or-n-p))
+;;(fset 'yes-or-no-p (symbol-function 'y-or-n-p))
+;; now customize 'use-short-options'
 
 ;; just a wrapper...
 (defun goto-top-or-bottom (arg)
@@ -494,7 +495,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 
 ;; Enable scala-mode for highlighting, indentation and motion commands
 (use-package scala-mode
-  :mode        "\\.s\\(cala\\|bt\\)$"
+  :mode        "\\.\\(scala\\|sbt\\|sc\\)$"
   :interpreter ("scala" . scala-mode))
 
 ;; Enable sbt mode for executing sbt commands

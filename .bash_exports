@@ -51,6 +51,7 @@ PRINTER=$COLOR_PRINTER
 RSYNC_RSH=ssh
 SHELL=/usr/local/bin/bash
 SSH_ASKPASS=/usr/bin/ksshaskpass
+#SSLKEYLOGFILE=~/.sslkeyfile
 SPARK_HOME=/usr/local/spark
 
 CVSEDITOR=$EDITOR

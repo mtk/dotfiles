@@ -82,6 +82,5 @@
 	defaultBranch = main
 [rebase]
 	autoStash = true
-[credential "https://github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+[pager]
+	branch = false
