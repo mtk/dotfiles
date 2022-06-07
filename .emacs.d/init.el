@@ -626,6 +626,7 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 	    (flycheck-mode)		; syntax checking
 	    (hlinum-activate)		; highlight current line number
 	    (electric-indent-mode)	; automatic re-indenting
+	    (highlight-indent-guides-mode) ; primarily for scala
             ;breaks my emacsclient wrapper bash function 'e'???
 	    ;(indent-guide-mode)	; show some kind of indentation helper?
 	    (setq comment-column 40)
