@@ -73,7 +73,8 @@ in=/usr/include
 ins=/usr/include/sys
 md=/smb/w10/C/Users/mtk/Desktop
 n=/dev/null
-x=/net/x1
+xh=/net/x1/home/mtk
+nh=/net/new/home/mtk
 
 # local hacking
 l=/usr/local

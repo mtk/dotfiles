@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 ( DATE=$(date +'%Y-%m-%d-%H-%M-%S')
   echo $DATE beginning google drive mount attempt
  /usr/bin/google-drive-ocamlfuse -verbose -debug -headless ~/g
