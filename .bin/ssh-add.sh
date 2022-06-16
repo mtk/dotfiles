@@ -1,2 +1,2 @@
 #!/bin/bash
-ssh-add </dev/null
+ssh-add ~/.ssh/id_ed25519 ~/.ssh/scalac-mtk </dev/null

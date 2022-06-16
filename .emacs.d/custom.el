@@ -19,6 +19,7 @@
  '(desktop-globals-to-save
    '(desktop-missing-file-warning tags-file-name tags-table-list search-ring regexp-search-ring register-alist file-name-history kill-ring))
  '(desktop-load-locked-desktop 'check-pid)
+ '(desktop-restore-in-current-display nil)
  '(desktop-save t)
  '(desktop-save-mode t)
  '(fci-rule-color "#eee8d5")

@@ -41,6 +41,7 @@ my @desired =
  'pi4',
  'thor',
  'x1',
+ 'rekin',
 );
 
 my $pinger = Net::Ping->new('external');

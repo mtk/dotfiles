@@ -12,7 +12,8 @@ else
         new-window -n dotty      -c ~/proj/git/dotty                          \; \
         new-window -n scala-src  -c ~/proj/src/scala                          \; \
         new-window -n scalac     -c ~/proj/scalac                             \; \
-        new-window -n akka       -c ~/proj/scalac/workshop-akka-actors        \; \
+        new-window -n quickstart -c ~/proj/scalac/akka-quickstart-scala       \; \
+        new-window -n workshop   -c ~/proj/scalac/workshop-akka-actors        \; \
 	new-window               -c ~
 fi
 
