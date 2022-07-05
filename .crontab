@@ -1,3 +1,4 @@
 SHELL=/bin/bash
 0 1 * * * /home/mtk/.bin/pi4sync.sh >/tmp/pi4sync.log 2>&1
-0 23 * * * /home/mtk/.local/share/coursier/bin/cs update >/tmp/cs-update.log 2>&1
+0 23 * * * /home/mtk/.bin/cs-update.sh
+

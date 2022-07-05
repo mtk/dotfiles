@@ -40,7 +40,6 @@ GNU_HOST=${HOSTNAME%%.*}
 HOSTFILE=~/.bash_hosts
 USER=${USER:-$LOGNAME}
 HISTFILE=~/.$USER-bash_history
-ICAROOT=/opt/Citrix/ICAClient
 INPUTRC=~/.inputrc
 LESS='-m -q -w -b50 -C -g -i -S -R -f'
 LS_COLORS='ex=00;32:sg=30;33'
@@ -75,6 +74,7 @@ md=/smb/w10/C/Users/mtk/Desktop
 n=/dev/null
 xh=/net/x1/home/mtk
 nh=/net/new/home/mtk
+rh=/net/rekin/home/mtk
 
 # local hacking
 l=/usr/local

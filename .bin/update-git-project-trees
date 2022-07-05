@@ -30,3 +30,9 @@ echo doing idea scala-cli...
 echo
 cd ~/IdeaProjects/scala-cli
 git pull
+echo
+
+echo doing idea doctor...
+echo
+cd ~/IdeaProjects/doctor
+git pull

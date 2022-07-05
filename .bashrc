@@ -61,6 +61,7 @@ alias ff=plocate
 alias gc=google-chrome
 alias get=GET
 alias pm=podman
+alias pmc=podman-compose
 alias rd=rmdir
 alias sk=start-gkrellms
 alias sns=snap-to-stanza
@@ -76,6 +77,7 @@ alias bui='bu install'
 alias cdl='cd -l'
 alias cpan='INPUTRC="" perl -MCPAN -eshell'
 alias cpanu="perl -MCPAN -e 'CPAN::Shell->install(CPAN::Shell->r)'"
+alias csc='cs complete'
 alias cx='chmod +x'
 alias d='gdb -q'
 alias da='date +"%a %h %d %Y %r"'
