@@ -32,4 +32,5 @@ time rsync -avx \
      --exclude mtk/.scala-build \
      --exclude mtk/.pydataset \
      --exclude mtk/.npm \
+     --exclude '*.class' \
      /home/mtk g/Backup/home 2>&1 | ts | tee -a google-drive-backup.log

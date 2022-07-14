@@ -136,7 +136,6 @@
 ;;; properties
 
 ;; still needed?
-;;(put 'scroll-left 'disabled nil)
 
 
 
@@ -693,3 +692,4 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 ;; End:
 
 (put 'narrow-to-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
