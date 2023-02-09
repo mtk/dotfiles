@@ -71,6 +71,8 @@
 	lt = describe --tags --abbrev=0
 	ggg = grep --break --heading --line-number
 	ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
+        rank = "shortlog -s -n --no-merges"
+
 [push]
 	default = simple
 [grep]
