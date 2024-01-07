@@ -1,9 +1,10 @@
 ;;; -*- coding: utf-8; mode: lisp-data -*-
-(("/home/mtk/proj/git/scala-cli-fork/build.sc" . 608)
- ("/home/mtk/.emacs.d/custom.el" . 5492)
- ("/home/mtk/.emacs.d/init.el" . 18018)
+(("/home/mtk/.emacs.d/init.el" . 18067)
+ ("/home/mtk/.emacs.d/custom.el" . 3460)
+ ("/home/mtk/proj/git/scala-cli-fork/build.sc" . 608)
  ("/home/mtk/proj/git/scala-cli-fork/modules/cli/src/main/scala/scala/cli/commands/version/Version.scala"
   . 666)
+ ("/home/mtk/.xmodmap-vmware" . 329) ("/home/mtk/.crontab" . 55)
  ("/home/mtk/psql-issue.txt" . 65) ("/home/mtk/tv.txt" . 21)
  ("/home/mtk/proj/git/bash/execute_cmd.c" . 14078)
  ("/home/mtk/proj/src/c/Linux-Socket-Programming/part4/chap18/ping.c"
@@ -25,7 +26,7 @@
  ("/home/mtk/proj/git/WeatherServer/src/main/scala/WeatherServer.scala"
   . 763)
  ("/home/mtk/.bash_exports" . 1761)
- ("/home/mtk/.bin/pi4sync.sh" . 194) ("/home/mtk/.crontab" . 76)
+ ("/home/mtk/.bin/pi4sync.sh" . 194)
  ("/home/mtk/proj/git/emacs/lisp/frameset.el" . 54299)
  ("/home/mtk/proj/git/emacs/src/xfns.c" . 16712)
  ("/home/mtk/proj/git/emacs/src/xterm.c" . 305442)
@@ -200,12 +201,11 @@
   . 193)
  ("/home/mtk/proj/git/FullDuplexRadio/fdr" . 1161)
  ("/home/mtk/.bash_completion" . 225)
- ("/home/mtk/.bin/new-session.sh" . 131) ("/home/mtk/.xmodmap" . 112)
+ ("/home/mtk/.bin/new-session.sh" . 131)
  ("/home/mtk/proj/git/emacs/lisp/tab-bar.el" . 14895)
  ("/home/mtk/.ssh/config" . 294) ("/home/mtk/.bin/wrapped-amm" . 98)
  ("/home/mtk/proj/git/emacs/src/keyboard.c" . 154890)
  ("/home/mtk/.bash_functions/cd" . 2115)
- ("/home/mtk/.bin/root-remote-session.sh" . 24)
  ("/home/mtk/.bin/x1-remote-session.sh" . 24)
  ("/home/mtk/.aws/credentials" . 234)
  ("/home/mtk/.bin/initial-start-gkrellms-wrapper.sh" . 50)

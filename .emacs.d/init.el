@@ -532,7 +532,6 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
   (global-treesit-auto-mode))
 
 (use-package which-key :config (which-key-mode))
->>>>>>> 1c213ec (who knows)
 
 (use-package python
   :delight "π "
