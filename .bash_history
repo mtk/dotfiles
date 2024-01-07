@@ -1,280 +1,188 @@
 su -
-df -l -H
-which tmux
-tmux
-which vim
-alias w=which
-w java
-java -version
-ls
-ls -ta
-zile t.c
-gcc t.c
-zile t.c
-gcc t.c
-zile t.c
-gcc t.c
-zile t.c
-gcc t.c
-man -2 printf
-man -s 2 printf
-man printf
-man man
-man 2 printf
-man 3 printf
-zile t.c
-gcc t.c
-a.out
-ls -t
-./a.out
-rm a.out t.c*
-cln
-ls
-f
-find
-hostname
-ls
-ls -ta
-b
-alias al=alias
-al b=clear
-b
-hostname
-cat /etc/hosts
-su -
-hostname
-ip addr
-pwd
-ls
-pwd
-help
-cd ls
-cd
-cd proj/git/emacs/
-alias al=alias
-al m=make
-m maintainer-clean
-git status
-git pull
-ls *.sh
-./autogen.sh 
-git status
-git pull
-./configure
-time make -j4
-make install
-xterm
-emacs
-help
-cd
-pwd
-cd proj/git
-ls
-git clone https://git.savannah.gnu.org/git/bash.git
-ls
-cd bash
-ls
-t version.c 
-ls *.sh
-ls
-./configure 
-ls
-make -j4
-ls
-less version.h
-cd /usr/local/src
-ls
-for i in {bash,tmux,emacs}; do echo ln -s /home/mtk/proj/git/$i /usr/local/src/$i; done
-for i in {bash,tmux,emacs}; do ln -s /home/mtk/proj/git/$i /usr/local/src/$i; done
-bls
-ls -l
-cd
-cd proj/git/bash
-make install 
-ls -l /usr/local/bin/bash
-/usr/local/bin/bash
-cd
-kpwd
-pwd
-cd src
-ls
-cd c
-ls
-cd bash-builtins/
-ls
-rm *.log
-make clean
-cat Makefile k
-cat Makefile 
-make
-ls
-make -n install
-make install
-which g++
-which gcc
-cd proj/git/tmux
-ls
-make maintainer-clean
-git status
-rm install.log 
-git status
-git pull
-make
-ls *.sh
-./autogen.sh 
-make
-ls
-./configure 
-make
-make install
-which tmux
-cd
-scp new:.tmux.conf .
-tmux
-ls .tmux
-tmux
-ssh-add -l
-ssh-add
-ls
-rm google-chrome-stable_current_x86_64.rpm 
-ls -la
-ls .gnupg
-ls -ld .gnupg
-ssh new ls -ld .gnupg
-ls -l .gnupg
-ssh new ls -l .gnupg
-cd /usr/local/src
-ls
-al
-b
-tmux
-su -
-pwd
-ls -ta
-scp new2:.mini.env .
-ls -ta
-pwd
-ssh -l root localhost
-ssh-add -l
-ssh-add
-ssh -l root localhost
 df
-pwd
-ls /home
+df -h
 su -
-ls -=l
-ls -l
-ls -ld .
-id
-ls .bin
-ls .ssh
-d
-ls /mnt/old
-ls /mnt/old/root
-ls /mnt/old/root/*
-ls /home
-ls /mnt/old/home/mtk
-ls /mnt/old/home/mtk/public_html/
-ls -a /mnt/old/home/mtk/public_html/
+ssh -l root localhost
+ping localhost
+printenv | grep -i ssh
+ssh-add -l
 cd /etc
-ls hosts
-cat hosts
-id
-su -
-cd
-pwd
+ls ssh
+ls -d ssh
+cd ssh
+ls
+cat <(ssh new cat /etc/ssh/ssh_config)
+diff ssh_config <(ssh new cat /etc/ssh/ssh_config)
 ls .ssh
-ls -ld .ssh
-ls -l .;ssh
-ls -l .ssh
-ssh-agent -l
-eval $(ssh-agent)
+ls
+grep known_hosts ssh_config
+cp ssh_config ssh_config.orig
+pwd
+su -
+sudo bash
+pwd
+diff /home/mtk/sshd_config sshd_config
+sudo
+su -
+cat /etc/redhat-release 
+ssh new ls .xmodmap*
+ls .ssh
+rsync -n -av new:.ssh .
+rsync -av new:.ssh .
 ssh-add -l
 ssh-add
+ssh-add -l
+ssh new echo hi
+scp new:.xmodmap-laptop xml
+less xml
+mv xml .xmodmap
+xmodmap .xmodmap
+ls
+pwd
+scp new:/etc/ssh/sshd_config .
+scp  root@new:/etc/ssh/sshd_config .
+ssh-add -l
+ssh-add
+ssh -l root localhost echo hi
+ls
+tmux
+ssh new ls .config/[Aa]*
+ssh new ls .d config/[Aa]*
+ssh new ls -d config/[Aa]*
+ssh new ls -d .config/[Aa]*
+ssh new ls .config/autostart-scripts
+scp new:.config/autostart-scripts/xmodmap.sh .config/autostart-scripts/
+ls -l .config/autostart-scripts/xmodmap.sh 
+.config/autostart-scripts/xmodmap.sh
+su -
+ssh -v -l root localhost
+zile .ssh/known_hosts 
+ssh -v -l root localhost
 ssh-add -l
 ssh -l root localhost echo hi
-which curl
-curl http://color/
-which GET
-which get
-telnet color HTTP
-telnet color 80
-ping color
-ls
-pwd
-ls -at
+ssh -l root
+ssh -l root localhost
+ssh new
+ssh -l root localhost
+echo hi
+echo there
+echo again
+scp new:.mini.env .
 ssh-add -l
-ssh thor ls
-ssh thor .bin
-ssh thor ls .bin
-ssh thor ls .bin/c1*
-df
-pwd
-ssh pi3 ls -la
-pwd
-ls
-rsync -n -av thor:/home/mtk /home
-rsync -n -av --exclude .cache thor:/home/mtk /home | less
-rsync -n -av --exclude .ccache --exclude .cache thor:/home/mtk /home | less
-ls .config
-rsync -n -av --exclude .config --exclude .ccache --exclude .cache thor:/home/mtk /home | less
-ls .local
-ls .local/share
-fps baloo
-ps -ef | grep -i baloo
-ls
-rsync -n -av --exclude .config --exclude .ccache --exclude .cache thor:/home/mtk /home | less
-ls .local
-f .local
-find .local
-echo rsync -n -av --exclude .local --exclude .config --exclude .ccache --exclude .cache thor:/home/mtk /home 
-ls -a
-pwd
-ls .aws
-ls .bin
-ls .docker
-ls .emacs.d
-ls .g8
-ls .gkrellm2/
-ls .kde
-ls .kde/share
-rsync -av --exclude .kde  --exclude .local --exclude .config --exclude .ccache --exclude .cache thor:/home/mtk /home
-bls proj
-rsync -av --exclude .kde  --exclude .local --exclude .config --exclude .ccache --exclude .cache thor:/home/mtk /home
-ls g
-pwd
-ls g
-bls g
-rm -rf g
-rsync -av --exclude g --exclude .kde  --exclude .local --exclude .config --exclude .ccache --exclude .cache thor:/home/mtk /home
-ls
-ls public_html/
-ls proj
-rm proj
-ssh thor ls /card
-ssh thor ls /card/home
-ssh thor ls /card/home/mtk
-ssh thor ls /card/home/mtk/proj
-rsync -n -av  thor:/card/home/mtk/proj .
-pwd
-ls proj
-ls
-rsync -av  thor:/card/home/mtk/proj .
-ls -t
-ls proj
-rsync -av  thor:/card/home/mtk/proj .
-which cmds
-ls .bin
-.bin/cmds ctl
-sysctl -h
-hostnamectl -h
-hostnamectl status
-sudo hostnamectl set-hostname new.mofjwutu.com
+ssh-add
+scp new:.mini.env .
+cat .mini.env
+rsync -n -av new:.bash_functions .
+rsync -av new:.bash_functions .
+ls .bash_functions/
+scp new:.inputrc .
+t .mini.env 
+less .mini.env
+cat .inputrc
+ls -ta
+nmcli connection list
+nmcli connection 
+sudo nmcli connection modify 647650_5G ip4.gateway 192.168.1.1
+sudo nmcli connection modify 647650_5G ipv4.gateway 192.168.1.1
+ip -4 route
+netstat -rn
 hostname
-df /usr/local
-df /home/mtk
+ifconfig
+man hostnamectl
+hostnamectl status
+man hostnamectl
+hostnamectl set-hostname x1.mofjwutu.com
+hostnamectl status
+man hostnamectl
+hostnamectl set-icon-name x1
+hostnamectl status
+hostname
+ping x1.mofjwutu.com
+grep x1 /etc/hosts
+cat /etc/hosts
+ping x1
+ip addr
+ls /ust/local
+ls /usr/local
+ls /usr/localwd
+pwd
+ls -ld local
+pwd
+ls -ta
+rm .bash_logout 
+t .bashrc
+less .bashrc
+less .bash_profile
+rm .bash_profile .bashrc
+ld
 ls
-ls local
-rsync -n -av thor:/usr/local .
-time rsync -av thor:/usr/local .
+ls /usr/local/src
+cd /usr/local/src
+bls
+ls -l
+cd tmux
+which make
+which gcc
+make maintainer-clean
+ls
+./autogen.sh 
+pwd
+cd
+t .tmux.conf
+less .tmux.conf
+pwd
+hostname
+scp new:.tmux.conf .
+new
+ssh new
+hn
+ssh -l root new
+ssh -l root localhost
+echo yum-config-manager-add-repo-https-rpm-releases-hashicorp-com-fedora-hashicorp-repo
+ls
+evince X1\ Yoga\ Gen\ 5\ and\ X1\ Carbon\ Gen\ 8\ User\ Guide.pdf 
+ls
+rd Desktop/ Documents/ Music/ Pictures/ Public/ Templates/ Videos/
+rmdir Desktop/ Documents/ Music/ Pictures/ Public/ Templates/ Videos/
+ls Desktop
+ls -a Desktop
+rm -rf Desktop/
+ls
+ls Downloads/
+ls /usr/loca
+ls /usr/local
+mkdir /usr/local/tar
+mv Downloads/* /usr/local/tar
+ls
+rd Downloads/
+rmdir Downloads/
+ls
+rm sshd_config 
+locate fprintd
+locate fprintd-enroll
+fprintd-enroll
+man fprintd-enroll
+fprintd-enroll -help
+authconfig --enablefingerprint --update
+man authselect
+ls /etc/pam
+ls /etc/pam.d
+cat /etc/pam.d/gdm-fingerprint 
+man watch
+watch df -h
+man watch
+watch -d - 10 df -h
+watch -d -n 10 df -h
+watch -d -n 5 df -h
+ls -t
+watch -d -n 5 df -h
+find /usr/local
+find /usr/local 2>&1 | t
 tmux
+ip route
+ping www.yale.edu
+hostname
+ff pam-auto-update
+ssh new
+ssh-add
+ssh new

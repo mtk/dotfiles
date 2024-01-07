@@ -12,6 +12,8 @@ add_before ~/.bin
 add_before ~/.local/bin
 add_before /home/mtk/.local/share/coursier/bin
 
+# these are used less frequently.  top-to-bottom is most-to-least frequent.
+
 # always search connected dir last.  some may consider this a security violation.
 add_after .
 

@@ -54,12 +54,14 @@ foreach my $p (@{Proc::ProcessTable->new->table})
   my $cmd = $p->{'cmndline'};
   next if $$ == $p->{'pid'};
   next unless $cmd =~ /(?:gkrellm|ssh.*gkrellm)(?: |$)/;
+  # local running it remotely via ssh
   if ($cmd =~ /ssh.*gkrellm()/)
     {
       my ($host) = $cmd =~ /ssh -f ([\w@]+) gkrellm(?: |$)/;
       $live{$host} = 1;
     }
-  else
+  # plain gkrellm (--config remote is a remote runner we should ignore)
+  elsif ($cmd !~ /--config remote/)
     {
       $live{$localhost} = 1;
     }
@@ -67,7 +69,7 @@ foreach my $p (@{Proc::ProcessTable->new->table})
 
 foreach my $desired (@desired)
 {
-  # don't recall what this is for
+  # don't recall what this is for (-c arg cmd line?)
   next if grep /$desired/, @cmds;
 
   my $desired_host = $desired;
@@ -84,10 +86,10 @@ foreach my $desired (@desired)
     }
 
  # l1 hack because we can't reach it directly
-  unless ($live{$desired} or ($desired_host ne 'l1' and not scalar ($pinger->ping ($desired_host, 2))))
+  unless ($live{$desired} or not scalar ($pinger->ping ($desired_host, 2)))
     {
-      # gkrellm -f adds hostname to config file to have one local (no hostname) and one remote config
-      my @cmd = $desired eq $localhost ? ('gkrellm') : ('ssh', '-f', $desired, 'gkrellm', '-f');
+      # --config access remote config, no such arg means result of previous -f (hostname appended) is used
+      my @cmd = $desired eq $localhost ? ('gkrellm') : ('ssh', '-f', $desired, 'gkrellm', '--config', 'remote');
 
       print "@cmd\n" if $verbose or $dont_execute or $debug;
 

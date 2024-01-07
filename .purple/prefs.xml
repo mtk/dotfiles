@@ -42,10 +42,10 @@
 			</pref>
 		</pref>
 		<pref name='savedstatus'>
-			<pref name='default' type='int' value='1340025015'/>
+			<pref name='default' type='int' value='1686174952'/>
 			<pref name='startup' type='int' value='0'/>
 			<pref name='startup_current_status' type='bool' value='1'/>
-			<pref name='idleaway' type='int' value='1345470580'/>
+			<pref name='idleaway' type='int' value='1686176222'/>
 			<pref name='isidleaway' type='bool' value='0'/>
 		</pref>
 		<pref name='conversations'>
@@ -63,9 +63,9 @@
 			<pref name='turn_port_tcp' type='int' value='3478'/>
 			<pref name='turn_username' type='string' value=''/>
 			<pref name='turn_password' type='string' value=''/>
-			<pref name='auto_ip' type='bool' value='1'/>
+			<pref name='auto_ip' type='bool' value='0'/>
 			<pref name='public_ip' type='string' value=''/>
-			<pref name='map_ports' type='bool' value='1'/>
+			<pref name='map_ports' type='bool' value='0'/>
 			<pref name='ports_range_use' type='bool' value='0'/>
 			<pref name='ports_range_start' type='int' value='1024'/>
 			<pref name='ports_range_end' type='int' value='2048'/>
@@ -84,47 +84,14 @@
 	</pref>
 	<pref name='plugins'>
 		<pref name='core'>
-			<pref name='musictracker'>
-				<pref name='string_format' type='string' value='%r: %t by %p on %a (%d)'/>
-				<pref name='string_off' type='string' value=''/>
-				<pref name='string_paused' type='string' value='%r: Paused'/>
-				<pref name='int_player' type='int' value='-1'/>
-				<pref name='bool_disabled' type='bool' value='0'/>
-				<pref name='bool_log' type='bool' value='0'/>
-				<pref name='bool_filter' type='bool' value='0'/>
-				<pref name='string_filter' type='string' value='fuck,suck,ass,bitch,dick,penis,porn,motherfucker'/>
-				<pref name='string_mask' type='string' value='*'/>
-				<pref name='bool_disable_when_away' type='bool' value='0'/>
-				<pref name='bool_now_listening_only' type='bool' value='0'/>
-				<pref name='string_xmms_sep' type='string' value='|'/>
-				<pref name='string_mpd_hostname' type='string' value='localhost'/>
-				<pref name='string_mpd_password' type='string' value=''/>
-				<pref name='string_mpd_port' type='string' value='6600'/>
-				<pref name='lastfm_user' type='string' value=''/>
-				<pref name='lastfm_interval' type='int' value='120'/>
-				<pref name='lastfm_quiet' type='int' value='600'/>
-				<pref name='string_xmms2_path' type='string' value=''/>
-				<pref name='string_squeezecenter_server' type='string' value='localhost:9090'/>
-				<pref name='string_squeezecenter_user' type='string' value=''/>
-				<pref name='string_squeezecenter_password' type='string' value=''/>
-				<pref name='string_squeezecenter_players' type='string' value=''/>
-				<pref name='bool_msn_swap' type='bool' value='0'/>
+			<pref name='statenotify'>
+				<pref name='notify_away' type='bool' value='1'/>
+				<pref name='notify_idle' type='bool' value='1'/>
+				<pref name='notify_signon' type='bool' value='1'/>
 			</pref>
-			<pref name='pidgin_pp'/>
-			<pref name='plugin_pack'>
-				<pref name='plonkers'>
-					<pref name='plonkers'>
-						<pref name='format_singular' type='string' value='/me has identified %N plonker: %P.'/>
-						<pref name='format_plural' type='string' value='/me has identified %N plonkers: %P.'/>
-					</pref>
-					<pref name='plonked'>
-						<pref name='format_singular' type='string' value='/me plonks: %P.'/>
-						<pref name='format_plural' type='string' value='/me plonks: %P.'/>
-					</pref>
-				</pref>
-				<pref name='findip'>
-					<pref name='notify' type='bool' value='1'/>
-				</pref>
+			<pref name='newline'>
+				<pref name='im' type='bool' value='1'/>
+				<pref name='chat' type='bool' value='1'/>
 			</pref>
 			<pref name='core-plugin_pack-autoaccept'>
 				<pref name='path' type='string' value='/home/mtk/.purple/autoaccept'/>
@@ -137,76 +104,13 @@
 				<pref name='show_notice' type='bool' value='1'/>
 				<pref name='activate_online' type='bool' value='1'/>
 			</pref>
-			<pref name='highlight'>
-				<pref name='words' type='string' value=''/>
-			</pref>
 			<pref name='core-plugin_pack-offlinemsg'>
 				<pref name='always' type='bool' value='0'/>
-			</pref>
-			<pref name='newline'>
-				<pref name='im' type='bool' value='1'/>
-				<pref name='chat' type='bool' value='1'/>
 			</pref>
 			<pref name='joinpart'>
 				<pref name='delay' type='int' value='10'/>
 				<pref name='threshold' type='int' value='20'/>
 				<pref name='hide_buddies' type='bool' value='0'/>
-			</pref>
-			<pref name='twitgin'>
-				<pref name='reply_link' type='bool' value='1'/>
-				<pref name='fav_link' type='bool' value='1'/>
-				<pref name='rt_link' type='bool' value='1'/>
-				<pref name='ms_link' type='bool' value='1'/>
-				<pref name='avatar_size' type='int' value='24'/>
-			</pref>
-			<pref name='splitter'>
-				<pref name='split_size' type='int' value='786'/>
-				<pref name='delay_ms' type='int' value='500'/>
-			</pref>
-			<pref name='statenotify'>
-				<pref name='notify_away' type='bool' value='1'/>
-				<pref name='notify_idle' type='bool' value='1'/>
-				<pref name='notify_signon' type='bool' value='1'/>
-			</pref>
-			<pref name='core-plugin_pack-autoreply'>
-				<pref name='idle' type='bool' value='1'/>
-				<pref name='away' type='bool' value='1'/>
-				<pref name='global' type='string' value='I am currently not available. Please leave your message, and I will get back to you as soon as possible.'/>
-				<pref name='mintime' type='int' value='10'/>
-				<pref name='maxsend' type='int' value='10'/>
-				<pref name='usestatus' type='int' value='0'/>
-				<pref name='prefix' type='string' value='This is an autoreply: '/>
-				<pref name='invisible' type='bool' value='1'/>
-			</pref>
-			<pref name='slashexec'>
-				<pref name='slash' type='bool' value='1'/>
-				<pref name='bang' type='bool' value='0'/>
-			</pref>
-			<pref name='core-plugin_pack-colorize'>
-				<pref name='initial_r' type='int' value='255'/>
-				<pref name='initial_g' type='int' value='0'/>
-				<pref name='initial_b' type='int' value='0'/>
-				<pref name='target_r' type='int' value='0'/>
-				<pref name='target_g' type='int' value='0'/>
-				<pref name='target_b' type='int' value='0'/>
-			</pref>
-			<pref name='vvconfig'>
-				<pref name='audio'>
-					<pref name='src'>
-						<pref name='plugin' type='string' value=''/>
-						<pref name='device' type='string' value=''/>
-					</pref>
-					<pref name='sink'>
-						<pref name='plugin' type='string' value=''/>
-						<pref name='device' type='string' value=''/>
-					</pref>
-				</pref>
-				<pref name='video'>
-					<pref name='src'>
-						<pref name='plugin' type='string' value=''/>
-						<pref name='device' type='string' value=''/>
-					</pref>
-				</pref>
 			</pref>
 			<pref name='nss_prefs'>
 				<pref name='cipher_list' type='stringlist'/>
@@ -216,9 +120,6 @@
 		</pref>
 		<pref name='lopl'/>
 		<pref name='prpl'>
-			<pref name='oscar'>
-				<pref name='recent_buddies' type='bool' value='0'/>
-			</pref>
 			<pref name='meanwhile'>
 				<pref name='blist_action' type='int' value='4'/>
 			</pref>
@@ -245,11 +146,67 @@
 					<pref name='notify_type' type='bool' value='1'/>
 					<pref name='notify_send' type='bool' value='1'/>
 					<pref name='notify_switch' type='bool' value='1'/>
+					<pref name='type_im_sys' type='bool' value='0'/>
+					<pref name='type_chat_sys' type='bool' value='0'/>
 					<pref name='method_present' type='bool' value='0'/>
 				</pref>
 				<pref name='gestures'>
 					<pref name='visual' type='bool' value='0'/>
 				</pref>
+			</pref>
+			<pref name='gtk-plugin_pack-convcolors'>
+				<pref name='ignore_incoming' type='bool' value='1'/>
+				<pref name='chats' type='bool' value='1'/>
+				<pref name='ims' type='bool' value='1'/>
+				<pref name='send'>
+					<pref name='color' type='string' value='#909090'/>
+					<pref name='format' type='int' value='0'/>
+					<pref name='enabled' type='bool' value='1'/>
+				</pref>
+				<pref name='recv'>
+					<pref name='color' type='string' value='#000000'/>
+					<pref name='format' type='int' value='0'/>
+					<pref name='enabled' type='bool' value='1'/>
+				</pref>
+				<pref name='system'>
+					<pref name='color' type='string' value='#50a050'/>
+					<pref name='format' type='int' value='2'/>
+					<pref name='enabled' type='bool' value='1'/>
+				</pref>
+				<pref name='error'>
+					<pref name='color' type='string' value='#ff0000'/>
+					<pref name='format' type='int' value='5'/>
+					<pref name='enabled' type='bool' value='1'/>
+				</pref>
+				<pref name='nick'>
+					<pref name='color' type='string' value='#0000dd'/>
+					<pref name='format' type='int' value='1'/>
+					<pref name='enabled' type='bool' value='1'/>
+				</pref>
+			</pref>
+			<pref name='transparency'>
+				<pref name='im_enabled' type='bool' value='0'/>
+				<pref name='im_alpha' type='int' value='255'/>
+				<pref name='im_slider' type='bool' value='0'/>
+				<pref name='im_solid_onfocus' type='bool' value='0'/>
+				<pref name='im_always_on_top' type='bool' value='0'/>
+				<pref name='bl_enabled' type='bool' value='0'/>
+				<pref name='bl_alpha' type='int' value='255'/>
+				<pref name='bl_solid_onfocus' type='bool' value='0'/>
+				<pref name='bl_always_on_top' type='bool' value='0'/>
+			</pref>
+			<pref name='musicmessaging'>
+				<pref name='editor_path' type='string' value='/usr/bin/gscore'/>
+			</pref>
+			<pref name='timestamp_format'>
+				<pref name='force' type='string' value='default'/>
+				<pref name='use_dates'>
+					<pref name='conversation' type='string' value='automatic'/>
+					<pref name='log' type='string' value='automatic'/>
+				</pref>
+			</pref>
+			<pref name='timestamp'>
+				<pref name='interval' type='int' value='300000'/>
 			</pref>
 			<pref name='purplerc'>
 				<pref name='set'>
@@ -297,274 +254,39 @@
 				</pref>
 				<pref name='disable-typing-notification' type='bool' value='0'/>
 			</pref>
-			<pref name='gtk-plugin_pack-xchat-chats'>
-				<pref name='date_format' type='string' value='[%H:%M]'/>
-			</pref>
-			<pref name='amc_grim'>
-				<pref name='blistops'>
-					<pref name='hidelist' type='bool' value='0'/>
-					<pref name='hidemenu' type='bool' value='0'/>
-					<pref name='stretch' type='bool' value='1'/>
-					<pref name='email' type='bool' value='0'/>
-				</pref>
-				<pref name='guifications2'>
-					<pref name='behavior'>
-						<pref name='display_time' type='int' value='6'/>
-						<pref name='throttle' type='int' value='6'/>
-						<pref name='show_while_away' type='bool' value='1'/>
-						<pref name='notifications' type='stringlist'>
-							<item value='sign-on'/>
-							<item value='sign-off'/>
-							<item value='unidle'/>
-							<item value='typing'/>
-							<item value='typing-stopped'/>
-							<item value='chat-invite'/>
-							<item value='topic-changed'/>
-							<item value='!master'/>
-						</pref>
-					</pref>
-					<pref name='appearance'>
-						<pref name='position' type='int' value='3'/>
-						<pref name='vertical' type='bool' value='1'/>
-						<pref name='animate' type='bool' value='1'/>
-					</pref>
-					<pref name='mouse'>
-						<pref name='left' type='string' value='open'/>
-						<pref name='middle' type='string' value='close'/>
-						<pref name='right' type='string' value='context'/>
-					</pref>
-					<pref name='themes' type='stringlist'>
-						<item value='/usr/share/pixmaps/pidgin/guifications/themes/default/theme.xml'/>
-					</pref>
-					<pref name='advanced'>
-						<pref name='release_notification' type='bool' value='1'/>
-						<pref name='release_last_check' type='int' value='0'/>
-						<pref name='screen' type='int' value='0'/>
-						<pref name='monitor' type='int' value='0'/>
-					</pref>
-				</pref>
-			</pref>
-			<pref name='plugin_pack'>
-				<pref name='enhanced_history'>
-					<pref name='number' type='int' value='10'/>
-					<pref name='bytes' type='int' value='4096'/>
-					<pref name='minutes' type='int' value='0'/>
-					<pref name='hours' type='int' value='0'/>
-					<pref name='days' type='int' value='0'/>
-					<pref name='dates' type='bool' value='1'/>
-					<pref name='im' type='bool' value='1'/>
-					<pref name='chat' type='bool' value='0'/>
-				</pref>
-				<pref name='xmms-remote'>
-					<pref name='format' type='string' value='/me is listening to %T'/>
-					<pref name='session' type='int' value='0'/>
-					<pref name='show_playlist' type='bool' value='1'/>
-					<pref name='conv' type='bool' value='1'/>
-					<pref name='blist' type='bool' value='1'/>
-					<pref name='extended' type='bool' value='1'/>
-					<pref name='volume' type='bool' value='1'/>
-				</pref>
-			</pref>
-			<pref name='musicmessaging'>
-				<pref name='editor_path' type='string' value='/usr/bin/gscore'/>
-			</pref>
-			<pref name='gtk-plugin_pack-convcolors'>
-				<pref name='ignore_incoming' type='bool' value='1'/>
-				<pref name='chats' type='bool' value='1'/>
-				<pref name='ims' type='bool' value='1'/>
-				<pref name='send'>
-					<pref name='color' type='string' value='#909090'/>
-					<pref name='format' type='int' value='0'/>
-					<pref name='enabled' type='bool' value='1'/>
-				</pref>
-				<pref name='recv'>
-					<pref name='color' type='string' value='#000000'/>
-					<pref name='format' type='int' value='0'/>
-					<pref name='enabled' type='bool' value='1'/>
-				</pref>
-				<pref name='system'>
-					<pref name='color' type='string' value='#50a050'/>
-					<pref name='format' type='int' value='2'/>
-					<pref name='enabled' type='bool' value='1'/>
-				</pref>
-				<pref name='error'>
-					<pref name='color' type='string' value='#ff0000'/>
-					<pref name='format' type='int' value='5'/>
-					<pref name='enabled' type='bool' value='1'/>
-				</pref>
-				<pref name='nick'>
-					<pref name='color' type='string' value='#0000dd'/>
-					<pref name='format' type='int' value='1'/>
-					<pref name='enabled' type='bool' value='1'/>
-				</pref>
-			</pref>
-			<pref name='birthday_reminder'>
-				<pref name='reminder'>
-					<pref name='once_a_day' type='bool' value='1'/>
-					<pref name='birthday_icons'>
-						<pref name='show' type='bool' value='1'/>
-						<pref name='before_days' type='int' value='3'/>
-					</pref>
-					<pref name='mini_dialog'>
-						<pref name='show' type='bool' value='1'/>
-						<pref name='before_days' type='int' value='0'/>
-					</pref>
-					<pref name='notification'>
-						<pref name='show' type='bool' value='0'/>
-						<pref name='before_days' type='int' value='0'/>
-					</pref>
-					<pref name='sound'>
-						<pref name='play' type='bool' value='1'/>
-						<pref name='before_days' type='int' value='0'/>
-					</pref>
-				</pref>
-				<pref name='tooltip'>
-					<pref name='show_birthday' type='bool' value='1'/>
-					<pref name='show_days_to_birthday' type='bool' value='1'/>
-					<pref name='show_age' type='bool' value='0'/>
-				</pref>
-				<pref name='export'>
-					<pref name='automatic' type='bool' value='0'/>
-					<pref name='path' type='path' value='/home/mtk/.purple/birthdays.ics'/>
-				</pref>
-			</pref>
-			<pref name='timestamp'>
-				<pref name='interval' type='int' value='300000'/>
-			</pref>
-			<pref name='infopane'>
-				<pref name='position' type='string' value='top'/>
-				<pref name='drag' type='bool' value='0'/>
-				<pref name='single' type='bool' value='1'/>
-				<pref name='icon' type='bool' value='1'/>
-			</pref>
 			<pref name='gtk-plugin_pack-markerline'>
 				<pref name='ims' type='bool' value='0'/>
 				<pref name='chats' type='bool' value='1'/>
 			</pref>
-			<pref name='timestamp_format'>
-				<pref name='force' type='string' value='default'/>
-				<pref name='use_dates'>
-					<pref name='conversation' type='string' value='automatic'/>
-					<pref name='log' type='string' value='automatic'/>
-				</pref>
-			</pref>
-			<pref name='gtk-plugin_pack-mystatusbox'>
-				<pref name='pane' type='int' value='741'/>
-				<pref name='global' type='bool' value='0'/>
-				<pref name='show' type='int' value='0'/>
-				<pref name='iconsel' type='bool' value='0'/>
-			</pref>
-			<pref name='gtk-plugin_pack-nicksaid'>
-				<pref name='hlwords' type='string' value=''/>
-				<pref name='chars' type='int' value='15'/>
-				<pref name='timestamp' type='bool' value='1'/>
-				<pref name='datestamp' type='bool' value='0'/>
-				<pref name='showwho' type='bool' value='1'/>
-				<pref name='showall' type='bool' value='0'/>
-			</pref>
-			<pref name='autoprofile'>
-				<pref name='widgets'>
-					<pref name='42'>
-						<pref name='component' type='string' value='Timestamp'/>
-						<pref name='alias' type='string' value='Timestamp'/>
-						<pref name='timestamp_format' type='string' value='Automatically created at %I:%M %p'/>
-					</pref>
-					<pref name='widget_ids' type='stringlist'>
-						<item value='42'/>
-					</pref>
-				</pref>
-				<pref name='autorespond'>
-					<pref name='auto_reply' type='string' value='awayidle'/>
-					<pref name='text' type='string' value='Say the magic word if you want me to talk more!'/>
-					<pref name='trigger' type='string' value='please'/>
-					<pref name='delay' type='int' value='2'/>
-					<pref name='enable' type='bool' value='1'/>
-				</pref>
-				<pref name='delay_update' type='int' value='30'/>
-				<pref name='show_summary' type='string' value='always'/>
-				<pref name='queue_messages_when_away' type='bool' value='0'/>
-				<pref name='away_when_idle' type='bool' value='1'/>
-				<pref name='profile_accounts' type='stringlist'/>
-				<pref name='profile' type='string' value='Get AutoProfile for Purple at &lt;a href=&quot;http://autoprofile.sourceforge.net/&quot;&gt;autoprofile.sourceforge.net&lt;/a&gt;&lt;br&gt;&lt;br&gt;[Timestamp]'/>
-			</pref>
-			<pref name='libnotify'>
-				<pref name='newmsg' type='bool' value='1'/>
-				<pref name='blocked' type='bool' value='1'/>
-				<pref name='newconvonly' type='bool' value='0'/>
-				<pref name='signon' type='bool' value='1'/>
-				<pref name='signoff' type='bool' value='0'/>
-				<pref name='only_available' type='bool' value='0'/>
-			</pref>
-			<pref name='vvconfig'>
-				<pref name='video'>
-					<pref name='sink'>
-						<pref name='plugin' type='string' value=''/>
-						<pref name='device' type='string' value=''/>
-					</pref>
-				</pref>
-			</pref>
-		</pref>
-		<pref name='pidgin_rhythmbox'>
-			<pref name='process_status' type='bool' value='1'/>
-			<pref name='process_userinfo' type='bool' value='1'/>
-			<pref name='lyrics_link' type='bool' value='1'/>
-			<pref name='format_string' type='string' value='&apos;%title&apos; by %artist'/>
-		</pref>
-		<pref name='gtk-rlaager-album'>
-			<pref name='window_height' type='int' value='258'/>
-			<pref name='window_width' type='int' value='362'/>
-			<pref name='icon_size' type='int' value='1'/>
-		</pref>
-		<pref name='ignore'>
-			<pref name='rules' type='stringlist'/>
 		</pref>
 	</pref>
 	<pref name='pidgin'>
 		<pref name='browsers'>
-			<pref name='place' type='int' value='3'/>
-			<pref name='browser' type='string' value='google-chrome'/>
+			<pref name='place' type='int' value='0'/>
+			<pref name='browser' type='string' value='xdg-open'/>
 			<pref name='manual_command' type='string' value=''/>
 		</pref>
 		<pref name='plugins'>
 			<pref name='loaded' type='pathlist'>
-				<item value='/usr/lib64/pidgin/blistops.so'/>
-				<item value='/usr/lib64/pidgin/extplacement.so'/>
-				<item value='/usr/lib64/pidgin/guifications.so'/>
-				<item value='/usr/lib64/purple-2/highlight.so'/>
-				<item value='/usr/lib64/pidgin/history.so'/>
-				<item value='/usr/lib64/pidgin/logplugin.so'/>
-				<item value='/usr/lib64/pidgin/markerline.so'/>
-				<item value='/usr/lib64/pidgin/notify.so'/>
-				<item value='/usr/lib64/pidgin/timestamp_format.so'/>
-				<item value='/usr/lib64/purple-2/ssl-nss.so'/>
-				<item value='/usr/lib64/pidgin/pidginrc.so'/>
-				<item value='/usr/lib64/purple-2/ssl.so'/>
-				<item value='/usr/lib64/pidgin/sepandtab.so'/>
-				<item value='/usr/lib64/pidgin/spellchk.so'/>
-				<item value='/usr/lib64/pidgin/timestamp.so'/>
-				<item value='/usr/lib64/pidgin/vvconfig.so'/>
-				<item value='/usr/lib64/pidgin/xmppconsole.so'/>
-				<item value='/usr/lib64/pidgin/xmppdisco.so'/>
-			</pref>
-			<pref name='gtk-plugin_pack-irssi'>
-				<pref name='textfmt' type='bool' value='1'/>
-				<pref name='datechange' type='bool' value='1'/>
-				<pref name='happynewyear' type='bool' value='1'/>
+				<item value='/usr/lib/pidgin/extplacement.so'/>
+				<item value='/usr/lib/pidgin/history.so'/>
+				<item value='/usr/lib/pidgin/notify.so'/>
+				<item value='/usr/lib/pidgin/nautilus.so'/>
 			</pref>
 		</pref>
 		<pref name='blist'>
 			<pref name='show_buddy_icons' type='bool' value='0'/>
-			<pref name='show_empty_groups' type='bool' value='1'/>
+			<pref name='show_empty_groups' type='bool' value='0'/>
 			<pref name='show_idle_time' type='bool' value='1'/>
-			<pref name='show_offline_buddies' type='bool' value='0'/>
+			<pref name='show_offline_buddies' type='bool' value='1'/>
 			<pref name='show_protocol_icons' type='bool' value='0'/>
-			<pref name='list_visible' type='bool' value='1'/>
+			<pref name='list_visible' type='bool' value='0'/>
 			<pref name='list_maximized' type='bool' value='0'/>
 			<pref name='sort_type' type='string' value='alphabetical'/>
-			<pref name='x' type='int' value='1355'/>
+			<pref name='x' type='int' value='0'/>
 			<pref name='y' type='int' value='0'/>
-			<pref name='width' type='int' value='231'/>
-			<pref name='height' type='int' value='873'/>
+			<pref name='width' type='int' value='668'/>
+			<pref name='height' type='int' value='534'/>
 			<pref name='theme' type='string' value=''/>
 		</pref>
 		<pref name='filelocations'>
@@ -574,6 +296,24 @@
 		</pref>
 		<pref name='smileys'>
 			<pref name='theme' type='string' value='Default'/>
+		</pref>
+		<pref name='vvconfig'>
+			<pref name='audio'>
+				<pref name='src'>
+					<pref name='device' type='string' value='autoaudiosrc'/>
+				</pref>
+				<pref name='sink'>
+					<pref name='device' type='string' value='autoaudiosink'/>
+				</pref>
+			</pref>
+			<pref name='video'>
+				<pref name='src'>
+					<pref name='device' type='string' value='autovideosrc'/>
+				</pref>
+				<pref name='sink'>
+					<pref name='device' type='string' value='autovideosink'/>
+				</pref>
+			</pref>
 		</pref>
 		<pref name='debug'>
 			<pref name='enabled' type='bool' value='0'/>
@@ -603,15 +343,15 @@
 		<pref name='sound'>
 			<pref name='enabled'>
 				<pref name='login' type='bool' value='1'/>
-				<pref name='logout' type='bool' value='0'/>
+				<pref name='logout' type='bool' value='1'/>
 				<pref name='im_recv' type='bool' value='1'/>
-				<pref name='first_im_recv' type='bool' value='1'/>
-				<pref name='send_im' type='bool' value='0'/>
+				<pref name='first_im_recv' type='bool' value='0'/>
+				<pref name='send_im' type='bool' value='1'/>
 				<pref name='join_chat' type='bool' value='0'/>
 				<pref name='left_chat' type='bool' value='0'/>
 				<pref name='send_chat_msg' type='bool' value='0'/>
 				<pref name='chat_msg_recv' type='bool' value='0'/>
-				<pref name='nick_said' type='bool' value='1'/>
+				<pref name='nick_said' type='bool' value='0'/>
 				<pref name='pounce_default' type='bool' value='1'/>
 				<pref name='sent_attention' type='bool' value='1'/>
 				<pref name='got_attention' type='bool' value='1'/>
@@ -632,7 +372,7 @@
 				<pref name='got_attention' type='path' value=''/>
 			</pref>
 			<pref name='theme' type='string' value=''/>
-			<pref name='conv_focus' type='bool' value='0'/>
+			<pref name='conv_focus' type='bool' value='1'/>
 			<pref name='mute' type='bool' value='0'/>
 			<pref name='command' type='path' value=''/>
 			<pref name='method' type='string' value='automatic'/>
@@ -655,7 +395,7 @@
 			<pref name='show_incoming_formatting' type='bool' value='1'/>
 			<pref name='resize_custom_smileys' type='bool' value='1'/>
 			<pref name='custom_smileys_size' type='int' value='96'/>
-			<pref name='minimum_entry_lines' type='int' value='4'/>
+			<pref name='minimum_entry_lines' type='int' value='2'/>
 			<pref name='show_timestamps' type='bool' value='1'/>
 			<pref name='show_formatting_toolbar' type='bool' value='1'/>
 			<pref name='placement' type='string' value='last'/>
@@ -676,18 +416,15 @@
 				<pref name='height' type='int' value='390'/>
 			</pref>
 			<pref name='im'>
-				<pref name='x' type='int' value='901'/>
+				<pref name='x' type='int' value='0'/>
 				<pref name='y' type='int' value='0'/>
-				<pref name='width' type='int' value='697'/>
-				<pref name='height' type='int' value='601'/>
+				<pref name='width' type='int' value='340'/>
+				<pref name='height' type='int' value='390'/>
 				<pref name='animate_buddy_icons' type='bool' value='1'/>
 				<pref name='entry_height' type='int' value='54'/>
 				<pref name='show_buddy_icons' type='bool' value='1'/>
 				<pref name='hide_new' type='string' value='never'/>
 				<pref name='close_immediately' type='bool' value='1'/>
-			</pref>
-			<pref name='toolbar'>
-				<pref name='wide' type='bool' value='0'/>
 			</pref>
 		</pref>
 		<pref name='pounces'>
@@ -711,14 +448,7 @@
 			<pref name='blink' type='bool' value='0'/>
 			<pref name='show' type='string' value='always'/>
 			<pref name='gtk'>
-				<pref name='embedded' type='bool' value='1'/>
-			</pref>
-		</pref>
-	</pref>
-	<pref name='core'>
-		<pref name='plugins'>
-			<pref name='core-plugin_pack-google'>
-				<pref name='domain' type='string' value='www.google.com'/>
+				<pref name='embedded' type='bool' value='0'/>
 			</pref>
 		</pref>
 	</pref>

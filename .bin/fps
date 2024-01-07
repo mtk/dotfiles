@@ -3,7 +3,7 @@
 use strict;
 
 use Getopt::Std;
-use Sys::Info;
+use System::Info;
 
 our ($opt_n, $opt_t, $opt_x);
 getopts ('ntx');

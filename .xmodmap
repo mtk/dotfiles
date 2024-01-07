@@ -1,15 +1,22 @@
-keysym Caps_Lock = Hyper_L Hyper_L Hyper_L
+keysym  quoteleft = Escape     Escape     Escape
+keysym  Escape    = quoteleft  asciitilde asciitilde
+
+keysym Caps_Lock = Control_L Control_L Control_L
+keysym Control_L = Hyper_L Hyper_L Hyper_L
 ! keycode 64     = Keycap Alt_L
 keycode 64       = Alt_L Alt_L Alt_L
 ! keycode 108    = keycap Alt_R
 keycode 108      = Meta_L Meta_L Meta_L
 
-clear lock
+clear Control
+clear Lock
 
 clear mod1
 clear mod2
 clear mod3
 clear mod4
+
+add Control = Control_L
 
 add mod1    = Meta_L
 add mod2    = Alt_L

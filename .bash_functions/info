@@ -1,4 +1,4 @@
 function info
 {
-	emacsclient -e "(my-info \"${1:-dir}\")" >$n 2>&1
+	emacsclient -n -e "(my-info \"${1:-dir}\")" >$n 2>&1
 }

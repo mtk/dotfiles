@@ -240,6 +240,7 @@
 
  ;; tab bar
  tab-bar-separator "   "		; easier to see them
+ always-show-tab-bar t
 
  ;; for LSP
  read-process-output-max (* 1024 1024)
@@ -465,22 +466,22 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode)))
 
-(use-package hl-todo
-  :config
-  (setq hl-todo-keyword-faces
-        '(("TODO"   . "#FF0000")
-          ("todo"   . "#FF0000")
-          ("FIXME"  . "#FF0000")
-          ("fixme"  . "#FF0000")
-          ("DEBUG"  . "#A020F0")
-          ("GOTCHA" . "#FF4500")
-          ("why"    . "#FF4500")
-          ("STUB"   . "#1E90FF")))
-  (define-key hl-todo-mode-map (kbd "C-c H p") 'hl-todo-previous)
-  (define-key hl-todo-mode-map (kbd "C-c H n") 'hl-todo-next)
-  (define-key hl-todo-mode-map (kbd "C-c H o") 'hl-todo-occur)
-  (define-key hl-todo-mode-map (kbd "C-c H i") 'hl-todo-insert)
-  (add-hook 'prog-mode-hook 'hl-todo-mode))
+;; (use-package hl-todo
+;;   :config
+;;   (setq hl-todo-keyword-faces
+;;         '(("TODO"   . "#FF0000")
+;;           ("todo"   . "#FF0000")
+;;           ("FIXME"  . "#FF0000")
+;;           ("fixme"  . "#FF0000")
+;;           ("DEBUG"  . "#A020F0")
+;;           ("GOTCHA" . "#FF4500")
+;;           ("why"    . "#FF4500")
+;;           ("STUB"   . "#1E90FF")))
+;;   (define-key hl-todo-mode-map (kbd "C-c H p") 'hl-todo-previous)
+;;   (define-key hl-todo-mode-map (kbd "C-c H n") 'hl-todo-next)
+;;   (define-key hl-todo-mode-map (kbd "C-c H o") 'hl-todo-occur)
+;;   (define-key hl-todo-mode-map (kbd "C-c H i") 'hl-todo-insert)
+;;   (add-hook 'prog-mode-hook 'hl-todo-mode))
 
 (use-package importmagic
     :ensure t
@@ -525,6 +526,13 @@ Lastly, if no tabs left in the window, it is deleted with `delete-window` functi
 (use-package hydra)
 
 (use-package which-key :config (which-key-mode))
+
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode))
+
+(use-package which-key :config (which-key-mode))
+>>>>>>> 1c213ec (who knows)
 
 (use-package python
   :delight "π "

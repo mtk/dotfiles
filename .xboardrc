@@ -5,7 +5,7 @@
 ; but if you add other options, the next Save Settings will not save them.
 ; Use a shortcut, an @indirection file, or a .bat file instead.
 ;
--saveDate 1586882528
+-saveDate 1680135603
 -whitePieceColor #FFFFCC
 -blackPieceColor #202020
 -lightSquareColor #C8C365
@@ -47,7 +47,7 @@
 -periodicUpdates true
 -popupExitMessage true
 -popupMoveErrors false
--boardSize Middling
+-boardSize Average
 -alwaysOnTop false
 -autoCallFlag false
 -autoComment false
@@ -134,12 +134,9 @@ Open Chat Box (name);$chat;
 "kc" -icshost alanimus.com -icshelper timeseal
 }
 -recentEngines 4
--recentEngineList {Crafty
+-recentEngineList {GNU Chess
 }
--firstChessProgramNames {fairymax
-"Fruit 2.1" -fcp fruit -fUCI
-"Crafty" -fcp crafty
-"GNU Chess" -fcp gnuchess
+-firstChessProgramNames {"GNU Chess" -fcp gnuchess
 }
 -themeNames {"native" -ubt false -pid "" -trueColors false -flipBlack false -overrideLineGap -1
 "classic" -ubt false -lsc #c8c365 -dsc #77a26d -pid "" -wpc #ffffcc -bpc #202020 -hsc #ffff00 -phc #ff0000 -overrideLineGap -1 -flipBlack false
@@ -235,41 +232,41 @@ Open Chat Box (name);$chat;
 -analysisBell 0
 -timeOddsMode 0
 -keepLineBreaksICS false
--winWidth 414
--winHeight 493
--x 1934
--y 791
+-winWidth 469
+-winHeight 588
+-x 232
+-y 119
 -icsUp false
--icsX 2147481714
--icsY 2147482857
+-icsX 2147483416
+-icsY 2147483529
 -icsW -2147483648
 -icsH -2147483648
--commentX 2147481714
--commentY 2147482857
+-commentX 2147483416
+-commentY 2147483529
 -commentW -2147483648
 -commentH -2147483648
--tagsX 513
--tagsY 46
--tagsW 387
--tagsH 302
--gameListX 2147481714
--gameListY 2147482857
+-tagsX 806
+-tagsY 280
+-tagsW 531
+-tagsH 345
+-gameListX 2147483416
+-gameListY 2147483529
 -gameListW 500
 -gameListH 300
--slaveX 2147481714
--slaveY 2147482857
+-slaveX 2147483416
+-slaveY 2147483529
 -moveHistoryUp false
--moveHistoryX 2147481714
--moveHistoryY 2147482857
--moveHistoryW -2147483648
--moveHistoryH -2147483648
+-moveHistoryX 743
+-moveHistoryY 132
+-moveHistoryW 404
+-moveHistoryH 65
 -evalGraphUp false
--evalGraphX 2147481714
--evalGraphY 2147482857
+-evalGraphX 576
+-evalGraphY 308
 -evalGraphW 300
 -evalGraphH 150
 -engineOutputUp false
--engineOutputX 2147481714
--engineOutputY 2147482857
--engineOutputW -2147483648
--engineOutputH -2147483648
+-engineOutputX 1184
+-engineOutputY 690
+-engineOutputW 504
+-engineOutputH 195
